@@ -13,6 +13,9 @@
 *.dvi
 *.ps
 
+#ignore vscode
+.vscode/*
+
 #ignore junk files from compiling C code
 *.o
 emulate

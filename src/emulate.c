@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-// #include "./emulator/machine.h"
+// #include "./emulator/machine.c"
 #include "./emulator/memory.c"
 
 
@@ -39,13 +39,15 @@ int main(int argc, char **argv) {
 
         //determine what of the 4 types the instr is
         op0 = (currentInstruction >> 25) & 0xf;
-        if (op0 & 0xd == 8) { // 0xd == 0b1110
+        // create a mask so we ignore dont cares
+        // then compare to the binary value of a certain type
+        if ((op0 & 0xe) == 8) { // 0xd = 0b1110
             // it is Data Processing (Immediate)
-        } else if (op0 & 0x7 == 5) {
+        } else if ((op0 & 0x7) == 5) {
             // it is Data Processing (Register) 
-        } else if (op0 & 0x5 == 4) {
+        } else if ((op0 & 0x5) == 4) {
             // it is Loads and Stores
-        } else if (op0 & 0xd == 10) {
+        } else if ((op0 & 0xe) == 10) {
             // it is Branches
         }
         printBinary(op0, 4);
