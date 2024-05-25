@@ -10,7 +10,7 @@ double calculate_area_circle(double radius);
 
 
 #define NUM_REGISTERS 31
-#define MEMORY_SIZE 2 << 21
+#define MEMORY_SIZE 2 << 20
 
 struct Pstate {
     bool N;
