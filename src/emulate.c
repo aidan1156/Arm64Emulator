@@ -4,8 +4,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-// #include "./emulator/machine.c"
-#include "./emulator/memory.c"
+#ifndef MACHINE_C  // Header guard to prevent multiple inclusions
+#define MACHINE_C
+#include "./machine.c"
+#endif
+#include "./memory.c"
 
 
 // print binary number

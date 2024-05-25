@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-
 #define NUM_REGISTERS 31
 #define MEMORY_SIZE 2 << 20
 
@@ -22,7 +21,6 @@ struct Machine {
     struct Pstate PSTATE;
     uint8_t memory[MEMORY_SIZE];
 };
-
 
 // ensure all memory segments are clear and have the correct value for a machine
 void initialiseMachine(struct Machine* machine) {

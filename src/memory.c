@@ -4,7 +4,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#ifndef MACHINE_C  // Header guard to prevent multiple inclusions
+#define MACHINE_C
 #include "./machine.c"
+#endif
+
 
 // load the program into main memory
 void loadProgram(char *file, struct Machine *machine) {
