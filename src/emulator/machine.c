@@ -3,11 +3,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-// Function prototypes for calculating area
-double calculate_area_rectangle(double length, double width);
-double calculate_area_circle(double radius);
-
-
 
 #define NUM_REGISTERS 31
 #define MEMORY_SIZE 2 << 20
