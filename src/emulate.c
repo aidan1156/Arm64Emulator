@@ -34,7 +34,8 @@ int main(int argc, char **argv) {
 
     uint32_t currentInstruction;
     int op0;
-    for (int i=0;i<10;i++){
+    bool exit = false;
+    while (!exit) {
         currentInstruction = fetchInstruction(&machine);
 
         //determine what of the 4 types the instr is
@@ -43,15 +44,15 @@ int main(int argc, char **argv) {
         // then compare to the binary value of a certain type
         if ((op0 & 0xe) == 8) { // 0xd = 0b1110
             // it is Data Processing (Immediate)
-        } else if ((op0 & 0x7) == 5) {
+        } else if ((op0 & 0x7) == 5) { // 0x7 = 0b0111
             // it is Data Processing (Register) 
-        } else if ((op0 & 0x5) == 4) {
+        } else if ((op0 & 0x5) == 4) { // 0x5 = 0b0101
             // it is Loads and Stores
-        } else if ((op0 & 0xe) == 10) {
+        } else if ((op0 & 0xe) == 10) { // 0xe = 0b1110
             // it is Branches
         }
-        printBinary(op0, 4);
-        printBinary(currentInstruction, 32);
+
+        exit = currentInstruction == 0x8a000000;
 
         machine.PC += 4;
     }
