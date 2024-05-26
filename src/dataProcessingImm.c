@@ -10,23 +10,9 @@
 #endif
 
 
-void dataProcessingImmediate(struct Machine* machine, uint32_t instr) {
-    short rd = instr & 0x1f;
-    int operand = (instr >> 4) & 0x1ffff; // 17 bits long
-    short opi = (instr >> 22) & 0x7; // 3 bits long
-    short opc = (instr >> 28) & 0x3; // 2 bits long
-    short sf = (instr >> 30) & 0x1; // 1 bit long
-
-    if (opi == 2) {
-        arithmeticInstruction(machine, rd, operand, opc, sf);
-    } else if (opi == 5) {
-        wideMoveInstruction(machine, rd, operand, opc, sf);
-    }
-}
-
 static void arithmeticInstruction(struct Machine* machine, short rd, int operand, short opc, short sf) {
-    short sh = (operand >> 21) & 0x1;
-    int imm12 = (operand >> 9) & 0xfff;
+    short sh = (operand >> 22) & 0x1;
+    int imm12 = (operand >> 10) & 0xfff;
     int rn = operand & 0x1f;
 
     if (sh) {
@@ -70,7 +56,7 @@ static void arithmeticInstruction(struct Machine* machine, short rd, int operand
 
 static void wideMoveInstruction(struct Machine* machine, short rd, int operand, short opc, short sf) {
     uint64_t imm16 = operand & 0x7FFF; // ensure it is 15 bits
-    short hw = (operand >> 20) & 0x3; // ensure it is 2 bits
+    short hw = (operand >> 21) & 0x3; // ensure it is 2 bits
 
     if (hw > 1 && sf == 0) {
         fprintf(stderr, "hw must be 0 or 1 for 32 bit addressing");
@@ -99,9 +85,28 @@ static void wideMoveInstruction(struct Machine* machine, short rd, int operand, 
     }
 }
 
+void dataProcessingImmediate(struct Machine* machine, uint32_t instr) {
+    short rd = instr & 0x1f;
+    int operand = (instr >> 5) & 0x1ffff; // 17 bits long
+    short opi = (instr >> 23) & 0x7; // 3 bits long
+    short opc = (instr >> 29) & 0x3; // 2 bits long
+    short sf = (instr >> 31) & 0x1; // 1 bit long
+
+    if (opi == 2) {
+        printf("arithmetic\n");
+        arithmeticInstruction(machine, rd, operand, opc, sf);
+    } else if (opi == 5) {
+        printf("wide\n");
+        wideMoveInstruction(machine, rd, operand, opc, sf);
+    }
+}
+
 
 int main(void) {
     struct Machine machine;
     initialiseMachine(&machine);
-    // dataProcessingImmediate()0 10 100 010 000110111000110110 10110
+    //  01010001000011011100011011010110
+    // 0 10 100 010 000110111000110110 10110
+    dataProcessingImmediate(&machine, 0x91000822);
+    printMachine(&machine, NULL);
 }
