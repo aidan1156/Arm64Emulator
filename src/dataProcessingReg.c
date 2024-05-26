@@ -39,7 +39,7 @@ int shifting( int shift, int sf, int rm, int operand, int opr ) {
     return op2;
 }
 
-void logic(struct Machine *machine, int opc, int rd, int rn, int op2, int sf) {
+void logic(struct Machine *machine, int opc, int rd, int rn, int op2, int sf, int rmAddress) {
     uint16_t result;
     int sign_bit;
 
@@ -64,7 +64,7 @@ void logic(struct Machine *machine, int opc, int rd, int rn, int op2, int sf) {
         sign_bit = sign_bit & 0x1;
     }
 
-    machine -> registers[rn] = result;
+    machine -> registers[rmAddress] = result;
 
     // updating PSTATE flags
     machine -> PSTATE.N = sign_bit;
@@ -76,10 +76,10 @@ void logic(struct Machine *machine, int opc, int rd, int rn, int op2, int sf) {
 }
 
 int main(uint32_t instruction, struct Machine *machine) {
-    int rd = instruction & 0x1F;
-    int rn = (instruction >> 5) & 0x1F;
+    int rd = machine -> registers[instruction & 0x1F];
+    int rn = machine -> registers[(instruction >> 5) & 0x1F];
     int operand = (instruction >> 10) & 0x3F;
-    int rm = (instruction >> 16) & 0x1F;
+    int rmAddress = (instruction >> 16) & 0x1F;
     int opr = (instruction >> 21) & 0xF;
     int M = (instruction >> 28) & 0x1;
     int opc = (instruction >> 29) & 0x3;
@@ -91,7 +91,7 @@ int main(uint32_t instruction, struct Machine *machine) {
         // M == 0 and (opr == 1xx0 or opr == 0xxx)
         // Arithmetic instr & bit-logic
         int shift = ((opr >> 1) & 0x3); // 0x3 == 0b0011
-        int op2 = shifting(shift, sf, rm, operand, opr);
+        int op2 = shifting(shift, sf, rmAddress, operand, opr);
 
         // logic instructions
         if ((opr & 0x8) == 0) {
@@ -99,9 +99,9 @@ int main(uint32_t instruction, struct Machine *machine) {
             int N = opr & 0x1;
             if (N == 1) {
                 // negated op2
-                logic(&machine, opc, rd, rn, ~op2, sf);
+                logic(&machine, opc, rd, rn, ~op2, sf, rmAddress);
             } else {
-                logic(&machine, opc, rd, rn, op2, sf);
+                logic(&machine, opc, rd, rn, op2, sf, rmAddress);
             }
         } else if ((opr & 0x9) == 8) {
             // Arithmetic instruction
