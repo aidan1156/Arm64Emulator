@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
         // then compare to the binary value of a certain type
         if ((op0 & 0xe) == 8) { // 0xd = 0b1110
             // it is Data Processing (Immediate)
+            dataProcessingImmediate(&machine, currentInstruction);
         } else if ((op0 & 0x7) == 5) { // 0x7 = 0b0111
             // it is Data Processing (Register) 
         } else if ((op0 & 0x5) == 4) { // 0x5 = 0b0101
