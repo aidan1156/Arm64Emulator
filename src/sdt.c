@@ -12,10 +12,23 @@
 #define TWELVE_BIT_MASK 0xFFF
 #define NINETEEN_BIT_MASK 0x7FFFF
 
+uint64_t load(uint8_t *memory, uint64_t address, int size) {
+    uint64_t data = 0;
+    for (int i = 0; i < size; i++) {
+        data |= ((uint64_t)memory[address + i]) << (i * 8);
+    }
+    return data;
+}
+
+void store(uint8_t *memory, uint64_t address, uint64_t data, int size) {
+    for (int i = 0; i < size; i++) {
+        memory[address + i] = (data >> (i * 8)) & 0xFF; // extract 1 byte
+    }
+}
 
 void execute_sdt(uint32_t instruction, struct Machine *machine) {
     bool is_sdt = (instruction >> 31) & ONE_BIT_MASK;
-    int target_register = instruction & FIVE_BIT_MASK; // rt
+    int rt = instruction & FIVE_BIT_MASK; // target register
     bool is_64 = (instruction >> 30) & ONE_BIT_MASK; // sf
 
     bool is_load = (instruction >> 22) & ONE_BIT_MASK; // L
@@ -79,5 +92,31 @@ void execute_sdt(uint32_t instruction, struct Machine *machine) {
         address = machine->PC + (simm19 << 2); //PC+simm19*4
         
     }
+
+    // size of data we are loading / storing
+    int size = is_64 ? 8 : 4;
+    if (is_load) {
+        // load
+        uint64_t data = load(machine->memory, address, size);
+        if (is_64) {
+            machine->registers[rt] = data;
+        } else {
+            machine->registers[rt] = (uint32_t)data; // Store only lower 32 bits
+        }
+    } else {
+        // store value in register into memory
+        uint64_t data = machine->registers[rt]; 
+        if (!is_64) {
+            // mask to 32 bits
+            data &= 0xFFFFFFFF;
+        }
+        store(machine->memory, address, data, size);
+    }
     
+}
+
+int main(void) {
+    struct Machine machine;
+    initialiseMachine(&machine);
+    printMachine(&machine, NULL);
 }
