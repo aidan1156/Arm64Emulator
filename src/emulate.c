@@ -18,7 +18,7 @@ void printBinary(uint32_t n, int nbits) {
         if (i % 8 == 0) {
             putchar(' ');
         }
-        if ((n & mask) == 0 ) {
+        if ((n & mask) == 0) {
             putchar('0');
         }
         else {
@@ -32,7 +32,6 @@ void printBinary(uint32_t n, int nbits) {
 int main(int argc, char **argv) {
     struct Machine machine;
     initialiseMachine(&machine);
-
     loadProgram(argv[1], &machine);
 
     uint32_t currentInstruction;
@@ -59,6 +58,12 @@ int main(int argc, char **argv) {
 
         machine.PC += 4;
     }
+
+    char* path = NULL;
+    if (argc > 2) {
+        path = argv[2];
+    }
+    printMachine(&machine, path);
 
     return EXIT_SUCCESS;
 }
