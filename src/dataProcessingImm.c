@@ -99,30 +99,35 @@ static void arithmeticInstruction(struct Machine* machine, short rd, int operand
 static void wideMoveInstruction(struct Machine* machine, short rd, int operand, short opc, short sf) {
     uint64_t imm16 = operand & 0x7FFF; // ensure it is 15 bits
     short hw = (operand >> 16) & 0x3; // ensure it is 2 bits
+    imm16 <<= hw * 16;
+
+    uint64_t sizeMask = 0xffffffffffffffff;
+    if (sf == 0) {
+        sizeMask = 0xffffffff;
+    }
 
     if (hw > 1 && sf == 0) {
         fprintf(stderr, "hw must be 0 or 1 for 32 bit addressing\n");
     }
 
-    imm16 <<= hw * 16;
 
     switch (opc) {
         case 0:
             machine -> registers[rd] = ~imm16;
             if (sf == 0) {
                 // clear upper 32 bits
-                machine -> registers[rd] = ~imm16 & 0xffffffff;
+                machine -> registers[rd] = ~imm16 & sizeMask;
             }
             break;
         case 2:
-            machine -> registers[rd] = imm16;
+            machine -> registers[rd] = imm16 & sizeMask;
             break;
         case 3:
             uint64_t mask = 0xffff;
             mask <<= hw * 16;
             mask = ~mask;
             // set bits in the range of the imm16 to 0 then add imm16
-            machine -> registers[rd] = ((machine -> registers[rd]) & mask) + imm16;
+            machine -> registers[rd] = (((machine -> registers[rd]) & mask) + imm16) & sizeMask;
             break;
     }
 }
