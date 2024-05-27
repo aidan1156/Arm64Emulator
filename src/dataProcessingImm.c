@@ -10,14 +10,47 @@
 #endif
 
 
-void computeArithmeticOperation(struct Machine* machine, uint64_t a, uint64_t b, short opc, short sf, short rd) {
-    uint64_t result;
+// print binary number
+void printBinary(uint32_t n, int nbits) {
+    uint32_t mask = 1 << (nbits - 1);
+    for (int i=0; i<nbits; i++) {
+        if (i % 8 == 0) {
+            putchar(' ');
+        }
+        if ((n & mask) == 0) {
+            putchar('0');
+        }
+        else {
+            putchar('1');
+        }
+        mask = mask >> 1;
+    }
+    putchar('\n');
+}
+
+// sign extend a 32 bit number to 64 bit
+int64_t extendTo64Bit(int64_t a) {
+    if ((a & 0x80000000) == 0) {
+        return a & 0xffffffff; // set upper 32 bits to 0 as a is >= 0
+    } 
+    return a | 0xffffffff00000000; // otherwise set upper 32 bits to 1 as a is negative
+}
+
+void computeArithmeticOperation(struct Machine* machine, int64_t a, int64_t b, short opc, short sf, short rd) {
+    int64_t result = 0;
+    int64_t mask = 0xffffffffffffffff;
+    if (sf == 0) {
+        mask = 0xffffffff;
+    }
     switch (opc) {
         case 0:
             result = a + b;
             break;
         case 1:
             result = a + b;
+            if (sf == 0) {
+                result = extendTo64Bit(result);
+            }
             machine -> PSTATE.N = (result < 0);
             machine -> PSTATE.Z = (result == 0);
             machine -> PSTATE.C = false;
@@ -28,6 +61,9 @@ void computeArithmeticOperation(struct Machine* machine, uint64_t a, uint64_t b,
             break;
         case 3:
             result = a - b;
+            if (sf == 0) {
+                result = extendTo64Bit(result);
+            }
             machine -> PSTATE.N = (result < 0);
             machine -> PSTATE.Z = (result == 0);
             machine -> PSTATE.C = false;
@@ -35,11 +71,7 @@ void computeArithmeticOperation(struct Machine* machine, uint64_t a, uint64_t b,
             break;
     };
 
-    // ensure it fits into 32 bit
-    if (sf == 0) {
-        result = result & 0xffffffff;
-    }
-
+    result = result & mask;
     // if it encodes the zero register do nothing
     if (rd != 0x1f) {
         machine -> registers[rd] = result;
@@ -49,16 +81,16 @@ void computeArithmeticOperation(struct Machine* machine, uint64_t a, uint64_t b,
 
 static void arithmeticInstruction(struct Machine* machine, short rd, int operand, short opc, short sf) {
     short sh = (operand >> 17) & 0x1;
-    int imm12 = (operand >> 5) & 0xfff;
+    unsigned int imm12 = (operand >> 5) & 0xfff;
     int rn = operand & 0x1f;
 
     if (sh) {
         imm12 = imm12 << 12;
     }
 
-    uint64_t regValue = machine -> registers[rn];
-    if (sf == 0) { // if we are using 32 bit addressing only get the bottom 32 bits
-        regValue = (regValue << 32) >> 32; // this preserves sign of the lower number so 0011 << 2 = 1100 then 1100 >> 2 = 1111 (equivalent to 11)
+    int64_t regValue = machine -> registers[rn];
+    if (sf == 0) {
+        regValue = extendTo64Bit(regValue);
     }
 
     computeArithmeticOperation(machine, regValue, imm12, opc, sf, rd);
@@ -97,7 +129,7 @@ static void wideMoveInstruction(struct Machine* machine, short rd, int operand, 
 
 void dataProcessingImmediate(struct Machine* machine, uint32_t instr) {
     short rd = instr & 0x1f;
-    int operand = (instr >> 5) & 0x1ffff; // 17 bits long
+    int operand = (instr >> 5) & 0x3ffff; // 18 bits long
     short opi = (instr >> 23) & 0x7; // 3 bits long
     short opc = (instr >> 29) & 0x3; // 2 bits long
     short sf = (instr >> 31) & 0x1; // 1 bit long
@@ -106,13 +138,7 @@ void dataProcessingImmediate(struct Machine* machine, uint32_t instr) {
         arithmeticInstruction(machine, rd, operand, opc, sf);
     } else if (opi == 5) {
         wideMoveInstruction(machine, rd, operand, opc, sf);
+    } else {
+        fprintf(stderr, "Unsupported opi value of %d\n", opi);
     }
-}
-
-
-int main(void) {
-    struct Machine machine;
-    initialiseMachine(&machine);
-    dataProcessingImmediate(&machine, 0x91000822);
-    printMachine(&machine, NULL);
 }
