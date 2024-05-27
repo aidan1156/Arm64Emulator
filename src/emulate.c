@@ -10,6 +10,8 @@
 #endif
 #include "./memory.c"
 
+#include "./dataProcessingImm.c"
+
 
 // print binary number
 void printBinary(uint32_t n, int nbits) {
