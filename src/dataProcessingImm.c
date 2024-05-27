@@ -18,6 +18,23 @@ int64_t extendTo64Bit(int64_t a) {
     return a | 0xffffffff00000000; // otherwise set upper 32 bits to 1 as a is negative
 }
 
+bool findAddCarry(int64_t a, int64_t b, int size) {
+    int64_t mask = 0x1;
+    bool carry = false;
+    bool digit1, digit2;
+    for (int i=0; i<size; i++) {
+        digit1 = (a & mask) > 0;
+        digit2 = (b & mask) > 0;
+        if ((digit1 && digit2) || (digit1 && carry) || (digit2 && carry)) {
+            carry = true;
+        } else {
+            carry = false;
+        }
+        mask <<= 1;
+    }
+    return carry;
+}
+
 void computeArithmeticOperation(struct Machine* machine, int64_t a, int64_t b, short opc, short sf, short rd) {
     int64_t result = 0;
     int64_t mask = 0xffffffffffffffff;
@@ -35,7 +52,7 @@ void computeArithmeticOperation(struct Machine* machine, int64_t a, int64_t b, s
             }
             machine -> PSTATE.N = (result < 0);
             machine -> PSTATE.Z = (result == 0);
-            machine -> PSTATE.C = false;
+            machine -> PSTATE.C = findAddCarry(a, b, 32 + 32 * sf);
             machine -> PSTATE.V = (a > 0 && b > 0 && result < 0) || (a < 0 && b < 0 && result > 0);
             break;
         case 2:
