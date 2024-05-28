@@ -1,7 +1,7 @@
 
-#include "../emulator/instructions/dataProcessingImm.c"
-
 #include "../emulator/machine.h"
+#include "../emulator/instructions/dataProcessingImm.h"
+
 
 bool add1ToReg() {
     struct Machine machine;
