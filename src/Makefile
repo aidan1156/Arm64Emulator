@@ -1,17 +1,16 @@
-CC      ?= gcc
-CFLAGS  ?= -std=c17 -g\
-	-D_POSIX_SOURCE -D_DEFAULT_SOURCE\
-	-Wall -Werror -pedantic
+CC = gcc
+CFLAGS = -Wall -Wextra -g
+SRC = machine.c sdt.c
+OBJ = $(SRC:.c=.o)
+TARGET = sdt
 
-.SUFFIXES: .c .o
+all: $(TARGET)
 
-.PHONY: all clean
+$(TARGET): $(OBJ)
+	$(CC) $(CFLAGS) -o $@ $^
 
-all: assemble emulate
-
-assemble: assemble.o
-emulate: emulate.o
+%.o: %.c
+	$(CC) $(CFLAGS) -c $<
 
 clean:
-	$(RM) *.o assemble emulate
-	
+	rm -f $(OBJ) $(TARGET)

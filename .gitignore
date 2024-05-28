@@ -20,6 +20,7 @@
 *.o
 emulate
 assemble
+dataProcessingImm
 
 #ignore junk files from compiling Haskell code
 *.hi
