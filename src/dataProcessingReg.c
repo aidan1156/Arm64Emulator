@@ -12,13 +12,14 @@
 int shifting( int shift, int sf, int rm, int operand, int opr ) {
     int op2;
     if (shift == 0) { // 00 lsl : logical shift left
-        int op2 = rm << operand;
+        op2 = rm << operand;
 
     } else if (shift == 1) { // 01 lsr : logical shift right
         unsigned int op2 = rm >> operand;
+        return op2;
 
     } else if (shift == 2) { // 10 asr : arithmetic shift right
-         int op2 = rm >> operand;
+        op2 = rm >> operand;
 
     } else if ((shift == 3) & ((opr & 0x8) == 0)) { // 11 ror : rotate right
         // bit logic only 
@@ -34,13 +35,13 @@ int shifting( int shift, int sf, int rm, int operand, int opr ) {
         }
         
         // combining the shifted bits & rotated bits
-        int op2 = shifted | rot_bits;
+        op2 = shifted | rot_bits;
     }
     return op2;
 }
 
 void logic(struct Machine *machine, int opc, int rd, int rn, int op2, int sf, int rmAddress) {
-    uint16_t result;
+    uint64_t result;
     int sign_bit;
 
     switch (opc) {
@@ -78,16 +79,15 @@ void logic(struct Machine *machine, int opc, int rd, int rn, int op2, int sf, in
 }
 
 void multiply(struct Machine *machine, int ra, int rn, int rm, int rdAddress, int sf, int x) {
+    uint64_t result;
     switch (x) {
             case 0:
-                uint64_t result;
                 result = ra + (rn * rm);
                 if (sf == 0) {
                     result = result & 0xffffffff;
                 }
                 machine -> registers[rdAddress] = result;
             case 1:
-                uint64_t result;
                 result = ra - (rn * rm);
                 if (sf == 0) {
                     result = result & 0xffffffff;
@@ -96,15 +96,15 @@ void multiply(struct Machine *machine, int ra, int rn, int rm, int rdAddress, in
         }
 }
 
-void main(uint32_t instruction, struct Machine *machine) {
+void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
     int rdAddress = machine -> registers[instruction & 0x1F];
 
     int rnAddress = (instruction >> 5) & 0x1F;
     int rn;
     if (rnAddress == 0b11111) {
-        int rn = 0;
+        rn = 0;
     } else {
-        int rn = machine -> registers[rnAddress];
+        rn = machine -> registers[rnAddress];
     }
 
     int operand = (instruction >> 10) & 0x3F;
@@ -112,9 +112,9 @@ void main(uint32_t instruction, struct Machine *machine) {
     int rmAddress = (instruction >> 16) & 0x1F;
     int rm;
     if (rmAddress == 0b11111) {
-        int rm = 0;
+        rm = 0;
     } else {
-        int rm = machine -> registers[rmAddress];
+        rm = machine -> registers[rmAddress];
     }
 
     int opr = (instruction >> 21) & 0xF;
@@ -127,7 +127,7 @@ void main(uint32_t instruction, struct Machine *machine) {
         // M == 0 and (opr == 1xx0 or opr == 0xxx)
         // Arithmetic instr & bit-logic
         if (rdAddress == 0b11111) {
-            return 0;
+            return;
             // if rd is zero register, nothing to store
         }
         int shift = ((opr >> 1) & 0x3); // 0x3 == 0b0011
@@ -138,9 +138,9 @@ void main(uint32_t instruction, struct Machine *machine) {
             int N = opr & 0x1;
             if (N == 1) {
                 // negated op2
-                logic(&machine, opc, rdAddress, rn, ~op2, sf, rm);
+                logic(machine, opc, rdAddress, rn, ~op2, sf, rm);
             } else {
-                logic(&machine, opc, rdAddress, rn, op2, sf, rm);
+                logic(machine, opc, rdAddress, rn, op2, sf, rm);
             }
         } else if ((opr & 0x9) == 8) {
             // Arithmetic instruction
@@ -153,11 +153,11 @@ void main(uint32_t instruction, struct Machine *machine) {
         int raAddress = operand & 0x1F;
         int ra;
         if (raAddress == 0b11111) {
-            int ra = 0;
+            ra = 0;
+            
         } else {
-            int ra = machine -> registers[raAddress];
+            ra = machine -> registers[raAddress];
         }
-        multiply(&machine, ra, rn, rm, rdAddress, sf, x);
+        multiply(machine, ra, rn, rm, rdAddress, sf, x);
     }
 }
-
