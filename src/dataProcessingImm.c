@@ -4,11 +4,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#ifndef MACHINE_C  // Header guard to prevent multiple inclusions
-#define MACHINE_C
-#include "./machine.c"
-#endif
 
+#ifndef MACHINE_H  // Header guard to prevent multiple inclusions
+#define MACHINE_H
+#include "./emulator/machine.h"
+#endif
 
 // sign extend a 32 bit number to 64 bit
 int64_t extendTo64Bit(int64_t a) {
@@ -138,7 +138,7 @@ static void wideMoveInstruction(struct Machine* machine, short rd, int operand, 
         case 2:
             machine -> registers[rd] = imm16 & sizeMask;
             break;
-        case 3:
+        case 3:;
             uint64_t mask = 0xffff;
             mask <<= hw * 16;
             mask = ~mask;

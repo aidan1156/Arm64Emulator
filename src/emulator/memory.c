@@ -4,10 +4,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#ifndef MACHINE_C  // Header guard to prevent multiple inclusions
-#define MACHINE_C
-#include "./machine.c"
-#endif
+// #ifndef MACHINE_H  // Header guard to prevent multiple inclusions
+// #define MACHINE_H
+// #include "./machine.c"
+// #endif
+
+#include "./memory.h"
 
 
 // load the program into main memory

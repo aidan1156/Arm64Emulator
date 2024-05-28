@@ -7,7 +7,7 @@
 
 #ifndef MACHINE_C  // Header guard to prevent multiple inclusions
 #define MACHINE_C
-#include "./machine.c"
+#include "./machine.h"
 #endif
 
 #include "./dataProcessingImm.c"
