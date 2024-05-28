@@ -104,7 +104,7 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
 
     int rnAddress = (instruction >> 5) & 0x1F;
     int rn;
-    if (rnAddress == 0b11111) {
+    if (rnAddress == 0x1F) {
         rn = 0;
     } else {
         rn = machine -> registers[rnAddress];
@@ -114,7 +114,7 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
 
     int rmAddress = (instruction >> 16) & 0x1F;
     int rm;
-    if (rmAddress == 0b11111) {
+    if (rmAddress == 0x1F) {
         rm = 0;
     } else {
         rm = machine -> registers[rmAddress];
@@ -129,7 +129,7 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
     if ((M == 0) & (((opr & 0x9) == 8) | ((opr & 0x8) == 0))) {
         // M == 0 and (opr == 1xx0 or opr == 0xxx)
         // Arithmetic instr & bit-logic
-        if (rdAddress == 0b11111) {
+        if (rdAddress == 0x1F) {
             return;
             // if rd is zero register, nothing to store
         }
@@ -155,7 +155,7 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
         int x = (operand >> 5) & 0x1; 
         int raAddress = operand & 0x1F;
         int ra;
-        if (raAddress == 0b11111) {
+        if (raAddress == 0x1F) {
             ra = 0;
             
         } else {

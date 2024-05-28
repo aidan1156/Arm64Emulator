@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
             dataProcessingImmediate(&machine, currentInstruction);
         } else if ((op0 & 0x7) == 5) { // 0x7 = 0b0111
             // it is Data Processing (Register) 
-            // dataProcessingRegister(&machine, currentInstruction);
+            dataProcessingRegister(&machine, currentInstruction);
         } else if ((op0 & 0x5) == 4) { // 0x5 = 0b0101
             // it is Loads and Stores
         } else if ((op0 & 0xe) == 10) { // 0xe = 0b1110
