@@ -3,11 +3,14 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
+ // to use computeArithmetic function
 
 #ifndef MACHINE_C  // Header guard to prevent multiple inclusions
 #define MACHINE_C
 #include "./machine.c"
 #endif
+
+#include "./dataProcessingImm.c"
 
 int shifting( int shift, int sf, int rm, int operand, int opr ) {
     int op2;
@@ -143,8 +146,8 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
                 logic(machine, opc, rdAddress, rn, op2, sf, rm);
             }
         } else if ((opr & 0x9) == 8) {
-            // Arithmetic instruction
-            // IMPLEMENTATION NEEDED, USE CODE FROM IMMEDIATE OPERAND
+            computeArithmeticOperation(machine, rn, op2, opc, sf, rdAddress);
+            // Arithmetic instruction - using code from dataProcessingImm
         }
         
     } else if ((M == 1) & ((opr & 0xF) == 8)) {// M == 1 and opr == 1000

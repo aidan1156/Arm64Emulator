@@ -4,15 +4,14 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "./dataProcessingReg.c"
-
 #ifndef MACHINE_C  // Header guard to prevent multiple inclusions
 #define MACHINE_C
 #include "./machine.c"
 #endif
 #include "./memory.c"
 
-#include "./dataProcessingImm.c"
+#include "./dataProcessingReg.c"
+// #include "./dataProcessingImm.c"
 
 
 // print binary number
