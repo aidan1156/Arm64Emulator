@@ -10,7 +10,7 @@ CFLAGS  ?= -std=c17 -g\
 all: assemble emulate
 
 assemble: assemble.c
-emulate: emulate.o ./emulator/memory.c ./emulator/machine.c
+emulate: emulate.o ./emulator/memory.c ./emulator/machine.c ./emulator/instructions/dataProcessingImm.c ./emulator/instructions/dataProcessingReg.c
 
 clean:
 	$(RM) *.o assemble emulate

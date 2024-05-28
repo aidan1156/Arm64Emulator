@@ -3,14 +3,14 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
- // to use computeArithmetic function
 
-#ifndef MACHINE_C  // Header guard to prevent multiple inclusions
-#define MACHINE_C
-#include "./machine.h"
-#endif
+#include "../machine.h"
+#include "./dataProcessingReg.h"
 
-#include "./dataProcessingImm.c"
+// to use computeArithmetic function
+#include "./dataProcessingImm.h"
+
+
 
 int shifting( int shift, int sf, int rm, int operand, int opr ) {
     int op2;

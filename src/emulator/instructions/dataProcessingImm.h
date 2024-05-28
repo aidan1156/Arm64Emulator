@@ -4,12 +4,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#ifndef MACHINE_H  // Header guard to prevent multiple inclusions
-#define MACHINE_H
-#include "./emulator/machine.h"
-#endif
-
-
 // sign extend a 32 bit number to 64 bit
 int64_t extendTo64Bit(int64_t a);
 

@@ -5,10 +5,9 @@
 #include <stdbool.h>
 
 
-#ifndef MACHINE_H  // Header guard to prevent multiple inclusions
-#define MACHINE_H
-#include "./emulator/machine.h"
-#endif
+#include "../machine.h"
+
+#include "./dataProcessingImm.h"
 
 // sign extend a 32 bit number to 64 bit
 int64_t extendTo64Bit(int64_t a) {
@@ -95,7 +94,7 @@ void computeArithmeticOperation(struct Machine* machine, int64_t a, int64_t b, s
 }
 
 
-static void arithmeticInstruction(struct Machine* machine, short rd, int operand, short opc, short sf) {
+void arithmeticInstruction(struct Machine* machine, short rd, int operand, short opc, short sf) {
     short sh = (operand >> 17) & 0x1;
     unsigned int imm12 = (operand >> 5) & 0xfff;
     int rn = operand & 0x1f;
@@ -112,7 +111,7 @@ static void arithmeticInstruction(struct Machine* machine, short rd, int operand
     computeArithmeticOperation(machine, regValue, imm12, opc, sf, rd);
 }
 
-static void wideMoveInstruction(struct Machine* machine, short rd, int operand, short opc, short sf) {
+void wideMoveInstruction(struct Machine* machine, short rd, int operand, short opc, short sf) {
     uint64_t imm16 = operand & 0x7FFF; // ensure it is 15 bits
     short hw = (operand >> 16) & 0x3; // ensure it is 2 bits
     imm16 <<= hw * 16;

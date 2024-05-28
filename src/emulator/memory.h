@@ -4,10 +4,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#ifndef MACHINE_H  // Header guard to prevent multiple inclusions
-#define MACHINE_H
-#include "./machine.h"
-#endif
 
 // load the program into main memory
 void loadProgram(char *file, struct Machine* machine);

@@ -4,14 +4,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#ifndef MACHINE_H  // Header guard to prevent multiple inclusions
-#define MACHINE_H
 #include "./emulator/machine.h"
-#endif
-
 #include "./emulator/memory.h"
 
-#include "./dataProcessingImm.c"
+#include "./emulator/instructions/dataProcessingImm.h"
+#include "./emulator/instructions/dataProcessingReg.h"
+
 
 
 // print binary number
