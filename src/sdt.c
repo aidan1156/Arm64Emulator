@@ -6,6 +6,7 @@
 #include <inttypes.h>
 
 #include "machine.h"
+#include "sdt.h"
 
 #define ONE_BIT_MASK 0x1
 #define FIVE_BIT_MASK 0x1F
@@ -39,7 +40,10 @@ void execute_sdt(uint32_t instruction, struct Machine *machine) {
 
     int simm19 = (instruction >> 5) & NINETEEN_BIT_MASK;
 
-    printf("xn: %d, rt: %d \n", xn, rt);
+    // size of data we are loading / storing
+    int size = is_64 ? 8 : 4;
+
+    //printf("xn: %d, rt: %d \n", xn, rt);
 
     uint64_t address;
 
@@ -98,10 +102,8 @@ void execute_sdt(uint32_t instruction, struct Machine *machine) {
         
     }
 
-    printf("The address is %" PRIu64 "\n", address);
+    //printf("The address is %" PRIu64 "\n", address);
 
-    // size of data we are loading / storing
-    int size = is_64 ? 8 : 4;
     if (is_load) {
         // load
         uint64_t data = load(machine->memory, address, size);
@@ -140,32 +142,26 @@ int main(void) {
     // Store instruction: STR X0, [X1, simm9 = 0] 
     uint32_t storeInstr = 0xF8000C20; // 1 1 1 110 0  0  0  0   0 000 000 000 11  00001 00000
     execute_sdt(storeInstr, &machine);
-    printf("After STR X0, [X1, #8]:\n");
+    printf("After STR X0, [X1, simm9 = 0]:\n");
     printMachine(&machine, NULL);
 
-// Store instruction: STR X0, [X1, simm9 = 8],
+    // Store instruction: STR X0, [X1, simm9 = 8],
     storeInstr = 0xF8008C20; // 1 1 1 110 0  0  0  0   0 000 001 000 11  00001 00000
     execute_sdt(storeInstr, &machine);
-    printf("After STR X0, [X1, #8]:\n");
+    printf("After STR X0, [X1, simm9 = 8]]:\n");
     printMachine(&machine, NULL);
 
-    // // Load instruction: LDR X3, [X1, #8]
-    // uint32_t loadInstr = 0xF9400843; // 1111 1001 0100 0000 0000 1000 0100 0011
-    // execute_sdt(loadInstr, &machine);
-    // printf("After LDR X3, [X1, #8]:\n");
-    // printMachine(&machine, NULL);
+    // Store instruction: STR W0, [X1, simm9 = 16]
+    uint32_t storeInstrPreIndexed = 0xB8010C20; //1 0 1 110 0 0 0 0 0 000 010 000 11 00001 00000
+    execute_sdt(storeInstrPreIndexed, &machine);
+    printf("After STR W0, [X1, simm9 = 0]!:\n");
+    printMachine(&machine, NULL);
 
-    // // Store instruction: STR W0, [X1, #4]
-    // storeInstr = 0xB9000440; // 1011 1001 0000 0000 0000 0100 0100 0000
-    // execute_sdt(storeInstr, &machine);
-    // printf("After STR W0, [X1, #4]:\n");
-    // printMachine(&machine, NULL);
-
-    // // Load instruction: LDR W3, [X1, #4]
-    // loadInstr = 0xB9400443; // 1011 1001 0100 0000 0000 0100 0100 0011
-    // execute_sdt(loadInstr, &machine);
-    // printf("After LDR W3, [X1, #4]:\n");
-    // printMachine(&machine, NULL);
+    // Load instruction: LDR W3, [X1, simm9 = 0] load value at address in X1
+    uint32_t loadInstrPreIndexed = 0xB8400C23; // 1 0 1 110 0 0 0 1 0 000 000 000 11 00001 00011
+    execute_sdt(loadInstrPreIndexed, &machine);
+    printf("After LDR W3, [X1, simm9 = 0]!:\n");
+    printMachine(&machine, NULL);
 
     return EXIT_SUCCESS;
 }
