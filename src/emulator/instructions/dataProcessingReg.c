@@ -49,7 +49,9 @@ void logic(struct Machine *machine, int opc, int64_t rn, int64_t op2, int sf, in
 
     switch (opc) {
         case 0:
+            printf("case 0 (and)\n");
             result = rn & op2;
+            printf("result: %ld\n", result);
         case 1:
             result = rn | op2;
         case 2:
@@ -76,9 +78,11 @@ void logic(struct Machine *machine, int opc, int64_t rn, int64_t op2, int sf, in
 
     if (sf == 0) {
         result = result & 0xffffffff; // removing upper 32 bits
+        printf("sf == 0, 32bits \n");
     }
-    machine -> registers[rdAddress] = result;
 
+    machine -> registers[rdAddress] = result;
+    printf("machine register [%d] = %ld", rdAddress, result);
 }
 
 void multiply(struct Machine *machine, int64_t ra, int64_t rn, int64_t rm, int rdAddress, int sf, int x) {
@@ -100,7 +104,7 @@ void multiply(struct Machine *machine, int64_t ra, int64_t rn, int64_t rm, int r
 }
 
 void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
-    int rdAddress = machine -> registers[instruction & 0x1F];
+    int rdAddress = instruction & 0x1F;
 
     int rnAddress = (instruction >> 5) & 0x1F;
     int64_t rn;
