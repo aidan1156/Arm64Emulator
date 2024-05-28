@@ -12,8 +12,8 @@
 
 
 
-int shifting( int shift, int sf, int rm, int operand, int opr ) {
-    int op2;
+int64_t shifting( int shift, int sf, int64_t rm, int operand, int opr ) {
+    int64_t op2;
     if (shift == 0) { // 00 lsl : logical shift left
         op2 = rm << operand;
 
@@ -43,7 +43,7 @@ int shifting( int shift, int sf, int rm, int operand, int opr ) {
     return op2;
 }
 
-void logic(struct Machine *machine, int opc, int rd, int rn, int op2, int sf, int rmAddress) {
+void logic(struct Machine *machine, int opc, int64_t rn, int64_t op2, int sf, int rdAddress) {
     uint64_t result;
     int sign_bit;
 
@@ -77,11 +77,11 @@ void logic(struct Machine *machine, int opc, int rd, int rn, int op2, int sf, in
     if (sf == 0) {
         result = result & 0xffffffff; // removing upper 32 bits
     }
-    machine -> registers[rmAddress] = result;
+    machine -> registers[rdAddress] = result;
 
 }
 
-void multiply(struct Machine *machine, int ra, int rn, int rm, int rdAddress, int sf, int x) {
+void multiply(struct Machine *machine, int64_t ra, int64_t rn, int64_t rm, int rdAddress, int sf, int x) {
     uint64_t result;
     switch (x) {
             case 0:
@@ -103,7 +103,7 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
     int rdAddress = machine -> registers[instruction & 0x1F];
 
     int rnAddress = (instruction >> 5) & 0x1F;
-    int rn;
+    int64_t rn;
     if (rnAddress == 0x1F) {
         rn = 0;
     } else {
@@ -113,12 +113,15 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
     int operand = (instruction >> 10) & 0x3F;
 
     int rmAddress = (instruction >> 16) & 0x1F;
-    int rm;
+    int64_t rm;
     if (rmAddress == 0x1F) {
         rm = 0;
     } else {
         rm = machine -> registers[rmAddress];
     }
+    printf("rn: %ld\n", rn);
+    printf("rm: %ld\n", rm);
+    printf("operand: %d\n", operand);
 
     int opr = (instruction >> 21) & 0xF;
     int M = (instruction >> 28) & 0x1;
@@ -132,18 +135,22 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
         if (rdAddress == 0x1F) {
             return;
             // if rd is zero register, nothing to store
+            printf("rd is zero register\n");
         }
+        
         int shift = ((opr >> 1) & 0x3); // 0x3 == 0b0011
-        int op2 = shifting(shift, sf, rm, operand, opr);
+        int64_t op2 = shifting(shift, sf, rm, operand, opr);
+        printf("op2: %ld\n", op2);
 
         // logic instructions
         if ((opr & 0x8) == 0) {
+            printf("logic instruction being emulated!\n");
             int N = opr & 0x1;
             if (N == 1) {
                 // negated op2
-                logic(machine, opc, rdAddress, rn, ~op2, sf, rm);
+                logic(machine, opc, rn, ~op2, sf, rdAddress);
             } else {
-                logic(machine, opc, rdAddress, rn, op2, sf, rm);
+                logic(machine, opc, rn, op2, sf, rdAddress);
             }
         } else if ((opr & 0x9) == 8) {
             computeArithmeticOperation(machine, rn, op2, opc, sf, rdAddress);
@@ -154,7 +161,7 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
         // Multiply
         int x = (operand >> 5) & 0x1; 
         int raAddress = operand & 0x1F;
-        int ra;
+        int64_t ra;
         if (raAddress == 0x1F) {
             ra = 0;
             

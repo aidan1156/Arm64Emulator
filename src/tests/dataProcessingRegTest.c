@@ -6,8 +6,8 @@ bool noShiftAnd() {
     struct Machine machine;
     initialiseMachine(&machine);
 
-    machine.registers[1] = 0x0000000A;
-    machine.registers[2] = 0x0000000B;
+    machine.registers[1] = 0x00000001;
+    machine.registers[2] = 0x00000001;
 
     dataProcessingRegister(&machine, 0x8A010043);
     // 64 bits
@@ -17,7 +17,9 @@ bool noShiftAnd() {
     // rd = 3
     // store rd := rm & rn
 
-    if (machine.registers[3] != 0x00000015) {
+    printMachine(&machine, NULL);
+
+    if (machine.registers[3] != 0x00000001) {
         fprintf(stderr, "Failed noShiftAnd\n");
         return false;
     }
