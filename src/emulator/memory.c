@@ -26,7 +26,7 @@ uint32_t fetchInstruction(struct Machine *machine) {
     // each instruction is 4 bytes
     // load in 1 byte at a time
     for (int i=0; i<4; i++) {
-        value = machine -> memory[(machine -> PC) + i];
+        value = (machine -> memory[(machine -> PC) + i]) & 0xff;
         result += value << (i * 8);
     }
     return result;
