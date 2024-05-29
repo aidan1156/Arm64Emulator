@@ -49,13 +49,14 @@ void logic(struct Machine *machine, int opc, int64_t rn, int64_t op2, int sf, in
 
     switch (opc) {
         case 0:
-            printf("case 0 (and)\n");
             result = rn & op2;
-            printf("result: %ld\n", result);
+            break;
         case 1:
             result = rn | op2;
+            break;
         case 2:
             result = rn ^ op2;
+            break;
         case 3:
             result = rn & op2;
             //update condition flags
@@ -71,18 +72,19 @@ void logic(struct Machine *machine, int opc, int64_t rn, int64_t op2, int sf, in
             machine -> PSTATE.N = sign_bit;
             if (result == 0) {
                 machine -> PSTATE.Z = 1;
+            } else {
+                machine -> PSTATE.Z = 0;
             }
             machine -> PSTATE.C = 0;
             machine -> PSTATE.V = 0;
+            break;
     }
 
     if (sf == 0) {
         result = result & 0xffffffff; // removing upper 32 bits
-        printf("sf == 0, 32bits \n");
     }
 
     machine -> registers[rdAddress] = result;
-    printf("machine register [%d] = %ld", rdAddress, result);
 }
 
 void multiply(struct Machine *machine, int64_t ra, int64_t rn, int64_t rm, int rdAddress, int sf, int x) {
@@ -123,9 +125,6 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
     } else {
         rm = machine -> registers[rmAddress];
     }
-    printf("rn: %ld\n", rn);
-    printf("rm: %ld\n", rm);
-    printf("operand: %d\n", operand);
 
     int opr = (instruction >> 21) & 0xF;
     int M = (instruction >> 28) & 0x1;
@@ -144,11 +143,9 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
         
         int shift = ((opr >> 1) & 0x3); // 0x3 == 0b0011
         int64_t op2 = shifting(shift, sf, rm, operand, opr);
-        printf("op2: %ld\n", op2);
 
         // logic instructions
         if ((opr & 0x8) == 0) {
-            printf("logic instruction being emulated!\n");
             int N = opr & 0x1;
             if (N == 1) {
                 // negated op2
