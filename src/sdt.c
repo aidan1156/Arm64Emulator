@@ -150,39 +150,40 @@ int main(void) {
     // check write back
 
     // PRE-INDEXED
-    // Store instruction: STR X0, [X1, simm9 = 0] 
+    // STR X0, [X1, simm9 = 0] 
     uint32_t instr = 0xF8000C20; // 1 1 1 110 0  0  0  0   0 000 000 000 11  00001 00000
     execute_sdt(instr, &machine);
     printf("After STR X0, [X1, simm9 = 0]:\n");
     printMachine(&machine, NULL);
 
-    // Store instruction: STR X0, [X1, simm9 = 8],
+    // STR X0, [X1, simm9 = 8],
     instr = 0xF8008C20; // 1 1 1 110 0  0  0  0   0 000 001 000 11  00001 00000
     execute_sdt(instr, &machine);
     printf("After STR X0, [X1, simm9 = 8]]:\n");
     printMachine(&machine, NULL);
 
-    // Store instruction: STR W0, [X1, simm9 = 16]
+    // STR W0, [X1, simm9 = 16]
     instr = 0xB8010C20; //1 0 1 110 0 0 0 0 0 000 010 000 11 00001 00000
     execute_sdt(instr, &machine);
     printf("After STR W0, [X1, simm9 = 0]!:\n");
     printMachine(&machine, NULL);
 
-    // Load instruction: LDR W3, [X1, simm9 = 0] load value at address in X1
+    // LDR W3, [X1, simm9 = 0] load value at address in X1
     instr = 0xB8400C23; // 1 0 1 110 0 0 0 1 0 000 000 000 11 00001 00011
     execute_sdt(instr, &machine);
     printf("After LDR W3, [X1, simm9 = 0]!:\n");
     printMachine(&machine, NULL);
 
     // POST INDEX
-    // Load instruction: LDR X5, [X4, simm9 = 4] load value at address in X4 into X5
+    // LDR X5, [X4, simm9 = 4] load value at address in X4 into X5
     instr = 0xF8404485; // 1 1 1 110 0 0 0 1 0 000 000 100 01 00100 00101
     execute_sdt(instr, &machine);
     printf("After LDR X5, [X4, simm9 = 4]!:\n");
     printMachine(&machine, NULL);
 
+
     // UNSIGNED OFFSET
-    // Load instruction: LDR W6, [X4, imm12 = 2 (offset = 8)] load 32 bit value at address in X4 into X5
+    // LDR W6, [X4, imm12 = 2 (offset = 8)] load 32 bit value at address in X4 into X5
     instr = 0xB9400886; // 1 0 1 110 0 1 0 1 0000 0000 0010 00100 00110
     execute_sdt(instr, &machine);
     printf("After LDR X6, [X4, imm12 = 1]!:\n");
@@ -190,7 +191,7 @@ int main(void) {
 
 
     // REGISTER OFFSET
-    // Load instruction: store value at X2 into address X1 + X4
+    // store value at X2 into address X1 + X4
     instr = 0xF8246822; // 1 1 1 110 0 0 0 0 1 00100 011010 00001 00010
     execute_sdt(instr, &machine);
     printf("store value at X2 into address X1 + X4:\n");
@@ -198,11 +199,18 @@ int main(void) {
 
 
     // LOAD FROM LITERAL
-    // Load instruction: load value at 0x201c into X7
+    // load value at 0x201c into X7
     // PC = 2000, simm19 = 7
     instr = 0x180000E7; // 0 0 011 000 0000 00000 00000 00111 00111
     execute_sdt(instr, &machine);
     printf("load value at 0x201c into X7:\n");
+    printMachine(&machine, NULL);
+
+    // pre-index negative immediate 
+    // simm9 = -12 load from address in X1 + simm9 and store in X8
+    instr = 0xB85F4C28; // 1 0 1 110 0 0 0 1 0 111 110 100 11 00001 01000
+    execute_sdt(instr, &machine);
+    printf("load from (address in X1) - 12 and store in X8:\n");
     printMachine(&machine, NULL);
     
     return EXIT_SUCCESS;
