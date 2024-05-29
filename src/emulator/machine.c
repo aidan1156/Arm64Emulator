@@ -53,7 +53,7 @@ void printMachine(struct Machine* machine, char* path) {
             value += ((machine -> memory[i+n]) & 0xff) << (8 * n);
         }
         if (value != 0) {
-            fprintf(file, "0X%08x = %08x\n", i, value);
+            fprintf(file, "0X%08x : %08x\n", i, value);
         }
     }
 
