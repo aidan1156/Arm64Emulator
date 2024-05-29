@@ -106,7 +106,7 @@ bool noShiftAndFlag2() {   // failed
     machine.registers[0] = 0x80000001;
     machine.registers[1] = 0x80000011;
 
-    dataProcessingRegister(&machine, 0xEA000022);
+    dataProcessingRegister(&machine, 0x6A000022);
     // 64 bits
     // no shift : operand = 0
     // rm = 0
@@ -122,8 +122,6 @@ bool noShiftAndFlag2() {   // failed
     bool n = machine.PSTATE.N != 1;
     bool v = machine.PSTATE.V != 0;
     bool z = machine.PSTATE.Z != 0;
-    printf("========== %ld\n", machine.registers[2]);
-    printf("========== %d\n", 0x80000001);
 
 
     if ((machine.registers[2] != 0x80000001) | c | v | n | z) {
@@ -215,7 +213,7 @@ bool asr() {
     struct Machine machine;
     initialiseMachine(&machine);
 
-    machine.registers[0] = 80000000;
+    machine.registers[0] = 0x80000000;
 
     dataProcessingRegister(&machine, 0xAA800C22);
     // 64 bits
@@ -225,12 +223,8 @@ bool asr() {
     // rd = 2
     // op2 = 0b0001
     // store rd := rm | rn
-
-    printf(" ========== %ld \n", machine.registers[2]);
-    // registers is uint64_t
-    // needs to be int64_t
     
-    if ((machine.registers[2] != 0xC0000000)) {
+    if ((machine.registers[2] != 0x10000000)) {
         fprintf(stderr, "Failed asr\n");
         return false;
     }
@@ -276,6 +270,53 @@ bool add() {
     return true;
 }
 
+// multiply-add
+bool madd() {
+    struct Machine machine;
+    initialiseMachine(&machine);
+
+    machine.registers[0] = 0x000A; // rm
+    machine.registers[1] = 0x0001; // ra
+    machine.registers[2] = 0x0004; // rn
+    // 64 bits
+    // rm = 0
+    // ra = 1
+    // rn = 2
+    // rd = 3
+    // store rd := ra + (rn * rm)
+
+    dataProcessingRegister(&machine, 0x9B000443);
+    
+    if ((machine.registers[3] != 0x0029)) {
+        fprintf(stderr, "Failed madd\n");
+        return false;
+    }
+    return true;
+}
+
+// multiply-add
+bool msub() {
+    struct Machine machine;
+    initialiseMachine(&machine);
+
+    machine.registers[0] = 0x0002; // rm
+    machine.registers[1] = 0x0002; // ra
+    machine.registers[2] = 0x0001; // rn
+    // 64 bits
+    // rm = 0
+    // ra = 1
+    // rn = 2
+    // rd = 3
+    // store rd := ra - (rn * rm)
+
+    dataProcessingRegister(&machine, 0x9B008443);
+    
+    if ((machine.registers[3] != 0)) {
+        fprintf(stderr, "Failed madd\n");
+        return false;
+    }
+    return true;
+}
 
 int main(void) {
     int failed = 0;
@@ -291,6 +332,8 @@ int main(void) {
     failed += !asr();
     failed += !ror();
     failed += !add();
+    failed += !madd();
+    failed += !msub();
 
     printf("%d failures\n", failed);
 }
