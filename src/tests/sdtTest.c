@@ -39,7 +39,7 @@ int main(void) {
     // PRE-INDEXED
     // STR X0, [X1, simm9 = 0] 
     uint32_t instr = 0xF8000C20; // 1 1 1 110 0  0  0  0   0 000 000 000 11  00001 00000
-    execute_sdt(instr, &machine);
+    execute_sdt(&machine, instr);
     printf("After STR X0, [X1, simm9 = 0]:\n");
     printMachine(&machine, NULL);
     assertMemoryValue(machine.memory, 0x1000, 0x123456789ABCDEF0, 8, &failed);
@@ -48,7 +48,7 @@ int main(void) {
 
     // STR X0, [X1, simm9 = 8],
     instr = 0xF8008C20; // 1 1 1 110 0  0  0  0   0 000 001 000 11  00001 00000
-    execute_sdt(instr, &machine);
+    execute_sdt(&machine, instr);
     printf("After STR X0, [X1, simm9 = 8]]:\n");
     printMachine(&machine, NULL);
     assertMemoryValue(machine.memory, 0x1008, 0x123456789ABCDEF0, 8, &failed);
@@ -57,15 +57,15 @@ int main(void) {
 
     // STR W0, [X1, simm9 = 16]
     instr = 0xB8010C20; //1 0 1 110 0 0 0 0 0 000 010 000 11 00001 00000
-    execute_sdt(instr, &machine);
+    execute_sdt(&machine, instr);
     printf("After STR W0, [X1, simm9 = 0]!:\n");
     printMachine(&machine, NULL);
-    assertMemoryValue(machine.memory, 0x1018, 0x9ABCDEF0, 4, &failed);
+    assertMemoryValue(machine.memory, 0x1018, 0x9abcdef0, 4, &failed);
     count++;
 
     // LDR W3, [X1, simm9 = 0] load value at address in X1
     instr = 0xB8400C23; // 1 0 1 110 0 0 0 1 0 000 000 000 11 00001 00011
-    execute_sdt(instr, &machine);
+    execute_sdt(&machine, instr);
     printf("After LDR W3, [X1, simm9 = 0]!:\n");
     printMachine(&machine, NULL);
     assertRegisterValue(machine.registers, 3, 0x9ABCDEF0, &failed);
@@ -74,7 +74,7 @@ int main(void) {
     // POST INDEX
     // LDR X5, [X4, simm9 = 4] load value at address in X4 into X5
     instr = 0xF8404485; // 1 1 1 110 0 0 0 1 0 000 000 100 01 00100 00101
-    execute_sdt(instr, &machine);
+    execute_sdt(&machine, instr);
     printf("After LDR X5, [X4, simm9 = 4]!:\n");
     printMachine(&machine, NULL);
     assertRegisterValue(machine.registers, 5, 0x9ABCDEF012345678, &failed);
@@ -83,7 +83,7 @@ int main(void) {
     // UNSIGNED OFFSET
     // LDR W6, [X4, imm12 = 2 (offset = 8)] load 32 bit value at address in X4 into X5
     instr = 0xB9400886; // 1 0 1 110 0 1 0 1 0000 0000 0010 00100 00110
-    execute_sdt(instr, &machine);
+    execute_sdt(&machine, instr);
     printf("After LDR W6, [X4, imm12 = 1]!:\n");
     printMachine(&machine, NULL);
     assertRegisterValue(machine.registers, 6, 0x12345678, &failed);
@@ -93,7 +93,7 @@ int main(void) {
     // REGISTER OFFSET
     // store value at X2 into address X1 + X4
     instr = 0xF8246822; // 1 1 1 110 0 0 0 0 1 00100 011010 00001 00010
-    execute_sdt(instr, &machine);
+    execute_sdt(&machine, instr);
     printf("store value at X2 into address X1 + X4:\n");
     printMachine(&machine, NULL);
     assertMemoryValue(machine.memory, 0x201c, 0x4, 8, &failed);
@@ -104,7 +104,7 @@ int main(void) {
     // load value at 0x201c into X7
     // PC = 2000, simm19 = 7
     instr = 0x180000E7; // 0 0 011 000 0000 00000 00000 00111 00111
-    execute_sdt(instr, &machine);
+    execute_sdt(&machine, instr);
     printf("load value at 0x201c into X7:\n");
     printMachine(&machine, NULL);
     assertRegisterValue(machine.registers, 7, 0x4, &failed);
@@ -113,7 +113,7 @@ int main(void) {
     // pre-index negative immediate 
     // simm9 = -12 load from address in X1 + simm9 and store in X8
     instr = 0xB85F4C28; // 1 0 1 110 0 0 0 1 0 111 110 100 11 00001 01000
-    execute_sdt(instr, &machine);
+    execute_sdt(&machine, instr);
     printf("load from (address in X1) - 12 and store in X8:\n");
     printMachine(&machine, NULL);
     assertRegisterValue(machine.registers, 8, 0x12345678, &failed);

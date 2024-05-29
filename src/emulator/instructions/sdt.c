@@ -30,7 +30,7 @@ void store(int8_t *memory, uint64_t address, int64_t data, int size) {
     }
 }
 
-void execute_sdt(uint32_t instruction, struct Machine *machine) {
+void execute_sdt(struct Machine *machine, uint32_t instruction) {
     bool is_sdt = (instruction >> 31) & ONE_BIT_MASK;
     int rt = instruction & FIVE_BIT_MASK; // target register
     bool is_64 = (instruction >> 30) & ONE_BIT_MASK; // sf
@@ -117,8 +117,7 @@ void execute_sdt(uint32_t instruction, struct Machine *machine) {
         int64_t data = load(machine->memory, address, size);
         if (is_64) {
             machine->registers[rt] = data;
-        } else {
-            printf("data: %" PRIx64 "\n", data);
+        } else {;
             machine->registers[rt] = extendTo64Bit(data); // Store only lower 32 bits
             printf("data: %" PRIx64 "\n", data);
         }
