@@ -59,7 +59,9 @@ int main(int argc, char **argv) {
 
         exit = currentInstruction == 0x8a000000;
 
-        machine.PC += 4;
+        if (!exit) {
+            machine.PC += 4;
+        }
     }
 
     char* path = NULL;
