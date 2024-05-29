@@ -14,5 +14,4 @@ dataProcessingImmTest: ../emulator/machine.c  ./dataProcessingImmTest.c ../emula
 dataProcessingRegTest: ../emulator/machine.c  ./dataProcessingRegTest.c ../emulator/memory.c  ../emulator/instructions/dataProcessingReg.c  ../emulator/instructions/dataProcessingImm.c 
 
 clean:
-	$(RM) *.o dataProcessingImmTest
-	
+	$(RM) *.o dataProcessingImmTest dataProcessingRegTest

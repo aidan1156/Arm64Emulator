@@ -12,8 +12,8 @@
 
 
 
-int shifting( int shift, int sf, int rm, int operand, int opr ) {
-    int op2;
+int64_t shifting( int shift, int sf, int64_t rm, int operand, int opr ) {
+    int64_t op2;
     if (shift == 0) { // 00 lsl : logical shift left
         op2 = rm << operand;
 
@@ -43,17 +43,20 @@ int shifting( int shift, int sf, int rm, int operand, int opr ) {
     return op2;
 }
 
-void logic(struct Machine *machine, int opc, int rd, int rn, int op2, int sf, int rmAddress) {
-    uint64_t result;
+void logic(struct Machine *machine, int opc, int64_t rn, int64_t op2, int sf, int rdAddress) {
+    int64_t result;
     int sign_bit;
 
     switch (opc) {
         case 0:
             result = rn & op2;
+            break;
         case 1:
             result = rn | op2;
+            break;
         case 2:
             result = rn ^ op2;
+            break;
         case 3:
             result = rn & op2;
             //update condition flags
@@ -69,20 +72,23 @@ void logic(struct Machine *machine, int opc, int rd, int rn, int op2, int sf, in
             machine -> PSTATE.N = sign_bit;
             if (result == 0) {
                 machine -> PSTATE.Z = 1;
+            } else {
+                machine -> PSTATE.Z = 0;
             }
             machine -> PSTATE.C = 0;
             machine -> PSTATE.V = 0;
+            break;
     }
 
     if (sf == 0) {
         result = result & 0xffffffff; // removing upper 32 bits
     }
-    machine -> registers[rmAddress] = result;
 
+    machine -> registers[rdAddress] = result;
 }
 
-void multiply(struct Machine *machine, int ra, int rn, int rm, int rdAddress, int sf, int x) {
-    uint64_t result;
+void multiply(struct Machine *machine, int64_t ra, int64_t rn, int64_t rm, int rdAddress, int sf, int x) {
+    int64_t result;
     switch (x) {
             case 0:
                 result = ra + (rn * rm);
@@ -90,20 +96,22 @@ void multiply(struct Machine *machine, int ra, int rn, int rm, int rdAddress, in
                     result = result & 0xffffffff;
                 }
                 machine -> registers[rdAddress] = result;
+                break;
             case 1:
                 result = ra - (rn * rm);
                 if (sf == 0) {
                     result = result & 0xffffffff;
                 }
                 machine -> registers[rdAddress] = result;
+                break;
         }
 }
 
 void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
-    int rdAddress = machine -> registers[instruction & 0x1F];
+    int rdAddress = instruction & 0x1F;
 
     int rnAddress = (instruction >> 5) & 0x1F;
-    int rn;
+    int64_t rn;
     if (rnAddress == 0x1F) {
         rn = 0;
     } else {
@@ -113,7 +121,7 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
     int operand = (instruction >> 10) & 0x3F;
 
     int rmAddress = (instruction >> 16) & 0x1F;
-    int rm;
+    int64_t rm;
     if (rmAddress == 0x1F) {
         rm = 0;
     } else {
@@ -132,18 +140,20 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
         if (rdAddress == 0x1F) {
             return;
             // if rd is zero register, nothing to store
+            printf("rd is zero register\n");
         }
+        
         int shift = ((opr >> 1) & 0x3); // 0x3 == 0b0011
-        int op2 = shifting(shift, sf, rm, operand, opr);
+        int64_t op2 = shifting(shift, sf, rm, operand, opr);
 
         // logic instructions
         if ((opr & 0x8) == 0) {
             int N = opr & 0x1;
             if (N == 1) {
                 // negated op2
-                logic(machine, opc, rdAddress, rn, ~op2, sf, rm);
+                logic(machine, opc, rn, ~op2, sf, rdAddress);
             } else {
-                logic(machine, opc, rdAddress, rn, op2, sf, rm);
+                logic(machine, opc, rn, op2, sf, rdAddress);
             }
         } else if ((opr & 0x9) == 8) {
             computeArithmeticOperation(machine, rn, op2, opc, sf, rdAddress);
@@ -154,7 +164,7 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
         // Multiply
         int x = (operand >> 5) & 0x1; 
         int raAddress = operand & 0x1F;
-        int ra;
+        int64_t ra;
         if (raAddress == 0x1F) {
             ra = 0;
             
