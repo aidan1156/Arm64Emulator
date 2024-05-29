@@ -10,14 +10,14 @@
 #include "./dataProcessingImm.h"
 
 // sign extend a 32 bit number to 64 bit
-int64_t extendTo64Bit(int64_t a) {
+static int64_t extendTo64Bit(int64_t a) {
     if ((a & 0x80000000) == 0) {
         return a & 0xffffffff; // set upper 32 bits to 0 as a is >= 0
     } 
     return a | 0xffffffff00000000; // otherwise set upper 32 bits to 1 as a is negative
 }
 
-bool findAddCarry(int64_t a, int64_t b, int size) {
+static bool findAddCarry(int64_t a, int64_t b, int size) {
     int64_t mask = 0x1;
     bool carry = false;
     bool digit1, digit2;
@@ -34,7 +34,7 @@ bool findAddCarry(int64_t a, int64_t b, int size) {
     return carry;
 }
 
-bool findSubCarry(int64_t a, int64_t b, int size) {
+static bool findSubCarry(int64_t a, int64_t b, int size) {
     int64_t mask = 0x1;
     bool carry = false;
     bool digit1, digit2;
@@ -94,7 +94,7 @@ void computeArithmeticOperation(struct Machine* machine, int64_t a, int64_t b, s
 }
 
 
-void arithmeticInstruction(struct Machine* machine, short rd, int operand, short opc, short sf) {
+static void arithmeticInstruction(struct Machine* machine, short rd, int operand, short opc, short sf) {
     short sh = (operand >> 17) & 0x1;
     unsigned int imm12 = (operand >> 5) & 0xfff;
     int rn = operand & 0x1f;
@@ -111,7 +111,7 @@ void arithmeticInstruction(struct Machine* machine, short rd, int operand, short
     computeArithmeticOperation(machine, regValue, imm12, opc, sf, rd);
 }
 
-void wideMoveInstruction(struct Machine* machine, short rd, int operand, short opc, short sf) {
+static void wideMoveInstruction(struct Machine* machine, short rd, int operand, short opc, short sf) {
     uint64_t imm16 = operand & 0x7FFF; // ensure it is 15 bits
     short hw = (operand >> 16) & 0x3; // ensure it is 2 bits
     imm16 <<= hw * 16;
