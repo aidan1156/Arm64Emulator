@@ -9,4 +9,4 @@ int64_t load(int8_t *memory, uint64_t address, int size);
 
 void store(int8_t *memory, uint64_t address, int64_t data, int size);
 
-void execute_sdt(uint32_t instruction, struct Machine *machine);
+void execute_sdt(struct Machine *machine, uint32_t instruction);
