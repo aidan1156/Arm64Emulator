@@ -1,21 +1,3 @@
-<<<<<<< HEAD
-CC = gcc
-CFLAGS = -Wall -Wextra -g
-SRC = machine.c sdt.c
-OBJ = $(SRC:.c=.o)
-TARGET = sdt
-
-all: $(TARGET)
-
-$(TARGET): $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $^
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $<
-
-clean:
-	rm -f $(OBJ) $(TARGET)
-=======
 CC      ?= gcc
 CFLAGS  ?= -std=c17 -g\
 	-D_POSIX_SOURCE -D_DEFAULT_SOURCE\
@@ -34,4 +16,3 @@ clean:
 
 %.o: %.c
 	%(CC) $(CFLAGS) -c $< -o $@
->>>>>>> setting-up-cpu

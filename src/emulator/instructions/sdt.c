@@ -7,6 +7,7 @@
 
 #include "../machine.h"
 #include "./sdt.h"
+#include "./dataProcessingImm.h"
 
 #define ONE_BIT_MASK 0x1
 #define FIVE_BIT_MASK 0x1F
@@ -14,15 +15,16 @@
 #define TWELVE_BIT_MASK 0xFFF
 #define NINETEEN_BIT_MASK 0x7FFFF
 
-uint64_t load(uint8_t *memory, uint64_t address, int size) {
-    uint64_t data = 0;
+int64_t load(int8_t *memory, uint64_t address, int size) {
+    int64_t data = 0;
     for (int i = 0; i < size; i++) {
-        data |= ((uint64_t)memory[address + i]) << (i * 8);
+        data += ((memory[address + i]) & 0xff) << (8 * i);
+        printf("data: %" PRIx64 "\n", data);
     }
     return data;
 }
 
-void store(uint8_t *memory, uint64_t address, uint64_t data, int size) {
+void store(int8_t *memory, uint64_t address, int64_t data, int size) {
     for (int i = 0; i < size; i++) {
         memory[address + i] = (data >> (i * 8)) & 0xFF; // extract 1 byte
     }
@@ -73,7 +75,7 @@ void execute_sdt(uint32_t instruction, struct Machine *machine) {
             // printf("Pre indexing...\n");
             int32_t simm9 = (int32_t)((instruction >> 12) & NINE_BIT_MASK);
             
-            printf("simm9 is %d", simm9);
+            // printf("simm9 is %d", simm9);
 
             // Sign extend
             if (simm9 & 0x100) {
@@ -112,106 +114,21 @@ void execute_sdt(uint32_t instruction, struct Machine *machine) {
 
     if (is_load) {
         // load
-        uint64_t data = load(machine->memory, address, size);
+        int64_t data = load(machine->memory, address, size);
         if (is_64) {
             machine->registers[rt] = data;
         } else {
-            machine->registers[rt] = (uint32_t)data; // Store only lower 32 bits
+            printf("data: %" PRIx64 "\n", data);
+            machine->registers[rt] = extendTo64Bit(data); // Store only lower 32 bits
+            printf("data: %" PRIx64 "\n", data);
         }
     } else {
         // store value in register into memory
-        uint64_t data = machine->registers[rt]; 
+        int64_t data = machine->registers[rt]; 
         if (!is_64) {
-            // mask to 32 bits
-            data &= 0xFFFFFFFF;
+            extendTo64Bit(data);
         }
         store(machine->memory, address, data, size);
     }
     
-}
-
-int main(void) {
-    struct Machine machine;
-    initialiseMachine(&machine);
-    
-    // Initialize some test values
-    machine.registers[0] = 0x123456789ABCDEF0; // X0
-    machine.registers[1] = 0x1000; // X1 (base address)
-    machine.registers[2] = 0x4; // X2 (offset)
-    machine.registers[3] = 0xFFFFFFFFFFFFFFFF; // X3 (to be loaded with 32-bit value)
-    machine.registers[4] = 0x1000;
-    machine.PC = 0x2000;
-
-    // Print initial state
-    printf("Initial state:\n");
-    printMachine(&machine, NULL);
-
-    // check load and store for 64 and 32 bit
-    // check write back
-
-    // PRE-INDEXED
-    // STR X0, [X1, simm9 = 0] 
-    uint32_t instr = 0xF8000C20; // 1 1 1 110 0  0  0  0   0 000 000 000 11  00001 00000
-    execute_sdt(instr, &machine);
-    printf("After STR X0, [X1, simm9 = 0]:\n");
-    printMachine(&machine, NULL);
-
-    // STR X0, [X1, simm9 = 8],
-    instr = 0xF8008C20; // 1 1 1 110 0  0  0  0   0 000 001 000 11  00001 00000
-    execute_sdt(instr, &machine);
-    printf("After STR X0, [X1, simm9 = 8]]:\n");
-    printMachine(&machine, NULL);
-
-    // STR W0, [X1, simm9 = 16]
-    instr = 0xB8010C20; //1 0 1 110 0 0 0 0 0 000 010 000 11 00001 00000
-    execute_sdt(instr, &machine);
-    printf("After STR W0, [X1, simm9 = 0]!:\n");
-    printMachine(&machine, NULL);
-
-    // LDR W3, [X1, simm9 = 0] load value at address in X1
-    instr = 0xB8400C23; // 1 0 1 110 0 0 0 1 0 000 000 000 11 00001 00011
-    execute_sdt(instr, &machine);
-    printf("After LDR W3, [X1, simm9 = 0]!:\n");
-    printMachine(&machine, NULL);
-
-    // POST INDEX
-    // LDR X5, [X4, simm9 = 4] load value at address in X4 into X5
-    instr = 0xF8404485; // 1 1 1 110 0 0 0 1 0 000 000 100 01 00100 00101
-    execute_sdt(instr, &machine);
-    printf("After LDR X5, [X4, simm9 = 4]!:\n");
-    printMachine(&machine, NULL);
-
-
-    // UNSIGNED OFFSET
-    // LDR W6, [X4, imm12 = 2 (offset = 8)] load 32 bit value at address in X4 into X5
-    instr = 0xB9400886; // 1 0 1 110 0 1 0 1 0000 0000 0010 00100 00110
-    execute_sdt(instr, &machine);
-    printf("After LDR X6, [X4, imm12 = 1]!:\n");
-    printMachine(&machine, NULL);
-
-
-    // REGISTER OFFSET
-    // store value at X2 into address X1 + X4
-    instr = 0xF8246822; // 1 1 1 110 0 0 0 0 1 00100 011010 00001 00010
-    execute_sdt(instr, &machine);
-    printf("store value at X2 into address X1 + X4:\n");
-    printMachine(&machine, NULL);
-
-
-    // LOAD FROM LITERAL
-    // load value at 0x201c into X7
-    // PC = 2000, simm19 = 7
-    instr = 0x180000E7; // 0 0 011 000 0000 00000 00000 00111 00111
-    execute_sdt(instr, &machine);
-    printf("load value at 0x201c into X7:\n");
-    printMachine(&machine, NULL);
-
-    // pre-index negative immediate 
-    // simm9 = -12 load from address in X1 + simm9 and store in X8
-    instr = 0xB85F4C28; // 1 0 1 110 0 0 0 1 0 111 110 100 11 00001 01000
-    execute_sdt(instr, &machine);
-    printf("load from (address in X1) - 12 and store in X8:\n");
-    printMachine(&machine, NULL);
-    
-    return EXIT_SUCCESS;
 }
