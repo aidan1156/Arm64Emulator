@@ -2,12 +2,13 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "./machine.c"
 
 void branchInstruction(struct Machine* machine, uint32_t instr) {
-    short flag = instruction >> 30; //first two bits determine type of branch
+    short flag = instr >> 30; //first two bits determine type of branch
     
     if (flag == 0){ //unconditional branch
-        int simm26 = instr & 0x2ffffff;
+        int simm26 = instr & 0x3ffffff;
 
         int offset;
         if (simm26 >> 25) { //check sign for extension to 64bits
@@ -20,15 +21,15 @@ void branchInstruction(struct Machine* machine, uint32_t instr) {
     } else if (flag == 3){ //register branch
         short xn = (instr >> 5) & 0x1f;
 
-        machine -> PC = xn
+        machine -> PC = xn;
 
     } else { //conditional branch
-        int simm19 = (instr >> 5) & 0x3ffff;
+        int simm19 = (instr >> 5) & 0x7ffff;
         short cond = instr & 0xf;
 
         int offset;
         if (simm19 >> 18) { //check sign for extension to 64bits
-            offset = 0xffffffffff300000 | (simm19 << 2);
+            offset = 0xffffffffffe0003 | (simm19 << 2);
         } else {
             offset = (simm19 << 2);
         }
@@ -36,23 +37,23 @@ void branchInstruction(struct Machine* machine, uint32_t instr) {
         bool cond_satisfied;
         switch (cond) {
             case 0:
-                cond_satisfied = machine -> PSTATE.Z == 1
+                cond_satisfied = machine -> PSTATE.Z == 1;
             case 1:
-                cond_satisfied = machine -> PSTATE.Z == 0
-            case 10:
-                cond_satisfied = machine -> PSTATE.N == machine -> PSTATE.V
+                cond_satisfied = machine -> PSTATE.Z == 0;
+            case 10: 
+                cond_satisfied = machine -> PSTATE.N == machine -> PSTATE.V;
             case 11:
-                cond_satisfied = machine -> PSTATE.N != machine -> PSTATE.V
+                cond_satisfied = machine -> PSTATE.N != machine -> PSTATE.V;
             case 12:
-                cond_satisfied = (machine -> PSTATE.Z == 0) && (machine -> PSTATE.N == machine -> PSTATE.V)
+                cond_satisfied = (machine -> PSTATE.Z == 0) && (machine -> PSTATE.N == machine -> PSTATE.V);
             case 13:
-                cond_satisfied = !((machine -> PSTATE.Z == 0) && (machine -> PSTATE.N == machine -> PSTATE.V))
+                cond_satisfied = !((machine -> PSTATE.Z == 0) && (machine -> PSTATE.N == machine -> PSTATE.V));
             case 14:
-                cond_satisfied = true
+                cond_satisfied = true;
         }
 
         if (cond_satisfied) {
-            machine -> PC += offset
+            machine -> PC += offset;
         }
     }
 }
