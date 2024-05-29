@@ -260,6 +260,22 @@ bool ror() {
     return true;
 }
 
+bool add() {
+    struct Machine machine;
+    initialiseMachine(&machine);
+
+    machine.registers[0] = 0x8;
+    machine.registers[1] = 0x0A;
+
+    dataProcessingRegister(&machine, 0x8B000022);
+    
+    if ((machine.registers[2] != 0x12)) {
+        fprintf(stderr, "Failed add\n");
+        return false;
+    }
+    return true;
+}
+
 
 int main(void) {
     int failed = 0;
@@ -274,7 +290,7 @@ int main(void) {
     failed += !lsr();
     failed += !asr();
     failed += !ror();
-    
+    failed += !add();
 
     printf("%d failures\n", failed);
 }
