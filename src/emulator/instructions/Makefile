@@ -7,12 +7,12 @@ CFLAGS  ?= -std=c17 -g\
 
 PHONY: all clean
 
-SRC = dataprocessingImm.c dataprocessingReg.c
+SRC = dataprocessingImm.c dataprocessingReg.c sdt.c
 
-all: dataprocessingImm.o dataprocessingReg.o
+all: dataprocessingImm.o dataprocessingReg.o sdt.o
 
 clean: 
-	rm -f dataprocessingImm.o dataprocessingReg.o
+	rm -f dataprocessingImm.o dataprocessingReg.o sdt.o
 
 %.o: %.c
 	%(CC) $(CFLAGS) -c $< -o $@
