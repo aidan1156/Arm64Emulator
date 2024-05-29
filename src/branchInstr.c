@@ -38,18 +38,25 @@ void branchInstruction(struct Machine* machine, uint32_t instr) {
         switch (cond) {
             case 0:
                 cond_satisfied = machine -> PSTATE.Z == 1;
+                break;
             case 1:
                 cond_satisfied = machine -> PSTATE.Z == 0;
+                break;
             case 10: 
                 cond_satisfied = machine -> PSTATE.N == machine -> PSTATE.V;
+                break;
             case 11:
                 cond_satisfied = machine -> PSTATE.N != machine -> PSTATE.V;
+                break;
             case 12:
                 cond_satisfied = (machine -> PSTATE.Z == 0) && (machine -> PSTATE.N == machine -> PSTATE.V);
+                break;
             case 13:
                 cond_satisfied = !((machine -> PSTATE.Z == 0) && (machine -> PSTATE.N == machine -> PSTATE.V));
+                break;
             case 14:
                 cond_satisfied = true;
+                break;
         }
 
         if (cond_satisfied) {
