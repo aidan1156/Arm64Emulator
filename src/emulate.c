@@ -6,9 +6,9 @@
 
 #ifndef MACHINE_C  // Header guard to prevent multiple inclusions
 #define MACHINE_C
-#include "./machine.c"
+#include "./emulator/machine.h"
 #endif
-#include "./memory.c"
+#include "./emulator/memory.h"
 
 
 // print binary number
