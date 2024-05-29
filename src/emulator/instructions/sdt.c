@@ -5,8 +5,8 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
-#include "machine.h"
-#include "sdt.h"
+#include "../machine.h"
+#include "./sdt.h"
 
 #define ONE_BIT_MASK 0x1
 #define FIVE_BIT_MASK 0x1F
