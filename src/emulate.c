@@ -4,13 +4,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#ifndef MACHINE_C  // Header guard to prevent multiple inclusions
-#define MACHINE_C
-#include "./machine.c"
-#endif
-#include "./memory.c"
+#include "./emulator/machine.h"
+#include "./emulator/memory.h"
 
-#include "./dataProcessingImm.c"
+#include "./emulator/instructions/dataProcessingImm.h"
+#include "./emulator/instructions/dataProcessingReg.h"
+#include "./emulator/instructions/sdt.h"
 
 
 // print binary number
@@ -51,15 +50,20 @@ int main(int argc, char **argv) {
             dataProcessingImmediate(&machine, currentInstruction);
         } else if ((op0 & 0x7) == 5) { // 0x7 = 0b0111
             // it is Data Processing (Register) 
+            dataProcessingRegister(&machine, currentInstruction);
         } else if ((op0 & 0x5) == 4) { // 0x5 = 0b0101
             // it is Loads and Stores
+            execute_sdt(&machine, currentInstruction);
+            
         } else if ((op0 & 0xe) == 10) { // 0xe = 0b1110
             // it is Branches
         }
 
         exit = currentInstruction == 0x8a000000;
 
-        machine.PC += 4;
+        if (!exit) {
+            machine.PC += 4;
+        }
     }
 
     char* path = NULL;

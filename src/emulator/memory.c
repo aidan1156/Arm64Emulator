@@ -4,10 +4,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#ifndef MACHINE_C  // Header guard to prevent multiple inclusions
-#define MACHINE_C
-#include "./machine.c"
-#endif
+#include "./machine.h"
+
+#include "./memory.h"
 
 
 // load the program into main memory
@@ -27,7 +26,7 @@ uint32_t fetchInstruction(struct Machine *machine) {
     // each instruction is 4 bytes
     // load in 1 byte at a time
     for (int i=0; i<4; i++) {
-        value = machine -> memory[(machine -> PC) + i];
+        value = (machine -> memory[(machine -> PC) + i]) & 0xff;
         result += value << (i * 8);
     }
     return result;

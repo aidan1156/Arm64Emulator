@@ -3,24 +3,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define NUM_REGISTERS 31
-#define MEMORY_SIZE 2 << 20
-
-struct Pstate {
-    bool N;
-    bool Z;
-    bool C;
-    bool V;
-};
-
-struct Machine {
-    uint8_t memory[MEMORY_SIZE];
-    uint64_t registers[NUM_REGISTERS];
-    struct Pstate PSTATE;
-    uint64_t ZR;
-    uint64_t PC;
-    uint64_t SP;
-};
+#include "./machine.h"
 
 // ensure all memory segments are clear and have the correct value for a machine
 void initialiseMachine(struct Machine* machine) {
@@ -52,9 +35,9 @@ void printMachine(struct Machine* machine, char* path) {
 
     fprintf(file, "Registers:\n");
     for (int i=0; i<31; i++) {
-        fprintf(file, "X%02d = %016lx\n", i, machine -> registers[i]);
+        fprintf(file, "X%02d    = %016lx\n", i, machine -> registers[i]);
     }
-    fprintf(file, "PC  = %016lx\n", machine -> PC);
+    fprintf(file, "PC     = %016lx\n", machine -> PC);
     fprintf(file, "PSTATE : ");
     (machine -> PSTATE.N) ? fprintf(file, "N") : fprintf(file, "-");
     (machine -> PSTATE.Z) ? fprintf(file, "Z") : fprintf(file, "-");
@@ -67,10 +50,10 @@ void printMachine(struct Machine* machine, char* path) {
     for (int i=0; i<MEMORY_SIZE; i += 4) {
         value = 0;
         for (int n=0; n<4;n++) {
-            value += (machine -> memory[i+n]) << (8 * n);
+            value += ((machine -> memory[i+n]) & 0xff) << (8 * n);
         }
         if (value != 0) {
-            fprintf(file, "0X%08x = %08x\n", i, value);
+            fprintf(file, "0X%08x : %08x\n", i, value);
         }
     }
 
