@@ -4,12 +4,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#ifndef MACHINE_C  // Header guard to prevent multiple inclusions
-#define MACHINE_C
 #include "./emulator/machine.h"
-#endif
 #include "./emulator/memory.h"
 
+#include "./emulator/instructions/dataProcessingImm.h"
+#include "./emulator/instructions/dataProcessingReg.h"
 
 // print binary number
 void printBinary(uint32_t n, int nbits) {
@@ -49,6 +48,7 @@ int main(int argc, char **argv) {
             dataProcessingImmediate(&machine, currentInstruction);
         } else if ((op0 & 0x7) == 5) { // 0x7 = 0b0111
             // it is Data Processing (Register) 
+            dataProcessingRegister(&machine, currentInstruction);
         } else if ((op0 & 0x5) == 4) { // 0x5 = 0b0101
             // it is Loads and Stores
         } else if ((op0 & 0xe) == 10) { // 0xe = 0b1110
@@ -57,7 +57,9 @@ int main(int argc, char **argv) {
 
         exit = currentInstruction == 0x8a000000;
 
-        machine.PC += 4;
+        if (!exit) {
+            machine.PC += 4;
+        }
     }
 
     char* path = NULL;

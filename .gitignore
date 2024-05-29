@@ -21,6 +21,7 @@
 emulate
 assemble
 dataProcessingImm
+*.cbuild
 
 #ignore junk files from compiling Haskell code
 *.hi
