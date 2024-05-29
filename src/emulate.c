@@ -10,7 +10,7 @@
 #include "./emulator/instructions/dataProcessingImm.h"
 #include "./emulator/instructions/dataProcessingReg.h"
 #include "./emulator/instructions/sdt.h"
-
+#include "./emulator/instructions/branchInstr.h"
 
 // print binary number
 void printBinary(uint32_t n, int nbits) {
@@ -54,9 +54,9 @@ int main(int argc, char **argv) {
         } else if ((op0 & 0x5) == 4) { // 0x5 = 0b0101
             // it is Loads and Stores
             execute_sdt(&machine, currentInstruction);
-            
         } else if ((op0 & 0xe) == 10) { // 0xe = 0b1110
             // it is Branches
+            branchInstruction(&machine, currentInstruction);
         }
 
         exit = currentInstruction == 0x8a000000;

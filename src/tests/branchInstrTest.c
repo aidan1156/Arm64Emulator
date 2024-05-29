@@ -1,5 +1,6 @@
 
-#include "../branchInstr.c"
+#include "../emulator/machine.h"
+#include "../emulator/instructions/branchInstr.h"
 
 //TESTING UNCONDITIONAL BRANCHES
 

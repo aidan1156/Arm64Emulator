@@ -7,7 +7,7 @@ CFLAGS  ?= -std=c17 -g\
 
 .PHONY: all clean
 
-all: dataProcessingImmTest dataProcessingRegTest sdtTest
+all: dataProcessingImmTest dataProcessingRegTest sdtTest branchInstrTest
 
 dataProcessingImmTest: ../emulator/machine.c  ./dataProcessingImmTest.c ../emulator/memory.c  ../emulator/instructions/dataProcessingImm.c
 
@@ -15,5 +15,7 @@ dataProcessingRegTest: ../emulator/machine.c  ./dataProcessingRegTest.c ../emula
 
 sdtTest: ../emulator/machine.c  ../emulator/memory.c ../emulator/instructions/dataProcessingImm.c ../emulator/instructions/sdt.c ./sdtTest.c
 
+branchInstrTest: ../emulator/machine.c ./branchInstrTest.c ../emulator/memory.c ../emulator/instructions/branchInstr.c 
+
 clean:
-	$(RM) *.o dataProcessingImmTest dataProcessingRegTest sdt
+	$(RM) *.o dataProcessingImmTest dataProcessingRegTest sdtTest branchInstrTest

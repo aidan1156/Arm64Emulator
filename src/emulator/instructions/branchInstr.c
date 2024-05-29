@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "./machine.c"
+#include "../machine.h"
+
+#include "./branchInstr.h"
 
 void branchInstruction(struct Machine* machine, uint32_t instr) {
     short flag = instr >> 30; //first two bits determine type of branch
