@@ -44,7 +44,7 @@ int64_t shifting( int shift, int sf, int64_t rm, int operand, int opr ) {
 }
 
 void logic(struct Machine *machine, int opc, int64_t rn, int64_t op2, int sf, int rdAddress) {
-    uint64_t result;
+    int64_t result;
     int sign_bit;
 
     switch (opc) {
@@ -88,7 +88,7 @@ void logic(struct Machine *machine, int opc, int64_t rn, int64_t op2, int sf, in
 }
 
 void multiply(struct Machine *machine, int64_t ra, int64_t rn, int64_t rm, int rdAddress, int sf, int x) {
-    uint64_t result;
+    int64_t result;
     switch (x) {
             case 0:
                 result = ra + (rn * rm);
@@ -96,12 +96,14 @@ void multiply(struct Machine *machine, int64_t ra, int64_t rn, int64_t rm, int r
                     result = result & 0xffffffff;
                 }
                 machine -> registers[rdAddress] = result;
+                break;
             case 1:
                 result = ra - (rn * rm);
                 if (sf == 0) {
                     result = result & 0xffffffff;
                 }
                 machine -> registers[rdAddress] = result;
+                break;
         }
 }
 
