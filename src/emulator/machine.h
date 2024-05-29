@@ -14,12 +14,12 @@ struct Pstate {
 };
 
 struct Machine {
-    uint8_t memory[MEMORY_SIZE];
-    uint64_t registers[NUM_REGISTERS];
+    int8_t memory[MEMORY_SIZE];
+    int64_t registers[NUM_REGISTERS];
     struct Pstate PSTATE;
-    uint64_t ZR;
-    uint64_t PC;
-    uint64_t SP;
+    int64_t ZR;
+    int64_t PC;
+    int64_t SP;
 };
 
 // ensure all memory segments are clear and have the correct value for a machine
