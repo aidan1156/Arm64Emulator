@@ -57,6 +57,10 @@ void computeArithmeticOperation(struct Machine* machine, int64_t a, int64_t b, s
     if (sf == 0) {
         mask = 0xffffffff;
     }
+    if (sf == 0) {
+        a = extendTo64Bit(a);
+        b = extendTo64Bit(b);
+    }
     switch (opc) {
         case 0:
             result = a + b;
