@@ -1,10 +1,14 @@
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "./assembler/maps.h"
 
 
+// read one line from a file
+// NOTE: result must be free()'d once it is no longer needed
 char* readLine(FILE *file) {
     int maxSize = 50; // max nume of elements the buffer can hold, do not do less than 3!!!!!
     char* currentInstr = malloc(maxSize * sizeof(char)); // we dont know the max length of a label or line so malloc it
@@ -12,7 +16,7 @@ char* readLine(FILE *file) {
 
     int c = fgetc(file);
     while (c != EOF) {
-        if (c == '\n') {
+        if (c == '\n' && currentInstr[0] != '\0') {
             return currentInstr;
         } else {
             // the instruction is FAT so make our buffer fatter
@@ -34,7 +38,15 @@ char* readLine(FILE *file) {
     return NULL;
 }
 
+// write an encoded binary instruction to the output file
+void writeInstruction(FILE* file, uint64_t instruction) {
+    for (int i=0; i<4; i++) {
+        fputc((instruction >> (i * 8)) & 0xff, file);
+    }
+}
 
+
+// find all the labels in the program and map them to their respecitve address
 void findLabels(Map* map, char* path) {
     FILE *file = fopen(path, "r");
     char* currentInstr = readLine(file);
@@ -54,15 +66,58 @@ void findLabels(Map* map, char* path) {
     fclose(file);
 }
 
+// if the instruction is a label
+bool isLabel(char* instruction) {
+    return instruction[strlen(instruction) - 1] == ':';
+}
+
+// if the instruction represents a .int directive
+bool isIntDirective(char* instruction) {
+    return instruction[0] == '.';
+}
 
 int main(int argc, char **argv) {
     if (argc < 3) {
         fprintf(stderr, "too few arguments supplied\n");
     }
-    // find the address
+    // find the address of each label
     Map* map = createMap(64);
     findLabels(map, argv[1]);
-    printMap(map);
+
+    // open the input file
+    FILE* inputFile = fopen(argv[1], "r");
+    FILE* outputFile = fopen(argv[2], "w");
+
+    char* instruction = readLine(inputFile);
+    int address = 0;
+    uint64_t binaryInstruction;
+    while (instruction != NULL) {
+        if (!isLabel(instruction)) {
+            if (isIntDirective(instruction)) {
+                binaryInstruction = 0xbabe0bee;
+            } else {
+                char* opcode = malloc(strlen(instruction) + 1);
+                sscanf(instruction, "%s", opcode);
+                printf("%s\n", opcode);
+                if (!strcmp(opcode, "cmp")) {
+                    binaryInstruction = 0x12345678;
+                } else {
+                    binaryInstruction = 0x90abcdef;
+                }
+            }
+            address += 4;
+
+            writeInstruction(outputFile, binaryInstruction);
+        }
+
+        free(instruction);
+        instruction = readLine(inputFile);
+    }
+
+    free(instruction);
+
+    fclose(inputFile);
+    fclose(outputFile);
 
     return EXIT_SUCCESS;
 }
