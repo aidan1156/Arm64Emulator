@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
             dataProcessingRegister(&machine, currentInstruction);
         } else if ((op0 & 0x5) == 4) { // 0x5 = 0b0101
             // it is Loads and Stores
-            execute_sdt(&machine, currentInstruction);
+            executeSdt(&machine, currentInstruction);
         } else if ((op0 & 0xe) == 10) { // 0xe = 0b1110
             // it is Branches
             branchInstruction(&machine, currentInstruction);

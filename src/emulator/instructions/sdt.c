@@ -30,47 +30,47 @@ void store(int8_t *memory, uint64_t address, int64_t data, int size) {
     }
 }
 
-void execute_sdt(struct Machine *machine, uint32_t instruction) {
-    bool is_sdt = (instruction >> 31) & ONE_BIT_MASK;
+void executeSdt(struct Machine *machine, uint32_t instruction) {
+    bool isSdt = (instruction >> 31) & ONE_BIT_MASK;
     int rt = instruction & FIVE_BIT_MASK; // target register
-    bool is_64 = (instruction >> 30) & ONE_BIT_MASK; // sf
+    bool is64 = (instruction >> 30) & ONE_BIT_MASK; // sf
 
-    bool is_load = (instruction >> 22) & ONE_BIT_MASK; // L
-    bool is_unsigned_offset = (instruction >> 24) & ONE_BIT_MASK; // U
+    bool isLoad = (instruction >> 22) & ONE_BIT_MASK; // L
+    bool isUnsignedOffset = (instruction >> 24) & ONE_BIT_MASK; // U
     int offset = (instruction >> 10) & TWELVE_BIT_MASK;
     int xn = (instruction >> 5) & FIVE_BIT_MASK; // base register
 
     int simm19 = (instruction >> 5) & NINETEEN_BIT_MASK;
 
     // size of data we are loading / storing
-    int size = is_64 ? 8 : 4;
+    int size = is64 ? 8 : 4;
 
     //printf("xn: %d, rt: %d \n", xn, rt);
 
     uint64_t address;
 
-    if (is_sdt) {
+    if (isSdt) {
         // 3 cases: register offset, pre/post-index, unsigned offset
-        bool is_pre_indexed = (instruction >> 11) & ONE_BIT_MASK; // I
-        bool is_register_offset = (instruction >> 21) & ONE_BIT_MASK;
+        bool isPreIndexed = (instruction >> 11) & ONE_BIT_MASK; // I
+        bool isRegisterOffset = (instruction >> 21) & ONE_BIT_MASK;
 
-        if (is_unsigned_offset) {
+        if (isUnsignedOffset) {
             // unsigned offset
             // printf("Unsigned offset...\n");
 
-            if (is_64) {
+            if (is64) {
                 offset *= 8;
             } else {
                 offset *= 4;
             }
             address = machine->registers[xn] + offset;
 
-        } else if (is_register_offset) {
+        } else if (isRegisterOffset) {
             // register offset
             int xm = (instruction >> 16) & FIVE_BIT_MASK;
             address = machine->registers[xn] + machine->registers[xm];
 
-        } else if (is_pre_indexed) {
+        } else if (isPreIndexed) {
             // pre indexed
             // printf("Pre indexing...\n");
             int32_t simm9 = (int32_t)((instruction >> 12) & NINE_BIT_MASK);
@@ -101,7 +101,7 @@ void execute_sdt(struct Machine *machine, uint32_t instruction) {
         
     } else {
         // load literal
-        is_load = true;
+        isLoad = true;
         
         if (simm19 & 0x40000) {
             simm19 |= ~0x7FFFF;
@@ -112,10 +112,10 @@ void execute_sdt(struct Machine *machine, uint32_t instruction) {
 
     printf("The address is %" PRIx64 "\n", address);
 
-    if (is_load) {
+    if (isLoad) {
         // load
         int64_t data = load(machine->memory, address, size);
-        if (is_64) {
+        if (is64) {
             machine->registers[rt] = data;
         } else {;
             machine->registers[rt] = extendTo64Bit(data); // Store only lower 32 bits
@@ -124,7 +124,7 @@ void execute_sdt(struct Machine *machine, uint32_t instruction) {
     } else {
         // store value in register into memory
         int64_t data = machine->registers[rt]; 
-        if (!is_64) {
+        if (!is64) {
             extendTo64Bit(data);
         }
         store(machine->memory, address, data, size);
