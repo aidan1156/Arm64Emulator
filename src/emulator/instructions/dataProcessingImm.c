@@ -48,7 +48,7 @@ bool findSubCarry(int64_t a, int64_t b, int size) {
         }
         mask <<= 1;
     }
-    return carry;
+    return !carry;
 }
 
 void computeArithmeticOperation(struct Machine* machine, int64_t a, int64_t b, short opc, short sf, short rd) {
@@ -112,7 +112,7 @@ void arithmeticInstruction(struct Machine* machine, short rd, int operand, short
 }
 
 void wideMoveInstruction(struct Machine* machine, short rd, int operand, short opc, short sf) {
-    uint64_t imm16 = operand & 0x7FFF; // ensure it is 15 bits
+    uint64_t imm16 = operand & 0xffff; // ensure it is 16 bits
     short hw = (operand >> 16) & 0x3; // ensure it is 2 bits
     imm16 <<= hw * 16;
 
