@@ -21,7 +21,7 @@ int64_t load(int8_t *memory, uint64_t address, int size) {
         data += ((memory[address + i]) & 0xff) << (8 * i);
         printf("data: %" PRIx64 "\n", data);
     }
-    return data;
+    return extendTo64Bit(data);
 }
 
 void store(int8_t *memory, uint64_t address, int64_t data, int size) {

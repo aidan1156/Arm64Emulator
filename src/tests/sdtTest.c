@@ -60,7 +60,7 @@ int main(void) {
     executeSdt(&machine, instr);
     printf("After STR W0, [X1, simm9 = 0]!:\n");
     printMachine(&machine, NULL);
-    assertMemoryValue(machine.memory, 0x1018, 0x9abcdef0, 4, &failed);
+    assertMemoryValue(machine.memory, 0x1018, 0xffffffff9abcdef, 4, &failed);
     count++;
 
     // LDR W3, [X1, simm9 = 0] load value at address in X1
@@ -68,7 +68,7 @@ int main(void) {
     executeSdt(&machine, instr);
     printf("After LDR W3, [X1, simm9 = 0]!:\n");
     printMachine(&machine, NULL);
-    assertRegisterValue(machine.registers, 3, 0x9ABCDEF0, &failed);
+    assertRegisterValue(machine.registers, 3, 0xffffffff9abcdef0, &failed);
     count++;
 
     // POST INDEX
@@ -79,6 +79,7 @@ int main(void) {
     printMachine(&machine, NULL);
     assertRegisterValue(machine.registers, 5, 0x9ABCDEF012345678, &failed);
     count++;
+    // seem to add values instead of concat for 64 bit (neg numbers)
 
     // UNSIGNED OFFSET
     // LDR W6, [X4, imm12 = 2 (offset = 8)] load 32 bit value at address in X4 into X5
