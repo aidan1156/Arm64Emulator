@@ -6,16 +6,11 @@
 
 
 #include "../machine.h"
+#include "../utilities.h"
 
 #include "./dataProcessingImm.h"
 
-// sign extend a 32 bit number to 64 bit
-int64_t extendTo64Bit(int64_t a) {
-    if ((a & 0x80000000) == 0) {
-        return a & 0xffffffff; // set upper 32 bits to 0 as a is >= 0
-    } 
-    return a | 0xffffffff00000000; // otherwise set upper 32 bits to 1 as a is negative
-}
+
 
 bool findAddCarry(int64_t a, int64_t b, int size) {
     int64_t mask = 0x1;
