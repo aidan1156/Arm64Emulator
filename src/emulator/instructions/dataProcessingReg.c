@@ -151,9 +151,11 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
     if ((M == 0) & (((opr & 0x9) == 8) | ((opr & 0x8) == 0))) {
         // M == 0 and (opr == 1xx0 or opr == 0xxx)
         // Arithmetic instr & bit-logic
-        if (rdAddress == 0x1F) {
+        if ((rdAddress == 0x1F) & ((opr & 0x8) == 0)) {
             return;
             // if rd is zero register, nothing to store
+            // but pass this if statement if treating arithmetic instr
+            // as flags may need to be handled
             printf("rd is zero register\n");
         }
         
@@ -170,6 +172,7 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
                 logic(machine, opc, rn, op2, sf, rdAddress);
             }
         } else if ((opr & 0x9) == 8) {
+            printf("ur arithmetic instr");
             computeArithmeticOperation(machine, rn, op2, opc, sf, rdAddress);
             // Arithmetic instruction - using code from dataProcessingImm
         }
