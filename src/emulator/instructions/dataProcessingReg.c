@@ -14,8 +14,6 @@
 
 int64_t shifting( int shift, int sf, int64_t rm, int operand, int opr ) {
     int64_t op2;
-    printf("rm: %lx\n", rm);
-    printf("operand: %d\n", operand);
     if (shift == 0) { // 00 lsl : logical shift left
         op2 = rm << operand;
 
@@ -26,6 +24,14 @@ int64_t shifting( int shift, int sf, int64_t rm, int operand, int opr ) {
 
     } else if (shift == 2) { // 10 asr : arithmetic shift right
         op2 = rm >> operand;
+        if (sf == 1) {
+            op2 = rm >> operand;
+        } else {
+            int32_t rm_32 = rm;
+            op2 = rm_32 >> operand;
+            op2 = op2 & 0xFFFFFFFF;
+        }
+        
 
     } else if ((shift == 3) & ((opr & 0x8) == 0)) { // 11 ror : rotate right
         // bit logic only 
