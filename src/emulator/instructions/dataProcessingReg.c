@@ -14,11 +14,14 @@
 
 int64_t shifting( int shift, int sf, int64_t rm, int operand, int opr ) {
     int64_t op2;
+    printf("rm: %lx\n", rm);
+    printf("operand: %d\n", operand);
     if (shift == 0) { // 00 lsl : logical shift left
         op2 = rm << operand;
 
     } else if (shift == 1) { // 01 lsr : logical shift right
-        unsigned int op2 = rm >> operand;
+        uint64_t unsignedRM = rm;
+        uint64_t op2 = unsignedRM >> operand;
         return op2;
 
     } else if (shift == 2) { // 10 asr : arithmetic shift right
