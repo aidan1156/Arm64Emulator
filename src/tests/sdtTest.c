@@ -60,7 +60,7 @@ int main(void) {
     executeSdt(&machine, instr);
     printf("After STR W0, [X1, simm9 = 0]!:\n");
     printMachine(&machine, NULL);
-    assertMemoryValue(machine.memory, 0x1018, 0xffffffff9abcdef, 4, &failed);
+    assertMemoryValue(machine.memory, 0x1018, 0xffffffff9abcdef0, 4, &failed);
     count++;
 
     // LDR W3, [X1, simm9 = 0] load value at address in X1
@@ -77,7 +77,7 @@ int main(void) {
     executeSdt(&machine, instr);
     printf("After LDR X5, [X4, simm9 = 4]!:\n");
     printMachine(&machine, NULL);
-    assertRegisterValue(machine.registers, 5, 0x9ABCDEF012345678, &failed);
+    assertRegisterValue(machine.registers, 5, 0x123456789abcdef0, &failed);
     count++;
     // seem to add values instead of concat for 64 bit (neg numbers)
 

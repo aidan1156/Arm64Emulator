@@ -18,27 +18,41 @@ int64_t shifting( int shift, int sf, int64_t rm, int operand, int opr ) {
         op2 = rm << operand;
 
     } else if (shift == 1) { // 01 lsr : logical shift right
-        unsigned int op2 = rm >> operand;
+        uint64_t unsignedRM = rm;
+        uint64_t op2 = unsignedRM >> operand;
         return op2;
 
     } else if (shift == 2) { // 10 asr : arithmetic shift right
         op2 = rm >> operand;
+        if (sf == 1) {
+            op2 = rm >> operand;
+        } else {
+            int32_t rm_32 = rm;
+            op2 = rm_32 >> operand;
+            op2 = op2 & 0xFFFFFFFF;
+        }
+        
 
     } else if ((shift == 3) & ((opr & 0x8) == 0)) { // 11 ror : rotate right
         // bit logic only 
-        // shift to right by operand
-        int shifted = rm >> operand;
-        int rot_bits;
 
-        // rotate the bits respect to bit-width of registers
         if (sf == 1) {
-            rot_bits = rm << (64 - operand);
+            // shift to right by operand
+            uint64_t unsignedRM = rm;
+            uint64_t shifted = unsignedRM >> operand;
+
+            // rotate the bits respect to bit-width of registers
+            uint64_t rot_bits = rm << (64 - operand);
+            op2 = shifted | rot_bits;
         } else {
-            rot_bits = rm << (32 - operand);
+            uint32_t unsignedRM = rm;
+            uint32_t shifted = unsignedRM >> operand;
+            uint32_t rm_32 = rm;
+            uint32_t rot_bits = rm_32 << (32 - operand);
+            op2 = shifted | rot_bits;
         }
         
         // combining the shifted bits & rotated bits
-        op2 = shifted | rot_bits;
     }
     return op2;
 }
