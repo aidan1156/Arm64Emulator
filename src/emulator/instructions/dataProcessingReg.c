@@ -18,9 +18,16 @@ int64_t shifting( int shift, int sf, int64_t rm, int operand, int opr ) {
         op2 = rm << operand;
 
     } else if (shift == 1) { // 01 lsr : logical shift right
-        uint64_t unsignedRM = rm;
-        uint64_t op2 = unsignedRM >> operand;
-        return op2;
+        if (sf == 1) {
+            uint64_t unsignedRM = rm;
+            uint64_t op2 = unsignedRM >> operand;
+            return op2;
+        } else {
+            uint32_t unsignedRM = rm;
+            op2 = unsignedRM >> operand;
+            op2 = op2 & 0xFFFFFFFF;
+            return op2;
+        }
 
     } else if (shift == 2) { // 10 asr : arithmetic shift right
         op2 = rm >> operand;
@@ -98,8 +105,12 @@ void logic(struct Machine *machine, int opc, int64_t rn, int64_t op2, int sf, in
         result = result & 0xffffffff; // removing upper 32 bits
     }
 
-    machine -> registers[rdAddress] = result;
-}
+    if (!(rdAddress == 0x1F)) {
+        // if rd is zero register, nothing to store
+        machine -> registers[rdAddress] = result;
+        }
+    }
+    
 
 void multiply(struct Machine *machine, int64_t ra, int64_t rn, int64_t rm, int rdAddress, int sf, int x) {
     int64_t result;
@@ -151,13 +162,6 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
     if ((M == 0) & (((opr & 0x9) == 8) | ((opr & 0x8) == 0))) {
         // M == 0 and (opr == 1xx0 or opr == 0xxx)
         // Arithmetic instr & bit-logic
-        if ((rdAddress == 0x1F) & ((opr & 0x8) == 0)) {
-            return;
-            // if rd is zero register, nothing to store
-            // but pass this if statement if treating arithmetic instr
-            // as flags may need to be handled
-            printf("rd is zero register\n");
-        }
         
         int shift = ((opr >> 1) & 0x3); // 0x3 == 0b0011
         int64_t op2 = shifting(shift, sf, rm, operand, opr);
@@ -172,7 +176,6 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
                 logic(machine, opc, rn, op2, sf, rdAddress);
             }
         } else if ((opr & 0x9) == 8) {
-            printf("ur arithmetic instr");
             computeArithmeticOperation(machine, rn, op2, opc, sf, rdAddress);
             // Arithmetic instruction - using code from dataProcessingImm
         }
