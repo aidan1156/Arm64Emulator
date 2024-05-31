@@ -76,6 +76,16 @@ bool isIntDirective(char* instruction) {
     return instruction[0] == '.';
 }
 
+int64_t parseToInt(char* number) {
+    uint64_t result;
+    if (number[1] == 'x') {
+        sscanf(number, "0x%lx", &result);
+    } else {
+        sscanf(number, "%lu", &result);
+    }
+    return result;
+}
+
 int main(int argc, char **argv) {
     if (argc < 3) {
         fprintf(stderr, "too few arguments supplied\n");
@@ -90,11 +100,14 @@ int main(int argc, char **argv) {
 
     char* instruction = readLine(inputFile);
     int address = 0;
-    uint64_t binaryInstruction;
+    uint32_t binaryInstruction;
     while (instruction != NULL) {
         if (!isLabel(instruction)) {
             if (isIntDirective(instruction)) {
-                binaryInstruction = 0xbabe0bee;
+                char* number = malloc(strlen(instruction) + 1);
+                sscanf(instruction, ".int %s", number);
+                binaryInstruction = parseToInt(number);
+                free(number);
             } else {
                 char* opcode = malloc(strlen(instruction) + 1);
                 sscanf(instruction, "%s", opcode);
@@ -104,6 +117,8 @@ int main(int argc, char **argv) {
                 } else {
                     binaryInstruction = 0x90abcdef;
                 }
+
+                free(opcode);
             }
             address += 4;
 
