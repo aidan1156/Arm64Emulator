@@ -48,7 +48,7 @@ void writeInstruction(FILE* file, uint64_t instruction) {
 
 // find all the labels in the program and map them to their respecitve address
 void findLabels(Map* map, char* path) {
-    FILE *file = fopen(path, "r");
+    FILE *file = fopen(path, "rb");
     char* currentInstr = readLine(file);
     int currentAddress = 0;
     while (currentInstr != NULL) {
@@ -95,8 +95,8 @@ int main(int argc, char **argv) {
     findLabels(map, argv[1]);
 
     // open the input file
-    FILE* inputFile = fopen(argv[1], "r");
-    FILE* outputFile = fopen(argv[2], "w");
+    FILE* inputFile = fopen(argv[1], "rb");
+    FILE* outputFile = fopen(argv[2], "wb");
 
     char* instruction = readLine(inputFile);
     int address = 0;
