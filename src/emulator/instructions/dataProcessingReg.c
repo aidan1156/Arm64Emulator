@@ -14,8 +14,6 @@
 
 int64_t shifting( int shift, int sf, int64_t rm, int operand, int opr ) {
     int64_t op2;
-    printf("rm: %lx\n", rm);
-    printf("operand: %d\n", operand);
     if (shift == 0) { // 00 lsl : logical shift left
         op2 = rm << operand;
 
@@ -26,22 +24,35 @@ int64_t shifting( int shift, int sf, int64_t rm, int operand, int opr ) {
 
     } else if (shift == 2) { // 10 asr : arithmetic shift right
         op2 = rm >> operand;
+        if (sf == 1) {
+            op2 = rm >> operand;
+        } else {
+            int32_t rm_32 = rm;
+            op2 = rm_32 >> operand;
+            op2 = op2 & 0xFFFFFFFF;
+        }
+        
 
     } else if ((shift == 3) & ((opr & 0x8) == 0)) { // 11 ror : rotate right
         // bit logic only 
-        // shift to right by operand
-        int shifted = rm >> operand;
-        int rot_bits;
 
-        // rotate the bits respect to bit-width of registers
         if (sf == 1) {
-            rot_bits = rm << (64 - operand);
+            // shift to right by operand
+            uint64_t unsignedRM = rm;
+            uint64_t shifted = unsignedRM >> operand;
+
+            // rotate the bits respect to bit-width of registers
+            uint64_t rot_bits = rm << (64 - operand);
+            op2 = shifted | rot_bits;
         } else {
-            rot_bits = rm << (32 - operand);
+            uint32_t unsignedRM = rm;
+            uint32_t shifted = unsignedRM >> operand;
+            uint32_t rm_32 = rm;
+            uint32_t rot_bits = rm_32 << (32 - operand);
+            op2 = shifted | rot_bits;
         }
         
         // combining the shifted bits & rotated bits
-        op2 = shifted | rot_bits;
     }
     return op2;
 }
@@ -140,9 +151,11 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
     if ((M == 0) & (((opr & 0x9) == 8) | ((opr & 0x8) == 0))) {
         // M == 0 and (opr == 1xx0 or opr == 0xxx)
         // Arithmetic instr & bit-logic
-        if (rdAddress == 0x1F) {
+        if ((rdAddress == 0x1F) & ((opr & 0x8) == 0)) {
             return;
             // if rd is zero register, nothing to store
+            // but pass this if statement if treating arithmetic instr
+            // as flags may need to be handled
             printf("rd is zero register\n");
         }
         
@@ -159,6 +172,7 @@ void dataProcessingRegister(struct Machine *machine, uint32_t instruction) {
                 logic(machine, opc, rn, op2, sf, rdAddress);
             }
         } else if ((opr & 0x9) == 8) {
+            printf("ur arithmetic instr");
             computeArithmeticOperation(machine, rn, op2, opc, sf, rdAddress);
             // Arithmetic instruction - using code from dataProcessingImm
         }

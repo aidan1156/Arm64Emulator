@@ -8,6 +8,7 @@
 #include "../machine.h"
 #include "./sdt.h"
 #include "./dataProcessingImm.h"
+#include "../utilities.h"
 
 #define ONE_BIT_MASK 0x1
 #define FIVE_BIT_MASK 0x1F
