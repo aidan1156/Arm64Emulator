@@ -28,7 +28,6 @@ int64_t load(int8_t *memory, uint64_t address, int size) {
         // don't prematurely sign extend)
         // 8 bits mask out any potential sign extension
         data |= ((uint64_t)(memory[address + i] & EIGHT_BIT_MASK)) << (8 * i);
-        // printf("data: %" PRIx64 "\n", data);
     }
 
     // Explicitly handle 32-bit sign extension
@@ -53,7 +52,7 @@ void executeSdt(struct Machine *machine, uint32_t instruction) {
     bool is64 = (instruction >> 30) & ONE_BIT_MASK; // sf
     bool isLoad = (instruction >> 22) & ONE_BIT_MASK; // L
     bool isUnsignedOffset = (instruction >> 24) & ONE_BIT_MASK; // U
-    int offset = (instruction >> 10) & TWELVE_BIT_MASK;
+    int imm12 = (instruction >> 10) & TWELVE_BIT_MASK;
     int xn = (instruction >> 5) & FIVE_BIT_MASK; // base register
     int simm19 = (instruction >> 5) & NINETEEN_BIT_MASK;
     int size = is64 ? 8 : 4; // size of data we are loading / storing
@@ -65,7 +64,6 @@ void executeSdt(struct Machine *machine, uint32_t instruction) {
                 simm9 |= ~NINE_BIT_MASK;
             }
 
-    //printf("xn: %d, rt: %d \n", xn, rt);
     uint64_t address;
 
     if (isSdt) {
@@ -75,14 +73,13 @@ void executeSdt(struct Machine *machine, uint32_t instruction) {
 
         if (isUnsignedOffset) {
             // unsigned offset
-            // printf("Unsigned offset...\n");
-
             if (is64) {
-                offset *= 8;
+                imm12 <<= 3;
             } else {
-                offset *= 4;
+                imm12 <<= 2;
             }
-            address = machine->registers[xn] + offset;
+
+            address = machine->registers[xn] + imm12;
 
         } else if (isRegisterOffset) {
             // register offset
@@ -91,16 +88,11 @@ void executeSdt(struct Machine *machine, uint32_t instruction) {
 
         } else if (isPreIndexed) {
             // pre indexed
-            // printf("Pre indexing...\n");
-            // printf("simm9 is %d", simm9);
-
             address = machine->registers[xn] + simm9;
             machine->registers[xn] = address;
 
         } else {
             // post indexed
-            // printf("Post indexing...\n");
-            
             address = machine->registers[xn];
             machine->registers[xn] = machine->registers[xn] + simm9;
         }
@@ -114,7 +106,8 @@ void executeSdt(struct Machine *machine, uint32_t instruction) {
         address = machine->PC + (simm19 << 2); // PC + simm19*4
         
     }
-    // printf("The address is %" PRIx64 "\n", address);
+
+    printf("The address is %" PRIx64 "\n", address);
 
     if (isLoad) {
         // load
