@@ -70,6 +70,7 @@ int main(int argc, char **argv) {
     if (argc > 2) {
         path = argv[2];
     }
+    printMachine(&machine, path);
 
     return EXIT_SUCCESS;
 }
