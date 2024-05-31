@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     bool exit = false;
     while (!exit) {
         currentInstruction = fetchInstruction(&machine);
-
+        bool branch = false;
         //determine what of the 4 types the instr is
         op0 = (currentInstruction >> 25) & 0xf;
         // create a mask so we ignore dont cares
@@ -38,15 +38,15 @@ int main(int argc, char **argv) {
             executeSdt(&machine, currentInstruction);
         } else if ((op0 & 0xe) == 10) { // 0xe = 0b1110
             // it is Branches
-            branchInstruction(&machine, currentInstruction);
+            branch = branchInstruction(&machine, currentInstruction);
         }
 
         exit = currentInstruction == 0x8a000000;
-
-        if (!exit) {
+        
+        if (!exit && !branch) {
             machine.PC += 4;
         }
-    }
+    } 
 
     char* path = NULL;
     if (argc > 2) {

@@ -6,9 +6,8 @@
 
 #include "./branchInstr.h"
 
-void branchInstruction(struct Machine* machine, uint32_t instr) {
+bool branchInstruction(struct Machine* machine, uint32_t instr) {
     short flag = instr >> 30; //first two bits determine type of branch
-    
     if (flag == 0){ //unconditional branch
         int simm26 = instr & 0x3ffffff;
 
@@ -23,7 +22,7 @@ void branchInstruction(struct Machine* machine, uint32_t instr) {
     } else if (flag == 3){ //register branch
         short xn = (instr >> 5) & 0x1f;
 
-        machine -> PC = xn;
+        machine -> PC = machine -> registers[xn];
 
     } else { //conditional branch
         int simm19 = (instr >> 5) & 0x7ffff;
@@ -63,7 +62,10 @@ void branchInstruction(struct Machine* machine, uint32_t instr) {
 
         if (cond_satisfied) {
             machine -> PC += offset;
+        } else {
+            return false; // didn't successfully branch
         }
     }
+    return true; //successfully moved to branch
 }
 
