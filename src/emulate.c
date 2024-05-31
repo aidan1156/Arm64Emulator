@@ -60,8 +60,8 @@ int main(int argc, char **argv) {
         }
 
         exit = currentInstruction == 0x8a000000;
-
-        if (!exit) {
+        
+        if (!exit && !((op0 & 0xe) == 10)) {
             machine.PC += 4;
         }
     }
@@ -70,7 +70,6 @@ int main(int argc, char **argv) {
     if (argc > 2) {
         path = argv[2];
     }
-    printMachine(&machine, path);
 
     return EXIT_SUCCESS;
 }
