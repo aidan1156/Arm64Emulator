@@ -39,5 +39,11 @@ uint32_t dataProcessingImmArithmetic(int opcode, char* instruction) {
     result += (opcode & 0x3) << 29; // opc
     result += (sf & 0x1) << 31; // sf
 
+    free(rdStr);
+    free(rnStr);
+    free(immStr);
+    free(shStr);
+    free(opcodeStr);
+
     return result;
 }
