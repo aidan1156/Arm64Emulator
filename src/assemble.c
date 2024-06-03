@@ -27,11 +27,10 @@ void findLabels(Map* map, char* path) {
         }
         currentInstr = readLine(file);
     }
-
     fclose(file);
 }
 
-uint32_t assembleInstruction(char* opcode, char* instruction) {
+uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap) {
     uint32_t result;
     if (strcmp(opcode, "add") == 0) {
         result = dataProcessingImmArithmetic(0, instruction);
@@ -41,6 +40,13 @@ uint32_t assembleInstruction(char* opcode, char* instruction) {
         result = dataProcessingImmArithmetic(2, instruction);
     } else if (strcmp(opcode, "subs") == 0) {
         result = dataProcessingImmArithmetic(3, instruction);
+    } else if (strcmp(opcode, "b") == 0) {
+        result = branchInstruction(0, instruction, NULL, labelmap);
+    } else if (strcmp(opcode, "b.*") == 0) {
+        char cond[2] = opcode[2];
+        result = branchInstruction(1, instruction, cond, labelmap);
+    } else if (strcmp(opcode, "br") == 0) {
+        result = branchInstruction(2, instruction, NULL, labelmap);
     } else {
         fprintf(stderr, "unknown opcode\n");
     }
@@ -76,7 +82,7 @@ int main(int argc, char **argv) {
                 sscanf(instruction, "%s", opcode);
                 printf("%s\n", opcode);
                 
-                assembleInstruction(opcode, instruction);
+                assembleInstruction(opcode, instruction, map);
 
                 free(opcode);
             }
