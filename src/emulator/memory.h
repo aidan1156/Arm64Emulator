@@ -9,4 +9,5 @@
 void loadProgram(char *file, struct Machine* machine);
 
 // fetch the instruction at the program counter from memory
+
 uint32_t fetchInstruction(struct Machine* machine);

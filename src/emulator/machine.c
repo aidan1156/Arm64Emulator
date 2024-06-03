@@ -35,9 +35,9 @@ void printMachine(struct Machine* machine, char* path) {
 
     fprintf(file, "Registers:\n");
     for (int i=0; i<31; i++) {
-        fprintf(file, "X%02d = %016lx\n", i, machine -> registers[i]);
+        fprintf(file, "X%02d    = %016lx\n", i, machine -> registers[i]);
     }
-    fprintf(file, "PC  = %016lx\n", machine -> PC);
+    fprintf(file, "PC     = %016lx\n", machine -> PC);
     fprintf(file, "PSTATE : ");
     (machine -> PSTATE.N) ? fprintf(file, "N") : fprintf(file, "-");
     (machine -> PSTATE.Z) ? fprintf(file, "Z") : fprintf(file, "-");
