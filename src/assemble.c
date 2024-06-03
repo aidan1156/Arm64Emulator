@@ -21,7 +21,7 @@ void findLabels(Map* map, char* path) {
         if (currentInstr[strlen(currentInstr) - 1] == ':') {
             // remove the ':' so we have just the label
             currentInstr[strlen(currentInstr) - 1] = '\0';
-            insertMap(map, currentInstr, currentAddress + 4);
+            insertMap(map, currentInstr, currentAddress);
         } else if (strcmp(currentInstr, "")) { // otherwise increment the address
             currentAddress += 4;
         }
@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
                 sscanf(instruction, "%s", opcode);
                 printf("%s\n", opcode);
                 
-                assembleInstruction(opcode, instruction);
+                binaryInstruction = assembleInstruction(opcode, instruction);
 
                 free(opcode);
             }

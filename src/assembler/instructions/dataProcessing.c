@@ -18,14 +18,14 @@ uint32_t dataProcessingImmArithmetic(int opcode, char* instruction) {
     // parse the instruction and if it doesnt have the optional shift set
     // set it to #0 (default value)
     if (sscanf(instruction, "%s %s %s %s lsl %s", opcodeStr, rdStr, rnStr, immStr, shStr) == 4) {
-        shStr = "#0";
+        strcpy(shStr, "#0");
     }
 
     int imm = parseToInt(immStr);
     int sf, rd, rn;
     parseRegister(rdStr, &sf, &rd);
     parseRegister(rnStr, &sf, &rn);
-    int sh = parseToInt(shStr);
+    int sh = (parseToInt(shStr) == 0) ? 0 : 1;
 
     // now we have the individual components of the instr
 
