@@ -41,12 +41,12 @@ uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uin
     } else if (strcmp(opcode, "subs") == 0) {
         result = dataProcessingImmArithmetic(3, instruction);
     } else if (strcmp(opcode, "b") == 0) {
-        result = branchInstruction(0, instruction, NULL, labelmap);
+        result = branchInstruction(0, instruction, address, NULL, labelmap);
     } else if (strcmp(opcode, "b.*") == 0) {
         char cond[2] = opcode[2];
-        result = branchInstruction(1, instruction, cond, labelmap);
+        result = branchInstruction(1, instruction, address, cond, labelmap);
     } else if (strcmp(opcode, "br") == 0) {
-        result = branchInstruction(2, instruction, NULL, labelmap);
+        result = branchInstruction(2, instruction, address, NULL, labelmap);
     } else {
         fprintf(stderr, "unknown opcode\n");
     }
@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
                 sscanf(instruction, "%s", opcode);
                 printf("%s\n", opcode);
                 
-                assembleInstruction(opcode, instruction);
+                assembleInstruction(opcode, instruction, map, address);
 
                 free(opcode);
             }
