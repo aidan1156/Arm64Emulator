@@ -32,17 +32,20 @@ void findLabels(Map* map, char* path) {
 }
 
 uint32_t assembleInstruction(char* opcode, char* instruction) {
+    uint32_t result;
     if (strcmp(opcode, "add") == 0) {
-        binaryInstruction = dataProcessingImmArithmetic(0, instruction);
+        result = dataProcessingImmArithmetic(0, instruction);
     } else if (strcmp(opcode, "adds") == 0) {
-        binaryInstruction = dataProcessingImmArithmetic(1, instruction);
+        result = dataProcessingImmArithmetic(1, instruction);
     } else if (strcmp(opcode, "sub") == 0) {
-        binaryInstruction = dataProcessingImmArithmetic(2, instruction);
+        result = dataProcessingImmArithmetic(2, instruction);
     } else if (strcmp(opcode, "subs") == 0) {
-        binaryInstruction = dataProcessingImmArithmetic(3, instruction);
+        result = dataProcessingImmArithmetic(3, instruction);
     } else {
-        fprintf(stderr, "unknown opcode\n")
+        fprintf(stderr, "unknown opcode\n");
     }
+
+    return result;
 }
 
 
