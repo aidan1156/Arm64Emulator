@@ -21,7 +21,7 @@ void findLabels(Map* map, char* path) {
         if (currentInstr[strlen(currentInstr) - 1] == ':') {
             // remove the ':' so we have just the label
             currentInstr[strlen(currentInstr) - 1] = '\0';
-            insertMap(map, currentInstr, currentAddress + 4);
+            insertMap(map, currentInstr, currentAddress);
         } else if (strcmp(currentInstr, "")) { // otherwise increment the address
             currentAddress += 4;
         }
@@ -30,7 +30,7 @@ void findLabels(Map* map, char* path) {
     fclose(file);
 }
 
-uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap) {
+uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uint64_t address) {
     uint32_t result;
     if (strcmp(opcode, "add") == 0) {
         result = dataProcessingImmArithmetic(0, instruction);
@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
                 sscanf(instruction, "%s", opcode);
                 printf("%s\n", opcode);
                 
-                assembleInstruction(opcode, instruction, map);
+                assembleInstruction(opcode, instruction);
 
                 free(opcode);
             }

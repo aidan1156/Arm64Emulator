@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "./utilities.h"
 
 // read one line from a file
 // NOTE: result must be free()'d once it is no longer needed
@@ -38,7 +39,7 @@ char* readLine(FILE *file) {
 }
 
 // write an encoded binary instruction to the output file
-void writeInstruction(FILE* file, uint64_t instruction) {
+void writeInstruction(FILE* file, uint32_t instruction) {
     for (int i=0; i<4; i++) {
         fputc((instruction >> (i * 8)) & 0xff, file);
     }
