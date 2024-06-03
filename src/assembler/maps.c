@@ -10,11 +10,13 @@
 
 // creates a dictionary/map like data structure
 struct Map* createMap(int initialSize) {
+    // allocate memory for the map structure
     struct Map* result = malloc(sizeof(struct Map));
     result -> maxSize = initialSize;
     result -> keys = malloc(result -> maxSize * sizeof(char*));
     result -> values = malloc(result -> maxSize * sizeof(uint64_t));
 
+    // initialise all keys to null
     for (int i=0; i<result -> maxSize; i++) {
         result -> keys[i] = NULL;
     }
@@ -28,6 +30,7 @@ void resizeMap(struct Map* map) {
     char** newKeys = malloc(newSize * sizeof(char*));
     uint64_t* newValues = malloc(newSize * sizeof(uint64_t));
 
+    // copy existing keys and values to new array
     for (int i=0; i<newSize; i++) {
         if (i < map -> maxSize) {
             newKeys[i] = map -> keys[i];
@@ -37,6 +40,7 @@ void resizeMap(struct Map* map) {
         }
     }
 
+    // free old keys and values array
     free(map -> keys);
     free(map -> values);
 
@@ -47,6 +51,7 @@ void resizeMap(struct Map* map) {
 
 void insertMap(struct Map* map, char* key, uint64_t value) {
     for (int i=0; i<map -> maxSize; i++) {
+        // key if key is empty or key matches
         if (map -> keys[i] == NULL || !strcmp(map -> keys[i], key)) {
             map -> values[i] = value;
             map -> keys[i] = key;
@@ -54,6 +59,7 @@ void insertMap(struct Map* map, char* key, uint64_t value) {
         }
     }
 
+    // resize if no empty slot was found
     resizeMap(map);
     insertMap(map, key, value);
 }
@@ -61,12 +67,12 @@ void insertMap(struct Map* map, char* key, uint64_t value) {
 uint64_t getMap(struct Map* map, char* key) {
     for (int i=0; i<map -> maxSize; i++) {
         if (map -> keys[i] == NULL) {
-            return -1;
+            return -1; // no value
         } else if (!strcmp(map -> keys[i], key)) {
             return map -> values[i];
         }
     }
-    return -1;
+    return -1; // key not found
 }
 
 void printMap(struct Map* map) {
