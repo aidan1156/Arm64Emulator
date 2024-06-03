@@ -5,10 +5,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-
 #include "./maps.h"
 
 
+// creates a dictionary/map like data structure
 struct Map* createMap(int initialSize) {
     struct Map* result = malloc(sizeof(struct Map));
     result -> maxSize = initialSize;
