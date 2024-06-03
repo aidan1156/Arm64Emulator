@@ -8,6 +8,8 @@
 #include "./assembler/utilities.h"
 #include "./assembler/fileIO.h"
 
+#include "./assembler/instructions/dataProcessing.h"
+
 
 // find all the labels in the program and map them to their respecitve address
 void findLabels(Map* map, char* path) {
@@ -28,6 +30,21 @@ void findLabels(Map* map, char* path) {
 
     fclose(file);
 }
+
+uint32_t assembleInstruction(char* opcode, char* instruction) {
+    if (strcmp(opcode, "add") == 0) {
+        binaryInstruction = dataProcessingImmArithmetic(0, instruction);
+    } else if (strcmp(opcode, "adds") == 0) {
+        binaryInstruction = dataProcessingImmArithmetic(1, instruction);
+    } else if (strcmp(opcode, "sub") == 0) {
+        binaryInstruction = dataProcessingImmArithmetic(2, instruction);
+    } else if (strcmp(opcode, "subs") == 0) {
+        binaryInstruction = dataProcessingImmArithmetic(3, instruction);
+    } else {
+        fprintf(stderr, "unknown opcode\n")
+    }
+}
+
 
 int main(int argc, char **argv) {
     if (argc < 3) {
@@ -55,11 +72,8 @@ int main(int argc, char **argv) {
                 char* opcode = malloc(strlen(instruction) + 1);
                 sscanf(instruction, "%s", opcode);
                 printf("%s\n", opcode);
-                if (strcmp(opcode, "cmp") == 0) {
-                    binaryInstruction = 0x12345678;
-                } else {
-                    binaryInstruction = 0x90abcdef;
-                }
+                
+                assembleInstruction(opcode, instruction);
 
                 free(opcode);
             }

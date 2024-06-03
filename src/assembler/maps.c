@@ -7,6 +7,9 @@
 
 #include "./maps.h"
 
+#ifndef MAPS_C
+#define MAPS_C
+
 
 // creates a dictionary/map like data structure
 struct Map* createMap(int initialSize) {
@@ -24,7 +27,7 @@ struct Map* createMap(int initialSize) {
     return result;
 }
 
-void resizeMap(struct Map* map) {
+void resizeMap(Map* map) {
     int newSize = (map -> maxSize) * 2;
 
     char** newKeys = malloc(newSize * sizeof(char*));
@@ -49,7 +52,7 @@ void resizeMap(struct Map* map) {
     map -> values = newValues;
 }
 
-void insertMap(struct Map* map, char* key, uint64_t value) {
+void insertMap(Map* map, char* key, uint64_t value) {
     for (int i=0; i<map -> maxSize; i++) {
         // key if key is empty or key matches
         if (map -> keys[i] == NULL || !strcmp(map -> keys[i], key)) {
@@ -64,7 +67,7 @@ void insertMap(struct Map* map, char* key, uint64_t value) {
     insertMap(map, key, value);
 }
 
-uint64_t getMap(struct Map* map, char* key) {
+uint64_t getMap(Map* map, char* key) {
     for (int i=0; i<map -> maxSize; i++) {
         if (map -> keys[i] == NULL) {
             return -1; // no value
@@ -75,7 +78,7 @@ uint64_t getMap(struct Map* map, char* key) {
     return -1; // key not found
 }
 
-void printMap(struct Map* map) {
+void printMap(Map* map) {
     printf("{\n");
     for (int i=0; i<map -> maxSize; i++) {
         if (map -> keys[i] != NULL) {
@@ -85,3 +88,5 @@ void printMap(struct Map* map) {
     printf("}\n");
 }
 
+
+#endif

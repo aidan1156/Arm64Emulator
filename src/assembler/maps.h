@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#ifndef MAPS_H
+#define MAPS_H
 
 typedef struct Map {
     uint64_t* values;
@@ -15,12 +17,12 @@ typedef struct Map {
 
 struct Map* createMap(int initialSize);
 
-void resizeMap(struct Map* map);
+void resizeMap(Map* map);
 
-void insertMap(struct Map* map, char* key, uint64_t value);
+void insertMap(Map* map, char* key, uint64_t value);
 
-uint64_t getMap(struct Map* map, char* key);
+uint64_t getMap(Map* map, char* key);
 
-void printMap(struct Map* map);
+void printMap(Map* map);
 
-
+#endif
