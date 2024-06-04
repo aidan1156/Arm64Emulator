@@ -11,6 +11,7 @@
 #include "./assembler/instructions/dataProcessingImm.h"
 #include "./assembler/instructions/dataProcessingReg.h"
 #include "./assembler/instructions/dataProcessingArith.h"
+#include "./assembler/instructions/branchInstr.h"
 
 
 // find all the labels in the program and map them to their respecitve address
@@ -53,7 +54,8 @@ uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uin
     } else if (strcmp(opcode, "b") == 0) {
         result = branchInstruction(0, instruction, address, NULL, labelmap);
     } else if (strcmp(opcode, "b.*") == 0) {
-        char cond[2] = opcode[2];
+        char cond[2];
+        strncpy(cond, opcode + 2, 2);
         result = branchInstruction(1, instruction, address, cond, labelmap);
     } else if (strcmp(opcode, "br") == 0) {
         result = branchInstruction(2, instruction, address, NULL, labelmap);
