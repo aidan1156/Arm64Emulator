@@ -31,7 +31,7 @@ uint32_t dataProcessingArithmetic(int opcode, char* instruction) {
 
     uint32_t result;
     sscanf(op2Str, "%s, %s %s", rmStr, shiftStr, operandStr);
-    if (strcmp(rmStr[0], "#") == 0) {
+    if (rmStr[0] == '#') {
         result = dataProcessingImmArithmetic(opcode, instruction);
     } else {
         result = dataProcessingRegAddSub(opcode, rdStr, rnStr, op2Str);
