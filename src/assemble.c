@@ -9,6 +9,7 @@
 #include "./assembler/fileIO.h"
 
 #include "./assembler/instructions/dataProcessing.h"
+#include "./assembler/instructions/sdt.h"
 
 
 // find all the labels in the program and map them to their respecitve address
@@ -41,9 +42,15 @@ uint32_t assembleInstruction(char* opcode, char* instruction) {
         result = dataProcessingImmArithmetic(2, instruction);
     } else if (strcmp(opcode, "subs") == 0) {
         result = dataProcessingImmArithmetic(3, instruction);
+    } else if (strcmp(opcode, "ldr") == 0) {
+        result = singleDataTransfer(1, instruction);
+    } else if (strcmp(opcode, "str") == 0) {
+        result = singleDataTransfer(0, instruction);
     } else {
+        // ADD YOUR INSTRUCTION CASES HERE
         fprintf(stderr, "unknown opcode\n");
     }
+
 
     return result;
 }
@@ -67,6 +74,7 @@ int main(int argc, char **argv) {
     while (instruction != NULL) {
         if (!isLabel(instruction)) {
             if (isIntDirective(instruction)) {
+                // + 1 to include terminator
                 char* number = malloc(strlen(instruction) + 1);
                 sscanf(instruction, ".int %s", number);
                 binaryInstruction = parseToInt(number);
