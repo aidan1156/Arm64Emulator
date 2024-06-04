@@ -8,7 +8,9 @@
 #include "./assembler/utilities.h"
 #include "./assembler/fileIO.h"
 
-#include "./assembler/instructions/dataProcessing.h"
+#include "./assembler/instructions/dataProcessingImm.h"
+#include "./assembler/instructions/dataProcessingReg.h"
+#include "./assembler/instructions/dataProcessingArith.h"
 
 
 // find all the labels in the program and map them to their respecitve address
@@ -33,13 +35,21 @@ void findLabels(Map* map, char* path) {
 uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uint64_t address) {
     uint32_t result;
     if (strcmp(opcode, "add") == 0) {
-        result = dataProcessingImmArithmetic(0, instruction);
+        result = dataProcessingArithmetic(0, instruction);
     } else if (strcmp(opcode, "adds") == 0) {
-        result = dataProcessingImmArithmetic(1, instruction);
+        result = dataProcessingArithmetic(1, instruction);
     } else if (strcmp(opcode, "sub") == 0) {
-        result = dataProcessingImmArithmetic(2, instruction);
+        result = dataProcessingArithmetic(2, instruction);
     } else if (strcmp(opcode, "subs") == 0) {
-        result = dataProcessingImmArithmetic(3, instruction);
+        result = dataProcessingArithmetic(3, instruction);
+    } else if (strcmp(opcode, "cmp") == 0) {
+        result = dataProcessingCmpCmn(3, instruction);
+    } else if (strcmp(opcode, "cmn") == 0) {
+        result = dataProcessingCmpCmn(1, instruction);
+    } else if (strcmp(opcode, "neg") == 0) {
+        result = dataProcessingNeg(2, instruction);
+    } else if (strcmp(opcode, "negs") == 0) {
+        result = dataProcessingNeg(3, instruction);
     } else if (strcmp(opcode, "b") == 0) {
         result = branchInstruction(0, instruction, address, NULL, labelmap);
     } else if (strcmp(opcode, "b.*") == 0) {

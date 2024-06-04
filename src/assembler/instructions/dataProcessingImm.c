@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "./dataProcessing.h"
+#include "./dataProcessingImm.h"
 
 uint32_t dataProcessingImmArithmetic(int opcode, char* instruction) {
     char* rdStr = malloc(strlen(instruction) * sizeof(char));
