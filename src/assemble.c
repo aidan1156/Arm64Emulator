@@ -43,13 +43,13 @@ uint32_t assembleInstruction(char* opcode, char* instruction, uint64_t address) 
         result = dataProcessingArithmetic(2, instruction);
     } else if (strcmp(opcode, "subs") == 0) {
         result = dataProcessingArithmetic(3, instruction);
-    } else if (strcmp(opcode, "cmp")) {
+    } else if (strcmp(opcode, "cmp") == 0) {
         result = dataProcessingCmpCmn(3, instruction);
-    } else if (strcmp(opcode, "cmn")) {
+    } else if (strcmp(opcode, "cmn") == 0) {
         result = dataProcessingCmpCmn(1, instruction);
-    } else if (strcmp(opcode, "neg")) {
+    } else if (strcmp(opcode, "neg") == 0) {
         result = dataProcessingNeg(2, instruction);
-    } else if (strcmp(opcode, "negs")) {
+    } else if (strcmp(opcode, "negs") == 0) {
         result = dataProcessingNeg(3, instruction);
     } else {
         fprintf(stderr, "unknown opcode\n");
