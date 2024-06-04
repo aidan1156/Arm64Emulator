@@ -9,7 +9,8 @@ CFLAGS  ?= -std=c17 -g\
 
 all: assemble emulate
 
-assemble: assemble.c ./assembler/maps.c ./assembler/utilities.c  ./assembler/fileIO.c ./assembler/instructions/dataProcessing.c ./assembler/instructions/sdt.c
+
+assemble: assemble.c ./assembler/maps.c ./assembler/utilities.c  ./assembler/fileIO.c ./assembler/instructions/dataProcessingArith.c ./assembler/instructions/dataProcessingImm.c ./assembler/instructions/dataProcessingReg.c ./assembler/instructions/branchInstr.c ./assembler/instructions/sdt.c
 emulate: emulate.o ./emulator/memory.c ./emulator/machine.c ./emulator/utilities.c ./emulator/instructions/dataProcessingImm.c ./emulator/instructions/dataProcessingReg.c ./emulator/instructions/sdt.c ./emulator/instructions/branchInstr.c
 
 clean:

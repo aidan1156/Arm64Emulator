@@ -4,6 +4,9 @@
 #ifndef UTILITIES_H
 #define UTILITIES_H
 
+// print binary number
+void printBinary(uint32_t n, int nbits);
+
 bool isLabel(char* instruction);
 
 bool isIntDirective(char* instruction);

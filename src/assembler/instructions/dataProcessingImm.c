@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "./dataProcessing.h"
+#include "./dataProcessingImm.h"
 
 uint32_t dataProcessingImmArithmetic(int opcode, char* instruction) {
     char* rdStr = malloc(strlen(instruction) * sizeof(char));
@@ -18,14 +18,14 @@ uint32_t dataProcessingImmArithmetic(int opcode, char* instruction) {
     // parse the instruction and if it doesnt have the optional shift set
     // set it to #0 (default value)
     if (sscanf(instruction, "%s %s %s %s lsl %s", opcodeStr, rdStr, rnStr, immStr, shStr) == 4) {
-        shStr = "#0";
+        strcpy(shStr, "#0");
     }
 
     int imm = parseToInt(immStr);
     int sf, rd, rn;
     parseRegister(rdStr, &sf, &rd);
     parseRegister(rnStr, &sf, &rn);
-    int sh = parseToInt(shStr);
+    int sh = (parseToInt(shStr) == 0) ? 0 : 1;
 
     // now we have the individual components of the instr
 
@@ -38,6 +38,12 @@ uint32_t dataProcessingImmArithmetic(int opcode, char* instruction) {
     result += 4 << 26; // constant 0b100
     result += (opcode & 0x3) << 29; // opc
     result += (sf & 0x1) << 31; // sf
+
+    free(rdStr);
+    free(rnStr);
+    free(immStr);
+    free(shStr);
+    free(opcodeStr);
 
     return result;
 }
