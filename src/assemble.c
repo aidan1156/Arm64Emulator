@@ -49,8 +49,32 @@ uint32_t assembleInstruction(char* opcode, char* instruction, uint64_t address) 
         result = dataProcessingCmpCmn(1, instruction);
     } else if (strcmp(opcode, "neg") == 0) {
         result = dataProcessingNeg(2, instruction);
-    } else if (strcmp(opcode, "negs") == 0) {
-        result = dataProcessingNeg(3, instruction);
+    } else if (strcmp(opcode, "and") == 0) {
+        result = dataProcessingRegLogic(0, instruction, 0);
+    } else if (strcmp(opcode, "bic") == 0) {
+        result = dataProcessingRegLogic(0, instruction, 1);
+    } else if (strcmp(opcode, "orr") == 0) {
+        result = dataProcessingRegLogic(1, instruction, 0);
+    } else if (strcmp(opcode, "orn") == 0) {
+        result = dataProcessingRegLogic(1, instruction, 1);
+    } else if (strcmp(opcode, "eor") == 0) {
+        result = dataProcessingRegLogic(2, instruction, 0);
+    } else if (strcmp(opcode, "eon") == 0) {
+        result = dataProcessingRegLogic(2, instruction, 1);
+    } else if (strcmp(opcode, "and") == 0) {
+        result = dataProcessingRegLogic(3, instruction, 0);
+    } else if (strcmp(opcode, "ands") == 0) {
+        result = dataProcessingRegLogic(3, instruction, 1);
+    } else if (strcmp(opcode, "tst") == 0) {
+        result = dataProcessingTstMvnMov(instruction);
+    } else if (strcmp(opcode, "mvn") == 0) {
+        result = dataProcessingTstMvnMov(instruction);
+    } else if (strcmp(opcode, "mov") == 0) {
+        result = dataProcessingTstMvnMov(instruction);
+    } else if (strcmp(opcode, "madd") == 0) {
+        result = dataProcessingRegMultiply(0, instruction);
+    } else if (strcmp(opcode, "msub") == 0) {
+        result = dataProcessingRegMultiply(1, instruction);
     } else {
         fprintf(stderr, "unknown opcode\n");
     }
