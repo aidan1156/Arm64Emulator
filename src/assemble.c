@@ -34,7 +34,8 @@ void findLabels(Map* map, char* path) {
     fclose(file);
 }
 
-uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uint64_t address) {
+uint32_t assembleInstruction(char* opcode, char* instruction,
+ Map* labelmap, uint64_t address) {
     uint32_t result;
     if (strcmp(opcode, "add") == 0) {
         result = dataProcessingArithmetic(0, instruction);
@@ -45,9 +46,9 @@ uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uin
     } else if (strcmp(opcode, "subs") == 0) {
         result = dataProcessingImmArithmetic(3, instruction);
     } else if (strcmp(opcode, "ldr") == 0) {
-        result = singleDataTransfer(1, instruction);
+        result = singleDataTransfer(1, instruction, address, labelmap);
     } else if (strcmp(opcode, "str") == 0) {
-        result = singleDataTransfer(0, instruction);
+        result = singleDataTransfer(0, instruction, address, labelmap);
         result = dataProcessingArithmetic(3, instruction);
     } else if (strcmp(opcode, "cmp") == 0) {
         result = dataProcessingCmpCmn(3, instruction);
@@ -81,7 +82,9 @@ int main(int argc, char **argv) {
     }
     // find the address of each label and store it to a map
     Map* map = createMap(64);
+    Map* intDirsMap = createMap(64);
     findLabels(map, argv[1]);
+    findIntDirectiveValues(intDirsMap, argv[1]);
 
     // open the input and output file
     FILE* inputFile = fopen(argv[1], "rb");

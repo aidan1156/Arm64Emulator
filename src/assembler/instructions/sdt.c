@@ -5,7 +5,8 @@
 #include <stdint.h>
 
 #include "sdt.h"
-#include "../../emulator/utilities.h"
+#include "../utilities.h"
+#include "../maps.h"
 
 void parseAddress(char* addressPt1, char* addressPt2, int* sf, int* rt, int* xn, int* xm,
  int64_t* offset, bool* isU, bool* isPostIndex, bool* isPreIndex,
@@ -68,9 +69,11 @@ void parseAddress(char* addressPt1, char* addressPt2, int* sf, int* rt, int* xn,
 
         }
     }
+
+    free(immStr);
 }
 
-uint32_t singleDataTransfer(int isLoad, char* instruction) {
+uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap) {
     int maxStrLength = (strlen(instruction) + 1) * sizeof(char); // incl null term
     char opcode[4]; // = malloc(maxStrLength);
     char rtStr[4];
@@ -89,8 +92,17 @@ uint32_t singleDataTransfer(int isLoad, char* instruction) {
 
     // parse the instruction into opcode and operands string
     if (sscanf(instruction, "%s %s %s %s", opcode, rtStr, addressPt1, addressPt2) == 4) {
-        parseAddress(addressPt1, addressPt2, &sf, &rt, &xn, &xm, &offset, &isU,
-        &isPostIndex, &isPreIndex, &isLit, &isReg);
+        parseAddress(addressPt1, addressPt2, &sf, &rt, &xn, &xm, &offset,
+         &isU, &isPostIndex, &isPreIndex, &isLit, &isReg);
+    } else if(sscanf(instruction, "%s %s %s", opcode, rtStr, addressPt1) == 3 &&
+    instruction[strlen(instruction) - 1] == ']') {
+        // zero unsigned case
+        isU = 1;
+        // extract the base register, xn
+        char* closeBracketPt1 = strchr(addressPt1, ']');
+        *closeBracketPt1 = '\0';
+        parseRegister(addressPt1 + 1, &sf, &xn);
+
     } else if (sscanf(instruction, "%s %s %s", opcode, rtStr, literalStr) == 3) {
         isLit = 1;
     }
@@ -98,24 +110,8 @@ uint32_t singleDataTransfer(int isLoad, char* instruction) {
     
     parseRegister(rtStr, &sf, &rt);
     
-
-    printf("Instruction: %s\n", instruction);
-    printf("Is Load?: %d", isLoad);
-    printf("Opcode: %s\n", opcode);
-    // printf("We gon chop this address up %s %s\n", addressPt1, addressPt2);
-    printf("Sf: %d\n", sf);
-    printf("Rt: %d\n", rt);
-    printf("Xn: %d\n", xn);
-    printf("Xm: %d\n", xm);
-    printf("Offset: %ld\n", offset);
-    printf("Literal: %s\n", literalStr);
-    printf("Post-index: %d\n", isPostIndex);
-    printf("Pre-index: %d\n", isPreIndex);
-    printf("Unsigned Offset: %d\n", isPreIndex);
-    printf("Load Literal: %d\n", isPreIndex);
-
     // Start constructing the binary instructions
-    binInstruction |= (isLit << 31) | (sf << 30) | rt;
+    binInstruction |= (!isLit << 31) | (sf << 30) | rt;
 
     if (!isLit) {
         binInstruction |= (0xE0 << 22); 
@@ -128,7 +124,7 @@ uint32_t singleDataTransfer(int isLoad, char* instruction) {
             binInstruction |= ((offset/size) << 10);
         } else if (isReg) {
             binInstruction |= (1 << 21);
-            binInstruction |= (xn << 16);
+            binInstruction |= (xm << 16);
             binInstruction |= (0x1A <<10);
         } else {
             // pre/post index
@@ -139,17 +135,33 @@ uint32_t singleDataTransfer(int isLoad, char* instruction) {
         }
 
     } else {
+        offset = getMap(labelMap, literalStr);
         binInstruction |= (0x18 << 24);
         // need to sort out simm19
+        binInstruction |= ((offset - PC) / 4) << 5;
+        printf("%ld\n ", (offset - PC) / 4);
 
     }
-    
+
+    printf("PC %d\n", PC);
+    printf("Instruction: %s\n", instruction);
+    printf("Is Load?: %d\n", isLoad);
+    printf("Opcode: %s\n", opcode);
+    printf("Sf: %d\n", sf);
+    printf("Rt: %d\n", rt);
+    printf("Xn: %d\n", xn);
+    printf("Xm: %d\n", xm);
+    printf("Offset: %ld\n", offset);
+    printf("Literal label: %s\n", literalStr);
+    printf("Post-index: %d\n", isPostIndex);
+    printf("Pre-index: %d\n", isPreIndex);
+    printf("Unsigned Offset: %d\n", isU);
+    printf("Load Literal: %d\n", isLit);
 
     free(addressPt1);
     free(addressPt2);
     free(literalStr);
 
-    //printf("This is our binary instruction %d\n", binInstruction);
     printBinary(binInstruction, 32);
 
     return binInstruction;
@@ -158,15 +170,24 @@ uint32_t singleDataTransfer(int isLoad, char* instruction) {
 int main() {
     // Example instructions
     char* instructions[] = {
-        "ldr w28, [x12], #226",
-        "ldr w11, [x20, #60]!",
-        "ldr x3, [x1, #0x0]",
-        "ldr w17, [x15, x4]",
-        "ldr x0, l1"
+        // zero unsigned offset
+        "ldr x2, [x0]", // 1 1 11100 1 0 1 00 00000 00000 00000 00010
+        // post
+        "ldr w28, [x12], #226",// 1 0 11100 0 0 1 0 0111 00010 0 1 01100 11100
+        // pre
+        "ldr w11, [x20, #60]!", // 1 0 11100 0 0 1 0 0001 11100 1 1 10100 01011
+        // unsigned
+        "ldr x3, [x1, #8]", // 1 1 11100 1 0 1 00 00000 00001 00001 00011
+        // register
+        "ldr w17, [x15, x4]", // 1 0 11100 0 0 1 1 00100 011010 01111 10001
+        // literal
+        "ldr x0, l1" // 0 1 011000 0000 00000 00000 00010 00000
     };
 
-    for (int i = 0; i < 5; i++) {
-        singleDataTransfer(1, instructions[i]);
+    for (int i = 0; i < 6; i++) {
+        Map* labelMap = createMap(64);
+        insertMap(labelMap, "l1", 0x8);
+        singleDataTransfer(1, instructions[i], 0x0, labelMap);
         printf("\n");
     }
 
