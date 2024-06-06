@@ -18,10 +18,8 @@ void parseAddress(char* addressPt1, char* addressPt2, int* sf, int* rt, int* xn,
     //  returns a pointer to the left-most occurrence of ch in s
     char* closeBracketPt1 = strchr(addressPt1, ']');
     char* closeBracketPt2 = strchr(addressPt2, ']');
-    char* commaPt1 = strchr(addressPt1, ',');
     char* exclamPt2 = strchr(addressPt2, '!');
     char* hashPt2 = strchr(addressPt2, '#');
-
 
     if (closeBracketPt1) { 
         // Post-index
@@ -35,12 +33,15 @@ void parseAddress(char* addressPt1, char* addressPt2, int* sf, int* rt, int* xn,
         *offset = parseToInt(addressPt2);
 
     } else {
+        printf("WE managed to get here");
+        
         // extract the base register, xn
-        *commaPt1 = '\0';
         parseRegister(addressPt1 + 1, sf, xn);
         
 
         if (exclamPt2) {
+
+
             // Pre-index
             *isPreIndex = 1;
 
@@ -80,6 +81,9 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
     char* addressPt1 = malloc(maxStrLength);
     char* addressPt2 = malloc(maxStrLength);
     char* literalStr = malloc(maxStrLength);
+    char* instructionReform = malloc(maxStrLength);
+
+    replaceCommaWithSpace(instruction, instructionReform);
 
     int sf = 0, rt;
     int xn = -1, xm = -1;
@@ -91,11 +95,18 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
 
 
     // parse the instruction into opcode and operands string
-    if (sscanf(instruction, "%s %s %s %s", opcode, rtStr, addressPt1, addressPt2) == 4) {
+    if (sscanf(instructionReform, "%s %s %s %s", opcode, rtStr, addressPt1, addressPt2) == 4) {
+
+        printf("Address? '%s' and '%s'\n", addressPt1, addressPt2);
+        printf("Opcode: %s\n", opcode);
+        printf("rt: %s\n", rtStr);
+      
+        printf("Load Literal: %d\n", isLit);
         parseAddress(addressPt1, addressPt2, &sf, &rt, &xn, &xm, &offset,
          &isU, &isPostIndex, &isPreIndex, &isLit, &isReg);
-    } else if(sscanf(instruction, "%s %s %s", opcode, rtStr, addressPt1) == 3 &&
-    instruction[strlen(instruction) - 1] == ']') {
+  
+    } else if(sscanf(instructionReform, "%s %s %s", opcode, rtStr, addressPt1) == 3 &&
+        instructionReform[strlen(instructionReform) - 1] == ']') {
         // zero unsigned case
         isU = 1;
         // extract the base register, xn
@@ -103,11 +114,11 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
         *closeBracketPt1 = '\0';
         parseRegister(addressPt1 + 1, &sf, &xn);
 
-    } else if (sscanf(instruction, "%s %s %s", opcode, rtStr, literalStr) == 3) {
+    } else if (sscanf(instructionReform, "%s %s %s", opcode, rtStr, literalStr) == 3) {
         isLit = 1;
     }
 
-    
+
     parseRegister(rtStr, &sf, &rt);
     
     // Start constructing the binary instructions
@@ -145,6 +156,7 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
 
     printf("PC %d\n", PC);
     printf("Instruction: %s\n", instruction);
+    printf("Address? '%s' and '%s'\n", addressPt1, addressPt2);
     printf("Is Load?: %d\n", isLoad);
     printf("Opcode: %s\n", opcode);
     printf("Sf: %d\n", sf);
@@ -161,6 +173,7 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
     free(addressPt1);
     free(addressPt2);
     free(literalStr);
+    free(instructionReform);
 
     printBinary(binInstruction, 32);
 
