@@ -43,7 +43,7 @@ uint32_t assembleInstruction(char* opcode, char* instruction, uint64_t address) 
         result = dataProcessingArithmetic(2, instruction);
     } else if (strcmp(opcode, "subs") == 0) {
         result = dataProcessingArithmetic(3, instruction);
-    } else if (strcmp(opcode, "cmp") == 0) {
+    } else if (strcmp(opcode, "cmp") == 0) {        
         result = dataProcessingCmpCmn(3, instruction);
     } else if (strcmp(opcode, "cmn") == 0) {
         result = dataProcessingCmpCmn(1, instruction);
@@ -75,6 +75,10 @@ uint32_t assembleInstruction(char* opcode, char* instruction, uint64_t address) 
         result = dataProcessingRegMultiply(0, instruction);
     } else if (strcmp(opcode, "msub") == 0) {
         result = dataProcessingRegMultiply(1, instruction);
+    } else if (strcmp(opcode, "mul") == 0) {
+        result = dataProcessingRegMultiply(0, instruction);
+    } else if (strcmp(opcode, "mneg") == 0) {
+        result = dataProcessingRegMultiply(1, instruction);
     } else {
         fprintf(stderr, "unknown opcode\n");
     }
@@ -84,6 +88,7 @@ uint32_t assembleInstruction(char* opcode, char* instruction, uint64_t address) 
 
 
 int main(int argc, char **argv) {
+
     if (argc < 3) {
         fprintf(stderr, "too few arguments supplied\n");
     }
@@ -117,6 +122,7 @@ int main(int argc, char **argv) {
             address += 4;
 
             writeInstruction(outputFile, binaryInstruction);
+            printf("%x\n", binaryInstruction);
         }
 
         free(instruction);
