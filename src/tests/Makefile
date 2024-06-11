@@ -17,7 +17,7 @@ sdtTest: ../emulator/machine.c ../emulator/utilities.c  ../emulator/memory.c ../
 
 branchInstrTest: ../emulator/machine.c ./branchInstrTest.c ../emulator/memory.c ../emulator/instructions/branchInstr.c
 
-assemblerBranchInstrTest: ../assembler/maps.c ./assemblerBranchInstrTest.c ../assembler/utilities.c ../assembler/instructions/branchInstr.c
+assemblerBranchInstrTest: ../assembler/maps.c ./assemblerBranchInstrTest.c ../assembler/utilities.c ../assembler/instructions/branchInstr.c ../assembler/instructions/dataProcessingImm.c
 
 clean:
 	$(RM) *.o dataProcessingImmTest dataProcessingRegTest sdtTest branchInstrTest

@@ -2,6 +2,8 @@
 #include "../assembler/instructions/branchInstr.h"
 #include "../assembler/maps.h"
 
+#include "../assembler/instructions/dataProcessingImm.h"
+
 //TESTING UNCONDITIONAL BRANCHES
 
 bool uncond() {
@@ -45,12 +47,27 @@ bool regist() {
      return true;
 }
 
+//TESTING WIDE MOVE
+
+bool wideMove() {
+     char instrStr[] = "x0 #0x1234 lsl #32";
+     char* instr1 = &(instrStr[0]);
+     if (wideMoveInstruction(0, instr1) != 0x92e24680) {
+          fprintf(stderr, "Failed wide move test\n");
+          return false;
+     }
+     printf("Passed wide move test\n");
+     return true;
+}
+
 int main(void) {
     int failed = 0;
 
     failed += !uncond();
     failed += !cond();
     failed += !regist();
+    
+    failed += !wideMove();
 
     printf("Executed tests with %d failures\n", failed);
 }

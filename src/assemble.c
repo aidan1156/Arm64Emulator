@@ -51,6 +51,12 @@ uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uin
         result = dataProcessingNeg(2, instruction);
     } else if (strcmp(opcode, "negs") == 0) {
         result = dataProcessingNeg(3, instruction);
+    } else if (strcmp(opcode, "movn") == 0) {
+        result = wideMoveInstruction(0, instruction);
+    } else if (strcmp(opcode, "movk") == 0) {
+        result = wideMoveInstruction(0, instruction);
+    } else if (strcmp(opcode, "movz") == 0) {
+        result = wideMoveInstruction(2, instruction);
     } else if (strcmp(opcode, "b") == 0) {
         result = branchInstruction(0, instruction, address, NULL, labelmap);
     } else if (strcmp(opcode, "b.*") == 0) {

@@ -30,7 +30,7 @@ bool branchInstruction(struct Machine* machine, uint32_t instr) {
 
         int offset;
         if (simm19 >> 18) { //check sign for extension to 64bits
-            offset = 0xffffffffffe0003 | (simm19 << 2);
+            offset = 0xffffffffffe0000 | (simm19 << 2);
         } else {
             offset = (simm19 << 2);
         }

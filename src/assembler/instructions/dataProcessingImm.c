@@ -9,6 +9,7 @@
 #include "./dataProcessingImm.h"
 
 uint32_t dataProcessingImmArithmetic(int opcode, char* instruction) {
+
     char* rdStr = malloc(strlen(instruction) * sizeof(char));
     char* rnStr = malloc(strlen(instruction) * sizeof(char));
     char* immStr = malloc(strlen(instruction) * sizeof(char));
@@ -46,4 +47,39 @@ uint32_t dataProcessingImmArithmetic(int opcode, char* instruction) {
     free(opcodeStr);
 
     return result;
+}
+
+uint32_t wideMoveInstruction(int opcode, char* instruction) {
+    uint32_t result = 0;
+    char* rd = malloc(strlen(instruction) * sizeof(char));
+    uint32_t* imm = malloc(strlen(instruction) * sizeof(int));
+    uint32_t* sh = malloc(strlen(instruction) * sizeof(int));
+    sscanf(instruction, "%s #%x lsl #%x", rd, imm, sh);
+ 
+    //determine sf and rd values
+    int* reg = malloc(5);
+    int* sf = malloc(1);
+    parseRegister(rd, sf, reg);
+    result = result | (*sf << 31);
+    result = result | (*reg);
+    free(reg);
+    free(sf);
+
+    //determine opc and opi
+    if (opcode == 0) {
+        result = result | 0x12800000;
+    } else if (opcode == 1) {
+        result = result | 0x52800000;
+    } else if (opcode == 2) {
+        result = result | 0x72800000;
+    }
+
+    //determine operand
+    result = result | ((*sh / 16) << 21);
+    result = result | (*imm << 5);
+
+    free(rd);
+    free(imm);
+    free(sh);
+    return result;   
 }
