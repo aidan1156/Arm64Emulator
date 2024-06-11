@@ -98,5 +98,4 @@ void freeMap(Map *map) {
     free(map);
 }
 
-
 #endif
