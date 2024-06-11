@@ -21,6 +21,8 @@
 emulate
 assemble
 dataProcessingImm
+flappyBird
+gameEngine
 *.cbuild
 
 #ignore junk files from compiling Haskell code

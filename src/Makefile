@@ -12,6 +12,8 @@ all: assemble emulate
 assemble: assemble.c
 emulate: emulate.o ./emulator/memory.c ./emulator/machine.c ./emulator/utilities.c ./emulator/instructions/dataProcessingImm.c ./emulator/instructions/dataProcessingReg.c ./emulator/instructions/sdt.c ./emulator/instructions/branchInstr.c
 
+flappyBird: flappyBird.c ./flappyBirdGame/gameEngine.c
+
 clean:
 	$(RM) *.o assemble emulate
 	
