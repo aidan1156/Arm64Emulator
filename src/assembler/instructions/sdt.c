@@ -196,7 +196,6 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
 
 //     for (int i = 0; i < 6; i++) {
 //         Map* labelMap = createMap(64);
-//         insertMap(labelMap, "l1", 0x8);
 //         singleDataTransfer(1, instructions[i], 0x0, labelMap);
 //         printf("\n");
 //     }

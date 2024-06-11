@@ -49,7 +49,6 @@ uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uin
         result = singleDataTransfer(1, instruction, address, labelmap);
     } else if (strcmp(opcode, "str") == 0) {
         result = singleDataTransfer(0, instruction, address, labelmap);
-        result = dataProcessingArithmetic(3, instruction);
     } else if (strcmp(opcode, "cmp") == 0) {        
         result = dataProcessingCmpCmn(3, instruction);
     } else if (strcmp(opcode, "cmn") == 0) {
