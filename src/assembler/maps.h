@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <assert.h>
 
 #ifndef MAPS_H
 #define MAPS_H
@@ -25,6 +26,6 @@ uint64_t getMap(Map* map, char* key);
 
 void printMap(Map* map);
 
-void freeMap(Map *map)
+void freeMap(Map *map);
 
 #endif
