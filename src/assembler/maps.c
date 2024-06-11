@@ -17,7 +17,9 @@ struct Map* createMap(int initialSize) {
     struct Map* result = malloc(sizeof(struct Map));
     result -> maxSize = initialSize;
     result -> keys = malloc(result -> maxSize * sizeof(char*));
+    assert(result -> keys != NULL);
     result -> values = malloc(result -> maxSize * sizeof(uint64_t));
+    assert(result -> values != NULL);
 
     // initialise all keys to null
     for (int i=0; i<result -> maxSize; i++) {
@@ -86,6 +88,13 @@ void printMap(Map* map) {
         }
     }
     printf("}\n");
+}
+
+void freeMap(Map *map) {
+    assert(map != NULL);
+    free(map->values);
+    free(map->keys);
+    free(map);
 }
 
 

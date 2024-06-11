@@ -70,9 +70,9 @@ uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uin
         result = dataProcessingRegLogic(2, instruction, 0);
     } else if (strcmp(opcode, "eon") == 0) {
         result = dataProcessingRegLogic(2, instruction, 1);
-    } else if (strcmp(opcode, "and") == 0) {
-        result = dataProcessingRegLogic(3, instruction, 0);
     } else if (strcmp(opcode, "ands") == 0) {
+        result = dataProcessingRegLogic(3, instruction, 0);
+    } else if (strcmp(opcode, "bics") == 0) {
         result = dataProcessingRegLogic(3, instruction, 1);
     } else if (strcmp(opcode, "tst") == 0) {
         result = dataProcessingTstMvnMov(instruction);
@@ -118,8 +118,8 @@ int main(int argc, char **argv) {
         fprintf(stderr, "too few arguments supplied\n");
     }
     // find the address of each label and store it to a map
-    Map* map = createMap(64);
-    findLabels(map, argv[1]);
+    Map* labelMap = createMap(64);
+    findLabels(labelMap, argv[1]);
 
     // open the input and output file
     FILE* inputFile = fopen(argv[1], "rb");
@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
                 char* instructionReform = malloc((strlen(instruction) + 1));
                 replaceCommaWithSpace(instruction, instructionReform);
                 
-                binaryInstruction = assembleInstruction(opcode, instructionReform, map, address);
+                binaryInstruction = assembleInstruction(opcode, instructionReform, labelMap, address);
 
                 free(opcode);
                 free(instructionReform);
@@ -158,8 +158,10 @@ int main(int argc, char **argv) {
 
         free(instruction);
         instruction = readLine(inputFile);
+
     }
 
+    freeMap(labelMap);
     free(instruction);
 
     fclose(inputFile);

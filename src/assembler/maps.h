@@ -25,4 +25,6 @@ uint64_t getMap(Map* map, char* key);
 
 void printMap(Map* map);
 
+void freeMap(Map *map)
+
 #endif
