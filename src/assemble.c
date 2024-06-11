@@ -50,7 +50,7 @@ uint32_t assembleInstruction(char* opcode, char* instruction,
     } else if (strcmp(opcode, "str") == 0) {
         result = singleDataTransfer(0, instruction, address, labelmap);
         result = dataProcessingArithmetic(3, instruction);
-    } else if (strcmp(opcode, "cmp") == 0) {
+    } else if (strcmp(opcode, "cmp") == 0) {        
         result = dataProcessingCmpCmn(3, instruction);
     } else if (strcmp(opcode, "cmn") == 0) {
         result = dataProcessingCmpCmn(1, instruction);
@@ -58,6 +58,36 @@ uint32_t assembleInstruction(char* opcode, char* instruction,
         result = dataProcessingNeg(2, instruction);
     } else if (strcmp(opcode, "negs") == 0) {
         result = dataProcessingNeg(3, instruction);
+    } else if (strcmp(opcode, "and") == 0) {
+        result = dataProcessingRegLogic(0, instruction, 0);
+    } else if (strcmp(opcode, "bic") == 0) {
+        result = dataProcessingRegLogic(0, instruction, 1);
+    } else if (strcmp(opcode, "orr") == 0) {
+        result = dataProcessingRegLogic(1, instruction, 0);
+    } else if (strcmp(opcode, "orn") == 0) {
+        result = dataProcessingRegLogic(1, instruction, 1);
+    } else if (strcmp(opcode, "eor") == 0) {
+        result = dataProcessingRegLogic(2, instruction, 0);
+    } else if (strcmp(opcode, "eon") == 0) {
+        result = dataProcessingRegLogic(2, instruction, 1);
+    } else if (strcmp(opcode, "and") == 0) {
+        result = dataProcessingRegLogic(3, instruction, 0);
+    } else if (strcmp(opcode, "ands") == 0) {
+        result = dataProcessingRegLogic(3, instruction, 1);
+    } else if (strcmp(opcode, "tst") == 0) {
+        result = dataProcessingTstMvnMov(instruction);
+    } else if (strcmp(opcode, "mvn") == 0) {
+        result = dataProcessingTstMvnMov(instruction);
+    } else if (strcmp(opcode, "mov") == 0) {
+        result = dataProcessingTstMvnMov(instruction);
+    } else if (strcmp(opcode, "madd") == 0) {
+        result = dataProcessingRegMultiply(0, instruction);
+    } else if (strcmp(opcode, "msub") == 0) {
+        result = dataProcessingRegMultiply(1, instruction);
+    } else if (strcmp(opcode, "mul") == 0) {
+        result = dataProcessingRegMultiply(0, instruction);
+    } else if (strcmp(opcode, "mneg") == 0) {
+        result = dataProcessingRegMultiply(1, instruction);
     } else if (strcmp(opcode, "movn") == 0) {
         result = wideMoveInstruction(0, instruction);
     } else if (strcmp(opcode, "movk") == 0) {
@@ -83,6 +113,7 @@ uint32_t assembleInstruction(char* opcode, char* instruction,
 
 
 int main(int argc, char **argv) {
+
     if (argc < 3) {
         fprintf(stderr, "too few arguments supplied\n");
     }
@@ -122,6 +153,7 @@ int main(int argc, char **argv) {
             address += 4;
 
             writeInstruction(outputFile, binaryInstruction);
+            printf("%x\n", binaryInstruction);
         }
 
         free(instruction);

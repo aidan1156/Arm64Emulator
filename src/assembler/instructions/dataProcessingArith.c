@@ -24,27 +24,19 @@ uint32_t dataProcessingArithmetic(int opcode, char* instruction) {
     char* rnStr = malloc(strlen(instruction) * sizeof(char));
     char* op2Str = malloc(strlen(instruction) * sizeof(char));
     sscanf(instruction, "%s %s %s %s", opcodeStr, rdStr, rnStr, op2Str);
-    
-    char* rmStr = malloc(strlen(instruction) * sizeof(char));
-    char* shiftStr = malloc(strlen(instruction) * sizeof(char));
-    char* operandStr = malloc(strlen(instruction) * sizeof(char));
 
-    uint32_t result;
-    sscanf(op2Str, "%s, %s %s", rmStr, shiftStr, operandStr);
-    if (rmStr[0] == '#') {
-        result = dataProcessingImmArithmetic(opcode, instruction);
-    } else {
-        result = dataProcessingRegAddSub(opcode, rdStr, rnStr, op2Str);
-    }
-
+    // freeing unncessary mallocs
     free(opcodeStr);
     free(rdStr);
     free(rnStr);
+    
+    uint32_t result;
+    if (op2Str[0] == '#') {
+        result = dataProcessingImmArithmetic(opcode, instruction);
+    } else {
+        result = dataProcessingRegAddSub(opcode, instruction);
+    }
+
     free(op2Str);
-
-    free(rmStr);
-    free(shiftStr);
-    free(operandStr);
-
     return result;
 }
