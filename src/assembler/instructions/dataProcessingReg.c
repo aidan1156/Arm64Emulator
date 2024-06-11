@@ -126,7 +126,7 @@ uint32_t dataProcessingCmpCmn(int opcode, char* instruction) {
     strcat(newInstruction, ", ");
     strcat(newInstruction, operandStr);
 
-    printf("newInstruction: %s\n", newInstruction);
+    replaceCommaWithSpace(newInstruction, newInstruction);
 
     uint32_t result = dataProcessingArithmetic(opcode, newInstruction);
 
@@ -181,6 +181,8 @@ uint32_t dataProcessingNeg(int opcode, char* instruction) {
     strcat(newInstruction, shiftStr);
     strcat(newInstruction, ", ");
     strcat(newInstruction, operandStr);
+
+    replaceCommaWithSpace(newInstruction, newInstruction);
 
     uint32_t result = dataProcessingArithmetic(opcode, newInstruction);
 
@@ -316,6 +318,8 @@ uint32_t dataProcessingTstMvnMov(char* instruction) {
         opcode = 1;
         N = 0;
     }
+
+    replaceCommaWithSpace(newInstruction, newInstruction);
 
     uint32_t result = dataProcessingRegLogic(opcode, instruction, N);
 
