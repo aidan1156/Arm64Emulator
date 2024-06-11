@@ -177,29 +177,29 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
     return binInstruction;
 }
 
-int main() {
-    // Example instructions
-    char* instructions[] = {
-        // zero unsigned offset
-        "ldr x2, [x0]", // 1 1 11100 1 0 1 00 00000 00000 00000 00010
-        // post
-        "ldr w28, [x12], #226",// 1 0 11100 0 0 1 0 0111 00010 0 1 01100 11100
-        // pre
-        "ldr w11, [x20, #60]!", // 1 0 11100 0 0 1 0 0001 11100 1 1 10100 01011
-        // unsigned
-        "ldr x3, [x1, #8]", // 1 1 11100 1 0 1 00 00000 00001 00001 00011
-        // register
-        "ldr w17, [x15, x4]", // 1 0 11100 0 0 1 1 00100 011010 01111 10001
-        // literal
-        "ldr x0, l1" // 0 1 011000 0000 00000 00000 00010 00000
-    };
+// int main() {
+//     // Example instructions
+//     char* instructions[] = {
+//         // zero unsigned offset
+//         "ldr x2, [x0]", // 1 1 11100 1 0 1 00 00000 00000 00000 00010
+//         // post
+//         "ldr w28, [x12], #226",// 1 0 11100 0 0 1 0 0111 00010 0 1 01100 11100
+//         // pre
+//         "ldr w11, [x20, #60]!", // 1 0 11100 0 0 1 0 0001 11100 1 1 10100 01011
+//         // unsigned
+//         "ldr x3, [x1, #8]", // 1 1 11100 1 0 1 00 00000 00001 00001 00011
+//         // register
+//         "ldr w17, [x15, x4]", // 1 0 11100 0 0 1 1 00100 011010 01111 10001
+//         // literal
+//         "ldr x0, l1" // 0 1 011000 0000 00000 00000 00010 00000
+//     };
 
-    for (int i = 0; i < 6; i++) {
-        Map* labelMap = createMap(64);
-        insertMap(labelMap, "l1", 0x8);
-        singleDataTransfer(1, instructions[i], 0x0, labelMap);
-        printf("\n");
-    }
+//     for (int i = 0; i < 6; i++) {
+//         Map* labelMap = createMap(64);
+//         insertMap(labelMap, "l1", 0x8);
+//         singleDataTransfer(1, instructions[i], 0x0, labelMap);
+//         printf("\n");
+//     }
 
-    return 0;
-}
+//     return 0;
+// }

@@ -1,3 +1,4 @@
+# this is mru's temporary make file for testing her code
 CC      ?= gcc
 CFLAGS  ?= -std=c17 -g -D_POSIX_SOURCE -D_DEFAULT_SOURCE -Wall -Werror -pedantic
 
