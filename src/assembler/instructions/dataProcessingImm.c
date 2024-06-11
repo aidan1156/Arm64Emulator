@@ -9,6 +9,7 @@
 #include "./dataProcessingImm.h"
 
 uint32_t dataProcessingImmArithmetic(int opcode, char* instruction) {
+    replaceCommaWithSpace(instruction, instruction);
 
     char* rdStr = malloc(strlen(instruction) * sizeof(char));
     char* rnStr = malloc(strlen(instruction) * sizeof(char));

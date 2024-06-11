@@ -126,6 +126,8 @@ uint32_t dataProcessingCmpCmn(int opcode, char* instruction) {
     strcat(newInstruction, ", ");
     strcat(newInstruction, operandStr);
 
+    printf("newInstruction: %s\n", newInstruction);
+
     uint32_t result = dataProcessingArithmetic(opcode, newInstruction);
 
     // free dynamically allocated memory
