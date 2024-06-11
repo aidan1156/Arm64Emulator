@@ -34,9 +34,9 @@ void findLabels(Map* map, char* path) {
     fclose(file);
 }
 
-uint32_t assembleInstruction(char* opcode, char* instruction,
- Map* labelmap, uint64_t address) {
+uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uint64_t address) {
     uint32_t result;
+    printf("instruction: %s\n", instruction);
     if (strcmp(opcode, "add") == 0) {
         result = dataProcessingArithmetic(0, instruction);
     } else if (strcmp(opcode, "adds") == 0) {
@@ -107,7 +107,7 @@ uint32_t assembleInstruction(char* opcode, char* instruction,
         fprintf(stderr, "unknown opcode\n");
     }
 
-
+    printf("result before returning: %x\n", result);
     return result;
 }
 
@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
                 char* instructionReform = malloc((strlen(instruction) + 1));
                 replaceCommaWithSpace(instruction, instructionReform);
                 
-                assembleInstruction(opcode, instructionReform, map, address);
+                binaryInstruction = assembleInstruction(opcode, instructionReform, map, address);
 
                 free(opcode);
                 free(instructionReform);
