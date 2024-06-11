@@ -15,4 +15,6 @@ int64_t parseToInt(char* number);
 
 void parseRegister(char* string, int* sf, int* reg);
 
+void replaceCommaWithSpace(char* instruction, char* output);
+
 #endif

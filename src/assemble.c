@@ -82,9 +82,7 @@ int main(int argc, char **argv) {
     }
     // find the address of each label and store it to a map
     Map* map = createMap(64);
-    Map* intDirsMap = createMap(64);
     findLabels(map, argv[1]);
-    findIntDirectiveValues(intDirsMap, argv[1]);
 
     // open the input and output file
     FILE* inputFile = fopen(argv[1], "rb");
@@ -105,10 +103,15 @@ int main(int argc, char **argv) {
                 char* opcode = malloc(strlen(instruction) + 1);
                 sscanf(instruction, "%s", opcode);
                 printf("%s\n", opcode);
+
+                // format instruction to be used with sscanf
+                char* instructionReform = malloc((strlen(instruction) + 1));
+                replaceCommaWithSpace(instruction, instructionReform);
                 
-                assembleInstruction(opcode, instruction, map, address);
+                assembleInstruction(opcode, instructionReform, map, address);
 
                 free(opcode);
+                free(instructionReform);
             }
             address += 4;
 

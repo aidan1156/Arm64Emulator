@@ -81,9 +81,6 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
     char* addressPt1 = malloc(maxStrLength);
     char* addressPt2 = malloc(maxStrLength);
     char* literalStr = malloc(maxStrLength);
-    char* instructionReform = malloc(maxStrLength);
-
-    replaceCommaWithSpace(instruction, instructionReform);
 
     int sf = 0, rt;
     int xn = -1, xm = -1;
@@ -95,7 +92,7 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
 
 
     // parse the instruction into opcode and operands string
-    if (sscanf(instructionReform, "%s %s %s %s", opcode, rtStr, addressPt1, addressPt2) == 4) {
+    if (sscanf(instruction, "%s %s %s %s", opcode, rtStr, addressPt1, addressPt2) == 4) {
 
         printf("Address? '%s' and '%s'\n", addressPt1, addressPt2);
         printf("Opcode: %s\n", opcode);
@@ -105,8 +102,8 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
         parseAddress(addressPt1, addressPt2, &sf, &rt, &xn, &xm, &offset,
          &isU, &isPostIndex, &isPreIndex, &isLit, &isReg);
   
-    } else if(sscanf(instructionReform, "%s %s %s", opcode, rtStr, addressPt1) == 3 &&
-        instructionReform[strlen(instructionReform) - 1] == ']') {
+    } else if(sscanf(instruction, "%s %s %s", opcode, rtStr, addressPt1) == 3 &&
+        instruction[strlen(instruction) - 1] == ']') {
         // zero unsigned case
         isU = 1;
         // extract the base register, xn
@@ -114,7 +111,7 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
         *closeBracketPt1 = '\0';
         parseRegister(addressPt1 + 1, &sf, &xn);
 
-    } else if (sscanf(instructionReform, "%s %s %s", opcode, rtStr, literalStr) == 3) {
+    } else if (sscanf(instruction, "%s %s %s", opcode, rtStr, literalStr) == 3) {
         isLit = 1;
     }
 
