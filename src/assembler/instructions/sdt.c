@@ -170,7 +170,7 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
     free(addressPt1);
     free(addressPt2);
     free(literalStr);
-    free(instructionReform);
+    free(instruction);
 
     printBinary(binInstruction, 32);
 
