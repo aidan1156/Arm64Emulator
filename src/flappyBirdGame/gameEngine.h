@@ -26,3 +26,7 @@ void setPixel(Window window, int x, int y, char value);
 char getPixel(Window window, int x, int y);
 
 bool getEnterPressed();
+
+int getWindowWidth(Window window);
+
+int getWindowHeight(Window window);

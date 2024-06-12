@@ -28,10 +28,10 @@ static void* inputThread(void *vargp) {
 
 static char* charLookup(char c) {
     switch (c) {
-        case ' ':
-            return "🟦";
         case '.':
             return "🐦";
+        case ' ':
+            return "🟦";
     }
     return "🟦";
 }
@@ -62,8 +62,14 @@ void engineInit(void) {
 }
 
 void engineQuit(void) {
+    // reenable the terminal echoing
+    struct termios term;
+    tcgetattr(fileno(stdin), &term);
+    term.c_lflag |= ECHO;
+    tcsetattr(fileno(stdin), 0, &term);
+
     // shut down the input thread
-    pthread_exit(&inputThreadId);
+    pthread_cancel(inputThreadId);
 }
 
 Window createWindow(int width, int height) {
@@ -84,7 +90,7 @@ void fillWindow(Window window, char fill) {
 }
 
 void drawWindow(Window window) {
-    putc('\n', stdout);
+    puts("\n\n\n\n\n\n\n\n\n\n\n");
     for (int i=0; i<window -> height; i++) {
         for (int j=0; j<window -> width; j++) {
             printf("%s", charLookup(getPixel(window, j, i)));
@@ -100,3 +106,10 @@ bool getEnterPressed() {
     return result;
 }
 
+int getWindowWidth(Window window) {
+    return window -> width;
+}
+
+int getWindowHeight(Window window) {
+    return window -> height;
+}
