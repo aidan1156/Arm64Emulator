@@ -54,12 +54,25 @@ uint32_t wideMoveInstruction(int opcode, char* instruction) {
     uint32_t result = 0;
     char* rd = malloc(strlen(instruction) * sizeof(char));
     char* mov = malloc(strlen(instruction) * sizeof(char));
-    uint32_t* imm = malloc(sizeof(int));
+    char* imm = malloc(strlen(instruction) * sizeof(char));
     int* sh = malloc(sizeof(int));
 
-    int ret = sscanf(instruction, "%s %s #%x lsl #%d", mov, rd, imm, sh);
+    int ret = sscanf(instruction, "%s %s #%s lsl #%d", mov, rd, imm, sh);
 
-    // printf("\nmov: %s\nrd : %s\nimm: %x\nsh: %d\n", mov, rd, *imm, *sh);
+    printf("\nmov: %s\nrd : %s\nimm: %s\nsh: %d\n", mov, rd, imm, *sh);
+    printf("%c-%c-%c-%c\n", imm[0], imm[1], imm[2], imm[3]);
+
+    uint32_t hexImm = 0;
+    int decImm = 0;
+    bool isHex = false;
+    printf("%s", imm);
+    if (strncmp(imm, "0x", 2) == 0) {
+        printf("help \n");
+        sscanf(imm, "%x", &hexImm);
+        isHex = true;
+    } else {
+        decImm = atoi(imm);
+    }
  
     //determine sf and rd values
     int* reg = malloc(5);
@@ -83,7 +96,12 @@ uint32_t wideMoveInstruction(int opcode, char* instruction) {
     if (ret == 4) {
         result = result | ((*sh / 16) << 21);
     }
-    result = result | (*imm << 5);
+    if (isHex) {
+        result = result | (hexImm << 5);
+    } else {
+        result = result | (decImm << 5);
+    }
+    
 
     free(mov);
     free(rd);

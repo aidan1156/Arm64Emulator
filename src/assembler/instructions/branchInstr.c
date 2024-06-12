@@ -14,13 +14,13 @@ uint32_t branchInstruction(int opcode, char* instruction, int curaddress, char c
     if (opcode == 0) { // branch unconditionally
         printf("in uncond");
         result = result | 0;
-        int simm26 = getMap(labelmap, instruction) - curaddress;
+        int simm26 = (getMap(labelmap, &instruction[2]) - curaddress) / 4;
         printf("simm26: %d", simm26);
         result = result | simm26;
 
     } else if (opcode == 1) { // branch conditionally
         result = result | 0x50000000;
-
+        printf("in cond");
         //convert the condition
         if (strcmp(cond, "eq") == 0) {
             result = result | 0x00000000;
@@ -38,10 +38,11 @@ uint32_t branchInstruction(int opcode, char* instruction, int curaddress, char c
             result = result | 0x0000000e;
         } 
 
-        int simm19 = getMap(labelmap, instruction) - curaddress;
+        int simm19 = (getMap(labelmap, &instruction[5]) - curaddress) / 4;
         result = result | (simm19 << 4);
 
     } else if (opcode == 2) { // branch register
+        printf("in reg");
         result = result | 0xd61f0000;
         int* reg = malloc(5);
         int* sf = malloc(1);
@@ -50,5 +51,6 @@ uint32_t branchInstruction(int opcode, char* instruction, int curaddress, char c
         free(reg);
         free(sf);
     }
+
     return result;
 }
