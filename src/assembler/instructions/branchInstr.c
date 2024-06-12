@@ -12,8 +12,10 @@ uint32_t branchInstruction(int opcode, char* instruction, int curaddress, char c
     int32_t result = 0x14000000;
 
     if (opcode == 0) { // branch unconditionally
+        printf("in uncond");
         result = result | 0;
         int simm26 = getMap(labelmap, instruction) - curaddress;
+        printf("simm26: %d", simm26);
         result = result | simm26;
 
     } else if (opcode == 1) { // branch conditionally

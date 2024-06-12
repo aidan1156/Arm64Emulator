@@ -9,6 +9,7 @@
 #include "./dataProcessingImm.h"
 
 uint32_t dataProcessingImmArithmetic(int opcode, char* instruction) {
+    replaceCommaWithSpace(instruction, instruction);
 
     char* rdStr = malloc(strlen(instruction) * sizeof(char));
     char* rnStr = malloc(strlen(instruction) * sizeof(char));
@@ -53,9 +54,12 @@ uint32_t wideMoveInstruction(int opcode, char* instruction) {
     uint32_t result = 0;
     char* rd = malloc(strlen(instruction) * sizeof(char));
     char* mov = malloc(strlen(instruction) * sizeof(char));
-    uint32_t* imm = malloc(strlen(instruction) * sizeof(int));
-    uint32_t* sh = malloc(strlen(instruction) * sizeof(int));
-    sscanf(instruction, "%s %s #%x lsl #%x", mov, rd, imm, sh);
+    uint32_t* imm = malloc(sizeof(int));
+    int* sh = malloc(sizeof(int));
+
+    int ret = sscanf(instruction, "%s %s #%x lsl #%d", mov, rd, imm, sh);
+
+    // printf("\nmov: %s\nrd : %s\nimm: %x\nsh: %d\n", mov, rd, *imm, *sh);
  
     //determine sf and rd values
     int* reg = malloc(5);
@@ -76,7 +80,9 @@ uint32_t wideMoveInstruction(int opcode, char* instruction) {
     }
 
     //determine operand
-    result = result | ((*sh / 16) << 21);
+    if (ret == 4) {
+        result = result | ((*sh / 16) << 21);
+    }
     result = result | (*imm << 5);
 
     free(mov);
