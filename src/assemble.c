@@ -90,7 +90,7 @@ uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uin
     } else if (strcmp(opcode, "movn") == 0) {
         result = wideMoveInstruction(0, instruction);
     } else if (strcmp(opcode, "movk") == 0) {
-        result = wideMoveInstruction(0, instruction);
+        result = wideMoveInstruction(1, instruction);
     } else if (strcmp(opcode, "movz") == 0) {
         result = wideMoveInstruction(2, instruction);
     } else if (strcmp(opcode, "b") == 0) {
