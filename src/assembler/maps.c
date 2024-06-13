@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <ctype.h>
 
 #include "./maps.h"
 
@@ -55,7 +56,18 @@ void resizeMap(Map* map) {
     map -> values = newValues;
 }
 
+char* trimWhitespace(char* str) {
+    char* end;
+    while (isspace((unsigned char)*str)) str++; // get rid one \n too!
+    if (*str == 0) return str;
+    end = str + strlen(str) - 1;
+    while (end > str && isspace((unsigned char)*end)) end--;
+    *(end + 1) = '\0';
+    return str;
+}
+
 void insertMap(Map* map, char* key, uint64_t value) {
+    key = trimWhitespace(key);
     for (int i=0; i<map -> maxSize; i++) {
         // key if key is empty or key matches
         if (map -> keys[i] == NULL || !strcmp(map -> keys[i], key)) {
@@ -71,21 +83,29 @@ void insertMap(Map* map, char* key, uint64_t value) {
 }
 
 uint64_t getMap(Map* map, char* key) {
-    for (int i=0; i<map -> maxSize; i++) {
-        if (map -> keys[i] == NULL) {
-            return -1; // no value
-        } else if (!strcmp(map -> keys[i], key)) {
-            return map -> values[i];
+    key = trimWhitespace(key);
+    for (int i = 0; i < map->maxSize; i++) {
+        if (map->keys[i] != NULL) {
+            for (char* p = map->keys[i]; *p; p++) {
+                printf("%c", *p);
+            }
+            // printf("' with value: %lu\n", map->values[i]);
+            // printf("Key length: %zu, Map key length: %zu\n", strlen(key), strlen(map->keys[i]));
+            if (strcmp(map->keys[i], key) == 0) {
+                return map->values[i];
+            }
         }
     }
+    // printf("Key '%s' not found in map\n", key);
     return -1; // key not found
 }
 
 void printMap(Map* map) {
+    printf("Map:");
     printf("{\n");
     for (int i=0; i<map -> maxSize; i++) {
         if (map -> keys[i] != NULL) {
-            printf("    %s: %ld,\n", map -> keys[i], map -> values[i]);
+            printf(" %s: %ld,\n", map -> keys[i], map -> values[i]);
         }
     }
     printf("}\n");

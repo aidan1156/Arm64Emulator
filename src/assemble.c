@@ -106,7 +106,7 @@ uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uin
         fprintf(stderr, "unknown opcode\n");
     }
 
-    printf("result before returning: %x\n", result);
+    printf("binary instruction: %x\n", result);
     return result;
 }
 
@@ -115,14 +115,18 @@ int main(int argc, char **argv) {
 
     if (argc < 3) {
         fprintf(stderr, "too few arguments supplied\n");
+        exit(1);
     }
-    // find the address of each label and store it to a map
-    Map* labelMap = createMap(64);
-    findLabels(labelMap, argv[1]);
 
     // open the input and output file
     FILE* inputFile = fopen(argv[1], "rb");
+    assert(inputFile != NULL);
     FILE* outputFile = fopen(argv[2], "wb");
+    assert(outputFile != NULL);
+
+    // find the address of each label and store it to a map
+    Map* labelMap = createMap(64);
+    findLabels(labelMap, argv[1]);
 
     char* instruction = readLine(inputFile);
     int address = 0;
@@ -152,7 +156,7 @@ int main(int argc, char **argv) {
             address += 4;
 
             writeInstruction(outputFile, binaryInstruction);
-            printf("%x\n", binaryInstruction);
+            // printf("%x\n", binaryInstruction);
         }
 
         free(instruction);

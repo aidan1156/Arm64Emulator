@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <ctype.h>
 
 #ifndef MAPS_H
 #define MAPS_H
@@ -19,6 +20,8 @@ typedef struct Map {
 struct Map* createMap(int initialSize);
 
 void resizeMap(Map* map);
+
+char* trimWhitespace(char* str);
 
 void insertMap(Map* map, char* key, uint64_t value);
 

@@ -116,6 +116,13 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
 
 
     parseRegister(rtStr, &sf, &rt);
+
+    printMap(labelMap);
+
+    // sign extend only correct number of bits
+    if (isPostIndex || isPreIndex) {
+        offset = offset & 0x1FF;
+    }
     
     // Start constructing the binary instructions
     binInstruction |= (!isLit << 31) | (sf << 30) | rt;
@@ -142,11 +149,14 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
         }
 
     } else {
+        // load literal
         offset = getMap(labelMap, literalStr);
+        // printf("Literal label: %s\n", literalStr);
+        printf("load literal offset: %ld\n", offset);
         binInstruction |= (0x18 << 24);
-        // need to sort out simm19
+        // simm19
         binInstruction |= ((offset - PC) / 4) << 5;
-        // printf("%ld\n ", (offset - PC) / 4);
+        printf("load literal number: %ld\n ", (offset - PC) / 4);
 
     }
 
@@ -189,11 +199,18 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
 //         // register
 //         "ldr w17, [x15, x4]", // 1 0 11100 0 0 1 1 00100 011010 01111 10001
 //         // literal
-//         "ldr x0, l1" // 0 1 011000 0000 00000 00000 00010 00000
+//         "ldr x0, l1", // 0 1 011000 0000 00000 00000 00010 00000
+
+//         // failing cases 13/06/24
+//         "str x16, [x19], #-62",
+
+//         "ldr x1, d0"
 //     };
 
 //     Map* labelMap = createMap(64);
-//     for (int i = 0; i < 6; i++) {
+//     insertMap(labelMap, "d0", 12 );
+
+//     for (int i = 0; i < 8; i++) {
 //         singleDataTransfer(1, instructions[i], 0x0, labelMap);
 //         printf("\n");
 //     }
