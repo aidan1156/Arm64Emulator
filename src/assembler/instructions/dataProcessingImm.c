@@ -62,9 +62,7 @@ uint32_t wideMoveInstruction(int opcode, char* instruction) {
     uint32_t hexImm = 0;
     int decImm = 0;
     bool isHex = false;
-    // printf("%s", imm);
     if (strncmp(imm, "0x", 2) == 0) {
-        // printf("help \n");
         sscanf(imm, "%x", &hexImm);
         isHex = true;
     } else {

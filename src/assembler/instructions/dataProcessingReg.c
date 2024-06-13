@@ -43,8 +43,6 @@ uint32_t dataProcessingRegAddSub(int opcode, char* instruction) {
 
     int scanSuccess = sscanf(instruction, "%s %s %s %s %s %s", opStr, rdStr, rnStr, rmStr, shiftStr, operandStr);
     if (scanSuccess != 6) {
-        // idk what shift to put if there is no shift
-        // going to put lsl, shift = 0
         strcpy(shiftStr, "lsl");
         strcpy(operandStr, "#0x0");
     }
@@ -91,8 +89,6 @@ uint32_t dataProcessingCmpCmn(int opcode, char* instruction) {
     char* operandStr = malloc(strlen(instruction) * sizeof(char));
 
     if (sscanf(instruction, "%s %s %s %s %s", cmpStr, rnStr, rmStr, shiftStr, operandStr) != 5) {
-        // idk what shift to put if there is no shift
-        // going to put lsl, shift = 0
         strcpy(shiftStr, "lsl");
         strcpy(operandStr, "#0x0");
     }
@@ -153,8 +149,6 @@ uint32_t dataProcessingNeg(int opcode, char* instruction) {
     char* shiftStr = malloc(strlen(instruction) * sizeof(char));
     char* operandStr = malloc(strlen(instruction) * sizeof(char));
     if (sscanf(instruction, "%s %s %s %s %s", negStr, rdStr, rmStr, shiftStr, operandStr) != 4) {
-        // idk what shift to put if there is no shift
-        // going to put lsl, shift = 0
         strcpy(shiftStr, "lsl");
         strcpy(operandStr, "#0x0");
     }
@@ -173,16 +167,14 @@ uint32_t dataProcessingNeg(int opcode, char* instruction) {
     char* newInstruction = malloc(strlen(instruction) * sizeof(char) * 2);
     strcat(newInstruction, "aaa ");
     strcat(newInstruction, rdStr);
-    strcat(newInstruction, ", ");
+    strcat(newInstruction, " ");
     strcat(newInstruction, rnStr);
-    strcat(newInstruction, ", ");
+    strcat(newInstruction, " ");
     strcat(newInstruction, rmStr);
-    strcat(newInstruction, ", ");
+    strcat(newInstruction, " ");
     strcat(newInstruction, shiftStr);
-    strcat(newInstruction, ", ");
+    strcat(newInstruction, " ");
     strcat(newInstruction, operandStr);
-
-    replaceCommaWithSpace(newInstruction, newInstruction);
 
     uint32_t result = dataProcessingArithmetic(opcode, newInstruction);
 
