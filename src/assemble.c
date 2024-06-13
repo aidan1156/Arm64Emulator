@@ -21,12 +21,16 @@ void findLabels(Map* map, char* path) {
     char* currentInstr = readLine(file);
     int currentAddress = 0;
     while (currentInstr != NULL) {
-        // if the final character in the instruction is a ':' then its a label
-        if (currentInstr[strlen(currentInstr) - 1] == ':') {
+        if (isLabel(currentInstr)) {
+            int length = strlen(currentInstr);
+            // remove \n
+            while (length > 0 && isspace(currentInstr[length - 1])) {
+                length--;
+            }
             // remove the ':' so we have just the label
-            currentInstr[strlen(currentInstr) - 1] = '\0';
+            currentInstr[length - 1] = '\0';
             insertMap(map, currentInstr, currentAddress);
-        } else if (strcmp(currentInstr, "")) { // otherwise increment the address
+        } else if (strcmp(currentInstr, "\n") != 0) { // otherwise increment the address
             currentAddress += 4;
         }
         currentInstr = readLine(file);
@@ -131,9 +135,14 @@ int main(int argc, char **argv) {
     char* instruction = readLine(inputFile);
     int address = 0;
     uint32_t binaryInstruction;
+
     while (instruction != NULL) {
+
+        printf("PC: %d:", address);
+        
         if (!isLabel(instruction)) {
             if (isIntDirective(instruction)) {
+                printf("is int dir: %s \n", instruction);
                 // + 1 to include terminator
                 char* number = malloc(strlen(instruction) + 1);
                 sscanf(instruction, " .int %s", number);
