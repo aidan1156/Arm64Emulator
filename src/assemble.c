@@ -40,7 +40,6 @@ void findLabels(Map* map, char* path) {
 
 uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uint64_t address) {
     uint32_t result;
-    printf("instruction: %s\n", instruction);
     if (strcmp(opcode, "add") == 0) {
         result = dataProcessingArithmetic(0, instruction);
     } else if (strcmp(opcode, "adds") == 0) {
@@ -110,7 +109,6 @@ uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uin
         fprintf(stderr, "unknown opcode\n");
     }
 
-    // printf("binary instruction: %x\n", result);
     return result;
 }
 
@@ -136,13 +134,9 @@ int main(int argc, char **argv) {
     int address = 0;
     uint32_t binaryInstruction;
 
-    while (instruction != NULL) {
-
-        printf("PC: %d:\n", address);
-        
+    while (instruction != NULL) {        
         if (!isLabel(instruction)) {
             if (isIntDirective(instruction)) {
-                printf("is int dir: %s \n", instruction);
                 // + 1 to include terminator
                 char* number = malloc(strlen(instruction) + 1);
                 sscanf(instruction, " .int %s", number);
@@ -151,12 +145,10 @@ int main(int argc, char **argv) {
             } else if (strcmp(instruction, "\n") == 0){
                 free(instruction);
                 instruction = readLine(inputFile);
-                printf("skipping \\n\n");
                 continue;
             } else {
                 char* opcode = malloc(strlen(instruction) + 1);
                 sscanf(instruction, "%s", opcode);
-                // printf("%s\n", opcode);
 
                 // format instruction to be used with sscanf
                 char* instructionReform = malloc((strlen(instruction) + 1));
@@ -172,7 +164,6 @@ int main(int argc, char **argv) {
             }
 
             writeInstruction(outputFile, binaryInstruction);
-            // printf("%x\n", binaryInstruction);
         }
 
         free(instruction);

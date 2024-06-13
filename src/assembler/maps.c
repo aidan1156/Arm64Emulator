@@ -87,14 +87,11 @@ uint64_t getMap(Map* map, char* key) {
     printf("Our key: %s", key);
     for (int i = 0; i < map->maxSize; i++) {
         if (map->keys[i] != NULL) {
-            printf("key: '%s' with value: %lu\n",map -> keys[i],  map->values[i]);
-            printf("Key length: %zu, Map key length: %zu\n", strlen(key), strlen(map->keys[i]));
             if (strcmp(map->keys[i], key) == 0) {
                 return map->values[i];
             }
         }
     }
-    // printf("Key '%s' not found in map\n", key);
     return -1; // key not found
 }
 
