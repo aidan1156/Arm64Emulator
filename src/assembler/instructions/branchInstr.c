@@ -20,7 +20,7 @@ uint32_t branchInstruction(int opcode, char* instruction, int curaddress, char c
 
     } else if (opcode == 1) { // branch conditionally
         result = result | 0x50000000;
-        printf("in cond: %s", cond);
+        // printf("in cond: %s", cond);
         //convert the condition
         if (strcmp(cond, "eq") == 0) {
             result = result | 0x00000000;
@@ -46,7 +46,11 @@ uint32_t branchInstruction(int opcode, char* instruction, int curaddress, char c
         result = result | 0xd61f0000;
         int* reg = malloc(5);
         int* sf = malloc(1);
-        parseRegister(instruction, sf, reg);
+        char regStr[4];
+
+        sscanf(instruction, " br %s", regStr);
+
+        parseRegister(regStr, sf, reg);
         result = result | (*reg << 5);
         free(reg);
         free(sf);
