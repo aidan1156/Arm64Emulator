@@ -93,8 +93,6 @@ void parseRegister(char* string, int* sf, int* reg) {
 void replaceCommaWithSpace(char* instruction, char* output) {
     int j = 0 ;
 
-    // printf("will replace the commas: %s\n", instruction);
-
     for (int i = 0; instruction[i] != '\0'; i++) {
         if (instruction[i] == ',') {
             output[j++] = ' ';
@@ -104,7 +102,6 @@ void replaceCommaWithSpace(char* instruction, char* output) {
     }
     output[j] = '\0';
 
-    // printf("we replaced the commas: %s\n", output);
 }
 
 
