@@ -148,6 +148,11 @@ int main(int argc, char **argv) {
                 sscanf(instruction, " .int %s", number);
                 binaryInstruction = parseToInt(number);
                 free(number);
+            } else if (strcmp(instruction, "\n") == 0){
+                free(instruction);
+                instruction = readLine(inputFile);
+                printf("skipping \\n\n");
+                continue;
             } else {
                 char* opcode = malloc(strlen(instruction) + 1);
                 sscanf(instruction, "%s", opcode);
