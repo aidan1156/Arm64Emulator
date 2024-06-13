@@ -261,7 +261,7 @@ uint32_t dataProcessingTstMvnMov(char* instruction) {
         strcpy(operandStr, "#0x0");
     }
 
-    char* newInstruction = malloc((strlen(instruction) + 10) * sizeof(char));
+    char* newInstruction = malloc((strlen(instruction) + 20) * sizeof(char));
 
     // to find sf
     int sf, op1;
@@ -277,51 +277,49 @@ uint32_t dataProcessingTstMvnMov(char* instruction) {
     int opcode, N;
     
     if (strcmp(logicStr, "tst") == 0) {
-        strcat(newInstruction, "ands ");
+        strcpy(newInstruction, "ands ");
         strcat(newInstruction, zrStr);
-        strcat(newInstruction, ", ");
+        strcat(newInstruction, " ");
         strcat(newInstruction, op1Str);
-        strcat(newInstruction, ", ");
+        strcat(newInstruction, " ");
         strcat(newInstruction, rmStr);
-        strcat(newInstruction, ", ");
+        strcat(newInstruction, " ");
         strcat(newInstruction, shiftStr);
-        strcat(newInstruction, ", ");
+        strcat(newInstruction, " ");
         strcat(newInstruction, operandStr);
         opcode = 3;
         N = 0;
 
     } else if (strcmp(logicStr, "mvn") == 0) {
-        strcat(newInstruction, "orn ");
+        strcpy(newInstruction, "orn ");
         strcat(newInstruction, op1Str);
-        strcat(newInstruction, ", ");
+        strcat(newInstruction, " ");
         strcat(newInstruction, zrStr);
-        strcat(newInstruction, ", ");
+        strcat(newInstruction, " ");
         strcat(newInstruction, rmStr);
-        strcat(newInstruction, ", ");
+        strcat(newInstruction, " ");
         strcat(newInstruction, shiftStr);
-        strcat(newInstruction, ", ");
+        strcat(newInstruction, " ");
         strcat(newInstruction, operandStr);
         opcode = 1;
         N = 1;
 
     } else if (strcmp(logicStr, "mov") == 0) {
-        strcat(newInstruction, "orr ");
+        strcpy(newInstruction, "orr ");
         strcat(newInstruction, op1Str);
-        strcat(newInstruction, ", ");
+        strcat(newInstruction, " ");
         strcat(newInstruction, zrStr);
-        strcat(newInstruction, ", ");
+        strcat(newInstruction, " ");
         strcat(newInstruction, rmStr);
-        strcat(newInstruction, ", ");
+        strcat(newInstruction, " ");
         strcat(newInstruction, shiftStr);
-        strcat(newInstruction, ", ");
+        strcat(newInstruction, " ");
         strcat(newInstruction, operandStr);
         opcode = 1;
         N = 0;
     }
 
-    replaceCommaWithSpace(newInstruction, newInstruction);
-
-    uint32_t result = dataProcessingRegLogic(opcode, instruction, N);
+    uint32_t result = dataProcessingRegLogic(opcode, newInstruction, N);
 
     free(zrStr);
     free(newInstruction);

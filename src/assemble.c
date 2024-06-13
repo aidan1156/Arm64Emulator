@@ -36,7 +36,7 @@ void findLabels(Map* map, char* path) {
 
 uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uint64_t address) {
     uint32_t result;
-    printf("instruction: %s\n", instruction);
+    // printf("instruction: %s\n", instruction);
     if (strcmp(opcode, "add") == 0) {
         result = dataProcessingArithmetic(0, instruction);
     } else if (strcmp(opcode, "adds") == 0) {
@@ -142,7 +142,7 @@ int main(int argc, char **argv) {
             } else {
                 char* opcode = malloc(strlen(instruction) + 1);
                 sscanf(instruction, "%s", opcode);
-                printf("%s\n", opcode);
+                // printf("%s\n", opcode);
 
                 // format instruction to be used with sscanf
                 char* instructionReform = malloc((strlen(instruction) + 1));
