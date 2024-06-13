@@ -32,6 +32,8 @@ static char* charLookup(char c) {
             return "🐦";
         case ' ':
             return "🟦";
+        case 'H':
+            return "🟩";
     }
     return "🟦";
 }
@@ -61,7 +63,7 @@ void engineInit(void) {
     pthread_create(&inputThreadId, NULL, inputThread, NULL); 
 }
 
-void engineQuit(void) {
+void engineQuit(Window window) {
     // reenable the terminal echoing
     struct termios term;
     tcgetattr(fileno(stdin), &term);
@@ -70,6 +72,10 @@ void engineQuit(void) {
 
     // shut down the input thread
     pthread_cancel(inputThreadId);
+
+    // free the window
+    free(window -> pixels);
+    free(window);
 }
 
 Window createWindow(int width, int height) {
@@ -100,7 +106,7 @@ void drawWindow(Window window) {
     fflush(stdout);
 }
 
-bool getEnterPressed() {
+bool getEnterPressed(void) {
     bool result = enterPressed;
     enterPressed = false;
     return result;

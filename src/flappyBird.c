@@ -3,8 +3,9 @@
 
 #include "./flappyBirdGame/gameEngine.h"
 #include "./flappyBirdGame/Bird.h"
+#include "./flappyBirdGame/Pipes.h"
 
-#define WINDOW_WIDTH 20
+#define WINDOW_WIDTH 25
 #define WINDOW_HEIGHT 30
 
 static volatile bool quit = false;
@@ -18,8 +19,11 @@ int main(void) {
     engineInit();
     Window window = createWindow(WINDOW_WIDTH, WINDOW_HEIGHT);
     Bird bird = createBird(WINDOW_HEIGHT);
+    Pipes pipes = createPipes(WINDOW_WIDTH, WINDOW_HEIGHT);
+    int score = 0;
 
     bool playing = false;
+    bool firstTime = true;
 
     while (!quit) {
         clock_t start_time = clock();
@@ -27,25 +31,33 @@ int main(void) {
         if (getEnterPressed()) {
             if (!playing) {
                 playing = true;
-                resetBird(bird);
+                // if this isnt the first game reset components
+                if (!firstTime) {
+                    resetBird(bird);
+                    resetPipes(pipes);
+                }
+                firstTime = false;
             }
             flapBird(bird);
         }
         if (playing) {
             // move all the components
-            updateBird(bird, window);
+            updatePipes(pipes, &score);
+            updateBird(bird);
 
             //finally detect if the bird has died
-            if (detectDeath(bird)) {
+            if (detectDeath(bird, pipes)) {
                 playing = false;
             }
         }
+
+        drawPipes(pipes, window);
         drawBird(bird, window);
         drawWindow(window);
         while (clock() < start_time + 100000);
     }
 
-    engineQuit();
+    engineQuit(window);
     exit(0);
 }
 

@@ -1,8 +1,10 @@
 
 #include <stdlib.h>
 
-#include "./gameEngine.h"
+
 #include "./Bird.h"
+
+#define BIRD_X 1
 
 typedef struct Bird {
     int pos;
@@ -11,7 +13,7 @@ typedef struct Bird {
 } *Bird;
 
 Bird createBird(int height) {
-    Bird bird = malloc(sizeof(Bird));
+    Bird bird = malloc(sizeof(struct Bird));
     bird -> windowHeight = height;
     resetBird(bird);
 
@@ -19,11 +21,11 @@ Bird createBird(int height) {
 }
 
 void drawBird(Bird bird, Window window) {
-    setPixel(window, 1, bird -> pos, '.');
+    setPixel(window, BIRD_X, bird -> pos, '.');
 }
 
-void updateBird(Bird bird, Window window) {
-    if (bird -> momentum > -4) {
+void updateBird(Bird bird) {
+    if (bird -> momentum > -2) {
         bird -> momentum -= 1;
     }
 
@@ -34,15 +36,15 @@ void updateBird(Bird bird, Window window) {
 }
 
 void flapBird(Bird bird) {
-    bird -> momentum = 4;
+    bird -> momentum = 3;
 }
 
-bool detectDeath(Bird bird) {
+bool detectDeath(Bird bird, Pipes pipes) {
     if (bird -> pos >= bird -> windowHeight - 1) {
         bird -> pos = bird -> windowHeight - 1;
         return true;
     }
-    return false;
+    return testIntersect(pipes, BIRD_X, bird -> pos);
 }
 
 void resetBird(Bird bird) {
@@ -50,3 +52,6 @@ void resetBird(Bird bird) {
     bird -> momentum = 0;
 }
 
+void freeBird(Bird bird) {
+    free(bird);
+}

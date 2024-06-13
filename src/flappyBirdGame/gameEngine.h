@@ -13,7 +13,7 @@ typedef struct window *Window;
 
 void engineInit(void);
 
-void engineQuit(void);
+void engineQuit(Window window);
 
 Window createWindow(int width, int height);
 
@@ -25,7 +25,7 @@ void setPixel(Window window, int x, int y, char value);
 
 char getPixel(Window window, int x, int y);
 
-bool getEnterPressed();
+bool getEnterPressed(void);
 
 int getWindowWidth(Window window);
 
