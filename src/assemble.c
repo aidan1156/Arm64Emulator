@@ -30,7 +30,7 @@ void findLabels(Map* map, char* path) {
             // remove the ':' so we have just the label
             currentInstr[length - 1] = '\0';
             insertMap(map, currentInstr, currentAddress);
-        } else if (strcmp(currentInstr, "\n") != 0) { // otherwise increment the address
+        } else if (strcmp(currentInstr, "\n") != 0 && strcmp(currentInstr, "") != 0) { // otherwise increment the address
             currentAddress += 4;
         }
         currentInstr = readLine(file);
@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
 
     while (instruction != NULL) {
 
-        printf("PC: %d:", address);
+        printf("PC: %d:\n", address);
         
         if (!isLabel(instruction)) {
             if (isIntDirective(instruction)) {
@@ -162,7 +162,9 @@ int main(int argc, char **argv) {
                 free(opcode);
                 free(instructionReform);
             }
-            address += 4;
+            if (strcmp(instruction, "\n") != 0 && strcmp(instruction, "")) {
+                address += 4;
+            }
 
             writeInstruction(outputFile, binaryInstruction);
             // printf("%x\n", binaryInstruction);

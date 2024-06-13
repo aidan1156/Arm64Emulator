@@ -84,10 +84,11 @@ void insertMap(Map* map, char* key, uint64_t value) {
 
 uint64_t getMap(Map* map, char* key) {
     key = trimWhitespace(key);
+    printf("Our key: %s", key);
     for (int i = 0; i < map->maxSize; i++) {
         if (map->keys[i] != NULL) {
-            // printf("key: '%s' with value: %lu\n",map -> keys[i],  map->values[i]);
-            // printf("Key length: %zu, Map key length: %zu\n", strlen(key), strlen(map->keys[i]));
+            printf("key: '%s' with value: %lu\n",map -> keys[i],  map->values[i]);
+            printf("Key length: %zu, Map key length: %zu\n", strlen(key), strlen(map->keys[i]));
             if (strcmp(map->keys[i], key) == 0) {
                 return map->values[i];
             }
