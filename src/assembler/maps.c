@@ -87,7 +87,6 @@ uint64_t getMap(Map* map, char* key) {
     for (int i = 0; i < map->maxSize; i++) {
         if (map->keys[i] != NULL) {
             for (char* p = map->keys[i]; *p; p++) {
-                printf("%c", *p);
             }
             // printf("' with value: %lu\n", map->values[i]);
             // printf("Key length: %zu, Map key length: %zu\n", strlen(key), strlen(map->keys[i]));

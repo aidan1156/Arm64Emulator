@@ -117,7 +117,7 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
 
     parseRegister(rtStr, &sf, &rt);
 
-    printMap(labelMap);
+    // printMap(labelMap);
 
     // sign extend only correct number of bits
     if (isPostIndex || isPreIndex) {
@@ -152,11 +152,11 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
         // load literal
         offset = getMap(labelMap, literalStr);
         // printf("Literal label: %s\n", literalStr);
-        printf("load literal offset: %ld\n", offset);
+        // printf("load literal offset: %ld\n", offset);
         binInstruction |= (0x18 << 24);
         // simm19
         binInstruction |= ((offset - PC) / 4) << 5;
-        printf("load literal number: %ld\n ", (offset - PC) / 4);
+        // printf("load literal number: %ld\n ", (offset - PC) / 4);
 
     }
 

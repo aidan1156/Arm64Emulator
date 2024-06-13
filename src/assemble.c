@@ -95,7 +95,7 @@ uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uin
         result = wideMoveInstruction(2, instruction);
     } else if (strcmp(opcode, "b") == 0) {
         result = branchInstruction(0, instruction, address, NULL, labelmap);
-    } else if (strcmp(opcode, "b.*") == 0) {
+    } else if (strncmp(opcode, "b.", 2) == 0) {
         char cond[2];
         strncpy(cond, opcode + 2, 2);
         result = branchInstruction(1, instruction, address, cond, labelmap);
@@ -106,7 +106,7 @@ uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uin
         fprintf(stderr, "unknown opcode\n");
     }
 
-    printf("binary instruction: %x\n", result);
+    // printf("binary instruction: %x\n", result);
     return result;
 }
 
@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
             if (isIntDirective(instruction)) {
                 // + 1 to include terminator
                 char* number = malloc(strlen(instruction) + 1);
-                sscanf(instruction, ".int %s", number);
+                sscanf(instruction, " .int %s", number);
                 binaryInstruction = parseToInt(number);
                 free(number);
             } else {

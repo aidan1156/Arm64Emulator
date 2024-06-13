@@ -59,15 +59,15 @@ uint32_t wideMoveInstruction(int opcode, char* instruction) {
 
     int ret = sscanf(instruction, "%s %s #%s lsl #%d", mov, rd, imm, sh);
 
-    printf("\nmov: %s\nrd : %s\nimm: %s\nsh: %d\n", mov, rd, imm, *sh);
-    printf("%c-%c-%c-%c\n", imm[0], imm[1], imm[2], imm[3]);
+    // printf("\nmov: %s\nrd : %s\nimm: %s\nsh: %d\n", mov, rd, imm, *sh);
+    // printf("%c-%c-%c-%c\n", imm[0], imm[1], imm[2], imm[3]);
 
     uint32_t hexImm = 0;
     int decImm = 0;
     bool isHex = false;
-    printf("%s", imm);
+    // printf("%s", imm);
     if (strncmp(imm, "0x", 2) == 0) {
-        printf("help \n");
+        // printf("help \n");
         sscanf(imm, "%x", &hexImm);
         isHex = true;
     } else {

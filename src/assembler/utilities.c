@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 
 #ifndef UTILITIES_C
@@ -35,7 +36,11 @@ bool isLabel(char* instruction) {
 
 // if the instruction represents a .int directive
 bool isIntDirective(char* instruction) {
-    return instruction[0] == '.';
+    // Skip leading whitespace
+    while (isspace((unsigned char)*instruction)) {
+        instruction++;
+    }
+    return strncmp(instruction, ".int", 4) == 0;
 }
 
 // parse an immediate value to an int so 0x10 = 16 and 16 = 16
