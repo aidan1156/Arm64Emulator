@@ -31,7 +31,14 @@ void printBinary(uint32_t n, int nbits) {
 
 // if the instruction is a label
 bool isLabel(char* instruction) {
-    return instruction[strlen(instruction) - 1] == ':';
+    int length = strlen(instruction);
+    
+    // remove \n
+    while (length > 0 && isspace(instruction[length - 1])) {
+        length--;
+    }
+
+    return (length > 0 && instruction[length - 1] == ':');
 }
 
 // if the instruction represents a .int directive

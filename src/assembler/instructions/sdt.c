@@ -150,13 +150,15 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
 
     } else {
         // load literal
+        printMap(labelMap);
         offset = getMap(labelMap, literalStr);
-        // printf("Literal label: %s\n", literalStr);
-        // printf("load literal offset: %ld\n", offset);
+        printf("Literal label: %s\n", literalStr);
+        printf("load literal offset: %ld\n", offset);
         binInstruction |= (0x18 << 24);
         // simm19
-        binInstruction |= ((offset - PC) / 4) << 5;
-        // printf("load literal number: %ld\n ", (offset - PC) / 4);
+        offset = ((offset - PC) / 4) & 0x7FFFF;// make sure to sign extend only up to 19
+        binInstruction |= offset << 5;
+        printf("load literal number: %ld\n ", offset);
 
     }
 
@@ -204,11 +206,15 @@ uint32_t singleDataTransfer(int isLoad, char* instruction, int PC, Map* labelMap
 //         // failing cases 13/06/24
 //         "str x16, [x19], #-62",
 
-//         "ldr x1, d0"
+//         "ldr x1, d0",
+
+
 //     };
 
 //     Map* labelMap = createMap(64);
-//     insertMap(labelMap, "d0", 12 );
+//     insertMap(labelMap, "l0", 0 );
+//     insertMap(labelMap, "l0", 0 );
+//     insertMap(labelMap, "l0", 0 );
 
 //     for (int i = 0; i < 8; i++) {
 //         singleDataTransfer(1, instructions[i], 0x0, labelMap);
