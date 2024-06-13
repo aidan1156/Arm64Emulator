@@ -133,6 +133,16 @@ void drawPipes(Pipes pipes, Window window) {
 
 
 bool testIntersect(Pipes pipes, int x, int y) {
+    for (int i=0; i<getMaxPipes(pipes -> width); i++) {
+        Pipe* pipe = pipes -> pipes[i];
+        if (pipe != NULL) {
+            if (y < pipe -> gap - PIPE_GAP / 2 || y > pipe -> gap + PIPE_GAP / 2) {
+                if (x >= pipe -> x && x < pipe -> x + PIPE_WIDTH) {
+                    return true;
+                }
+            }
+        }
+    }
     return false;
 }
 

@@ -4,6 +4,7 @@
 #include "./flappyBirdGame/gameEngine.h"
 #include "./flappyBirdGame/Bird.h"
 #include "./flappyBirdGame/Pipes.h"
+#include "./flappyBirdGame/text.h"
 
 #define WINDOW_WIDTH 25
 #define WINDOW_HEIGHT 30
@@ -35,6 +36,7 @@ int main(void) {
                 if (!firstTime) {
                     resetBird(bird);
                     resetPipes(pipes);
+                    score = 0;
                 }
                 firstTime = false;
             }
@@ -53,6 +55,7 @@ int main(void) {
 
         drawPipes(pipes, window);
         drawBird(bird, window);
+        drawScore(window, score);
         drawWindow(window);
         while (clock() < start_time + 100000);
     }
