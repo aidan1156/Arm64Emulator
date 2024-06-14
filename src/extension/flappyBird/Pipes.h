@@ -1,5 +1,5 @@
 
-#include "./gameEngine.h"
+#include "../gameEngine.h"
 
 
 typedef struct Pipe Pipe;

@@ -10,10 +10,11 @@ CFLAGS  ?= -std=c17 -g\
 all: assemble emulate flappyBird
 
 assemble: assemble.c
-emulate: emulate.o ./emulator/memory.c ./emulator/machine.c ./emulator/utilities.c ./emulator/instructions/dataProcessingImm.c ./emulator/instructions/dataProcessingReg.c ./emulator/instructions/sdt.c ./emulator/instructions/branchInstr.c
+emulate: emulate.c ./emulator/memory.c ./emulator/machine.c ./emulator/utilities.c ./emulator/instructions/dataProcessingImm.c ./emulator/instructions/dataProcessingReg.c ./emulator/instructions/sdt.c ./emulator/instructions/branchInstr.c
 
-flappyBird: ./flappyBirdGame/gameEngine.c ./flappyBirdGame/Pipes.c ./flappyBirdGame/Bird.c ./flappyBirdGame/text.c flappyBird.c 
+flappyBird: ./extension/flappyBird/flappyBird.c ./extension/gameEngine.c ./extension/flappyBird/Pipes.c ./extension/flappyBird/Bird.c ./extension/flappyBird/text.c
+	$(CC) $(CFLAGS) -o flappyBird ./extension/flappyBird/flappyBird.c ./extension/gameEngine.c ./extension/flappyBird/Pipes.c ./extension/flappyBird/Bird.c ./extension/flappyBird/text.c
 
 clean:
-	$(RM) *.o assemble emulate
+	$(RM) *.o assemble emulate flappyBird
 	

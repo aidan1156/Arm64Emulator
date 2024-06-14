@@ -2,10 +2,10 @@
 #include <signal.h>
 #include <string.h>
 
-#include "./flappyBirdGame/gameEngine.h"
-#include "./flappyBirdGame/Bird.h"
-#include "./flappyBirdGame/Pipes.h"
-#include "./flappyBirdGame/text.h"
+#include "../gameEngine.h"
+#include "./Bird.h"
+#include "./Pipes.h"
+#include "./text.h"
 
 #define WINDOW_WIDTH 25
 #define WINDOW_HEIGHT 30

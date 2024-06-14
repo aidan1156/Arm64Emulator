@@ -1,5 +1,5 @@
 
-#include "./gameEngine.h"
+#include "../gameEngine.h"
 #include "./Pipes.h"
 
 typedef struct Bird *Bird;
