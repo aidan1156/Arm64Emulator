@@ -11,11 +11,13 @@
 
 typedef struct window *Window;
 
+typedef char* (*LookupFunc)(char);
+
 void engineInit(void);
 
 void engineQuit(Window window);
 
-Window createWindow(int width, int height);
+Window createWindow(int width, int height, LookupFunc LookupFunc);
 
 void fillWindow(Window window, char fill);
 
@@ -25,7 +27,7 @@ void setPixel(Window window, int x, int y, char value);
 
 char getPixel(Window window, int x, int y);
 
-bool getEnterPressed(void);
+char* getkeyPresses(void);
 
 int getWindowWidth(Window window);
 
