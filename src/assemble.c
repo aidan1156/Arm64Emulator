@@ -105,7 +105,6 @@ uint32_t assembleInstruction(char* opcode, char* instruction, Map* labelmap, uin
     } else if (strcmp(opcode, "br") == 0) {
         result = branchInstruction(2, instruction, address, NULL, labelmap);
     } else {
-        // ADD YOUR INSTRUCTION CASES HERE
         fprintf(stderr, "unknown opcode\n");
     }
 
