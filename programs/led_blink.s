@@ -1,27 +1,20 @@
-ldr r0, #0x3f200000
 
-ldr r1, #0x8
-str r1, [r0, #0x08]
+eor x0, x0, x0
+eor x1, x1, x1
+eor x2, x2, x2
+eor x3, x3, x3
 
-ldr r2, #0x800000
 
-loop:
-	ldr r1, #0x200000
-	str r1, [r0, #0x1c]
+ldr w0, d0
+add w1, w1, #0x2
+str w1 [w0, #1]
 
-	eor r10, r10, r10
-	delay1:
-		add r10, r10, #1
-		cmp r10, r2
-		bne delay1
+eor x1, x1, x1
+add w1, w1, #0x8
 
-	ldr r1, #0x200000
-	str r1, [r0, #0x28]
+str w1 [w0, #0x1c]
+and x0, x0, x0
 
-	eor r10, r10, r10
-	delay2:
-		add r10, r10, #1
-		cmp r10, r2
-		bne delay2
-
-	b loop
+d0:
+.int 0x3f200000
+and x0, x0, x0
