@@ -1,5 +1,3 @@
-#include <time.h>
-#include <signal.h>
 #include <string.h>
 
 #include "../gameEngine.h"
@@ -9,12 +7,6 @@
 
 #define WINDOW_WIDTH 25
 #define WINDOW_HEIGHT 30
-
-static volatile bool quit = false;
-
-void quitHandler(int a) {
-    quit = true;
-}
 
 // used to look up character and replace them with colourful emoji!
 static char* charLookup(char c) {
@@ -50,7 +42,6 @@ static char* charLookup(char c) {
 }
 
 int main(void) {
-    signal(SIGINT, quitHandler);
     engineInit();
     Window window = createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, &charLookup);
     Bird bird = createBird(WINDOW_HEIGHT);
@@ -60,11 +51,11 @@ int main(void) {
     bool playing = false;
     bool firstTime = true;
 
+    bool quit = getQuit();
     while (!quit) {
-        clock_t start_time = clock();
         fillWindow(window, ' ');
 
-        char* keyPresses = getkeyPresses();
+        char* keyPresses = getKeyPresses();
         if (strlen(keyPresses) > 0) {
             if (!playing) {
                 playing = true;
@@ -95,7 +86,8 @@ int main(void) {
         drawBird(bird, window);
         drawScore(window, score);
         drawWindow(window);
-        while (clock() < start_time + 100000);
+        tick(100);
+        quit = getQuit();
     }
 
     engineQuit(window);

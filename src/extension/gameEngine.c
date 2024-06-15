@@ -2,6 +2,7 @@
 #include <termios.h> // used to hide terminal input
 #include <unistd.h> // also used to hide terminal input
 #include <pthread.h> // used to create a thread specifically to get input from terminal
+#include <signal.h> // used to intercept ctrl+c
 #include <stdio.h> 
 #include <stdbool.h>
 #include <assert.h>
@@ -24,7 +25,9 @@ typedef struct Window {
 
 static pthread_t inputThreadId; // thread handling inputs
 static struct termios oldTerminal; // old terminal settings
-static char keyPresses[MAX_KEYPRESSES];
+static char keyPresses[MAX_KEYPRESSES]; // buffer containing key presses
+static volatile bool quitGame = false; // if we should quit the game
+static clock_t lastTick; // the last time we ticked
 
 static void* inputThread(void *vargp) { 
     char c = getc(stdin);
@@ -42,6 +45,11 @@ static void* inputThread(void *vargp) {
 static int getPixelIndex(Window window, int x, int y){
     return x + y * (window -> width);
 }
+
+void quitHandler(int a) {
+    quitGame = true;
+}
+
 
 void setPixel(Window window, int x, int y, char value) {
     window -> pixels[getPixelIndex(window, x, y)] = value;
@@ -67,6 +75,10 @@ void engineInit(void) {
 
     // start the thread to get user input  
     pthread_create(&inputThreadId, NULL, inputThread, NULL); 
+
+    signal(SIGINT, quitHandler);
+
+    lastTick = clock();
 }
 
 void engineQuit(Window window) {
@@ -124,4 +136,13 @@ int getWindowWidth(Window window) {
 
 int getWindowHeight(Window window) {
     return window -> height;
+}
+
+bool getQuit(void) {
+    return quitGame;
+}
+
+void tick(int delay) {
+    while (clock() < lastTick + delay * 1000);
+    lastTick = clock();
 }

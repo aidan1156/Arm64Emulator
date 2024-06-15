@@ -32,3 +32,7 @@ char* getKeyPresses(void);
 int getWindowWidth(Window window);
 
 int getWindowHeight(Window window);
+
+bool getQuit(void);
+
+void tick(int delay);
