@@ -27,7 +27,7 @@ void setPixel(Window window, int x, int y, char value);
 
 char getPixel(Window window, int x, int y);
 
-char* getkeyPresses(void);
+char* getKeyPresses(void);
 
 int getWindowWidth(Window window);
 

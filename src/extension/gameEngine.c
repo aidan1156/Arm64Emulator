@@ -110,7 +110,7 @@ void drawWindow(Window window) {
     fflush(stdout);
 }
 
-char* getkeyPresses(void) {
+char* getKeyPresses(void) {
     char* result = malloc((strlen(keyPresses) + 1) * sizeof(char));
     strcpy(result, keyPresses);
     keyPresses[0] = '\0';
