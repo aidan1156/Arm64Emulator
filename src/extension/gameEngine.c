@@ -24,7 +24,7 @@ typedef struct Window {
 
 static pthread_t inputThreadId; // thread handling inputs
 static struct termios oldTerminal; // old terminal settings
-static volatile char keyPresses[MAX_KEYPRESSES];
+static char keyPresses[MAX_KEYPRESSES];
 
 static void* inputThread(void *vargp) { 
     char c = getc(stdin);
