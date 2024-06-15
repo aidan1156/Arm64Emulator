@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 
-typedef struct window *Window;
+typedef struct Window *Window;
 
 typedef char* (*LookupFunc)(char);
 

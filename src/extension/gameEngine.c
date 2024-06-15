@@ -13,7 +13,7 @@
 
 typedef char* (*LookupFunc)(char);
 
-typedef struct window {
+typedef struct Window {
     LookupFunc lookupFunc;
     char* pixels;
     int width;
@@ -24,7 +24,7 @@ typedef struct window {
 
 static pthread_t inputThreadId; // thread handling inputs
 static struct termios oldTerminal; // old terminal settings
-static char keyPresses[MAX_KEYPRESSES];
+static volatile char keyPresses[MAX_KEYPRESSES];
 
 static void* inputThread(void *vargp) { 
     char c = getc(stdin);
@@ -82,7 +82,7 @@ void engineQuit(Window window) {
 }
 
 Window createWindow(int width, int height, LookupFunc lookup) {
-    Window result = malloc(sizeof(struct window));
+    Window result = malloc(sizeof(struct Window));
     assert(result != NULL);
     result -> lookupFunc = lookup;
     result -> width = width;
