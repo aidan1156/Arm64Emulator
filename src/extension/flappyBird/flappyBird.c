@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 
 #include "../gameEngine.h"
 #include "./Bird.h"
@@ -53,8 +54,6 @@ int main(void) {
 
     bool quit = getQuit();
     while (!quit) {
-        fillWindow(window, ' ');
-
         char* keyPresses = getKeyPresses();
         if (strlen(keyPresses) > 0) {
             if (!playing) {
@@ -82,6 +81,7 @@ int main(void) {
             }
         }
 
+        fillWindow(window, ' ');
         drawPipes(pipes, window);
         drawBird(bird, window);
         drawScore(window, score);
