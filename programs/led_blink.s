@@ -17,8 +17,8 @@ add w1, w1, #0x8
 str w1 [w0, #0x1c]
 
 // GPCLR0 PIN3 = 1
-str w1 [w0, #0x1c]
-str w3 [w0, #0x28]
+str w3 [w0, #0x1c]
+str w1 [w0, #0x28]
 
 // termination
 and x0, x0, x0
