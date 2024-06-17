@@ -7,7 +7,7 @@ CFLAGS  ?= -std=c17 -g\
 
 .PHONY: all clean
 
-all: assemble emulate flappyBird
+all: assemble emulate flappyBird pong
 
 assemble: assemble.c
 emulate: emulate.c ./emulator/memory.c ./emulator/machine.c ./emulator/utilities.c ./emulator/instructions/dataProcessingImm.c ./emulator/instructions/dataProcessingReg.c ./emulator/instructions/sdt.c ./emulator/instructions/branchInstr.c
@@ -15,6 +15,9 @@ emulate: emulate.c ./emulator/memory.c ./emulator/machine.c ./emulator/utilities
 flappyBird: ./extension/flappyBird/flappyBird.c ./extension/gameEngine.c ./extension/flappyBird/Pipes.c ./extension/flappyBird/Bird.c ./extension/flappyBird/text.c
 	$(CC) $(CFLAGS) -o flappyBird ./extension/flappyBird/flappyBird.c ./extension/gameEngine.c ./extension/flappyBird/Pipes.c ./extension/flappyBird/Bird.c ./extension/flappyBird/text.c
 
+pong: ./extension/pong/pong.c ./extension/gameEngine.c ./extension/pong/player.c ./extension/pong/ball.c
+	$(CC) $(CFLAGS) -o pong ./extension/pong/pong.c ./extension/gameEngine.c ./extension/pong/player.c ./extension/pong/ball.c
+
 clean:
-	$(RM) *.o assemble emulate flappyBird
+	$(RM) *.o assemble emulate flappyBird pong
 	
