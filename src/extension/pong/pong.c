@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "../gameEngine.h"
 #include "./player.h"
@@ -45,7 +46,7 @@ int main(void) {
 
     Player player1 = createPlayer(0, WINDOW_WIDTH, WINDOW_HEIGHT);
     Player player2 = createPlayer(WINDOW_WIDTH - 1, WINDOW_WIDTH, WINDOW_HEIGHT);
-    // Player players[3] = {player1, player2, NULL};
+    Player players[3] = {player1, player2, NULL};
     Ball ball = createBall(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     bool quit = getQuit();
@@ -62,7 +63,19 @@ int main(void) {
         }
         free(keyPresses);
 
-        updateBall(ball);
+        updateBall(ball, players);
+
+        if (detectRoundEnd(ball)) {
+            if (detectRoundEnd(ball) == -1) {
+                incrementScore(player2);
+            } 
+            else {
+                incrementScore(player1);
+            }
+            resetBall(ball);
+            resetPlayer(player1);
+            resetPlayer(player2);
+        }
 
         fillWindow(window, ' ');
         drawPlayer(player1, window);
@@ -71,7 +84,18 @@ int main(void) {
         drawWindow(window);
         tick(100);
         quit = getQuit();
+        if (getScore(player1) == 9 || getScore(player2) == 9) {
+            quit = true;
+        }
     }
+
+    char* winner = "1";
+    if (getScore(player1) == getScore(player2)) {
+        winner = "1 and 2";
+    } else if (getScore(player1) < getScore(player2)) {
+        winner = "2";
+    }
+    printf("Player %s won\n", winner);
 
     engineQuit(window);
     exit(0);

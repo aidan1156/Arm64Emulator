@@ -18,10 +18,10 @@ typedef struct Player {
 Player createPlayer(int x, int windowWidth, int windowHeight) {
     Player result = malloc(sizeof(struct Player));
     result -> x = x;
-    result -> y = windowHeight / 2 - PLAYER_SIZE / 2;
     result -> windowHeight = windowHeight;
     result -> windowWidth = windowWidth;
     result -> score = 0;
+    resetPlayer(result);
 
     return result;
 }
@@ -47,6 +47,34 @@ void drawPlayer(Player player, Window window) {
     setPixel(window, x, 0, '0' + player -> score);
 }
 
-int detectCollision(Player player, Ball ball) {
-    return 0;
+int detectCollision(Player player, int x, int y) {
+    int direction = 1;
+    if (player -> x > player -> windowWidth / 2) {
+        direction = -1;
+    }
+
+    if (x == player -> x + direction) {
+        if (y >= player -> y && y <= player -> y + PLAYER_SIZE) {
+            if (y < player -> y + 2) {
+                return 0;
+            } else if (y > player -> y + PLAYER_SIZE - 2) {
+                return 2;
+            } else {
+                return 1;
+            }
+        }
+    }
+    return -1;
 }
+
+void resetPlayer(Player player) {
+    player -> y = player -> windowHeight / 2 - PLAYER_SIZE / 2;
+}
+
+void incrementScore(Player player) {
+    player -> score++;
+}
+
+int getScore(Player player) {
+    return player -> score;
+} 
