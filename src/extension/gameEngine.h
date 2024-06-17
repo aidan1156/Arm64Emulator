@@ -1,13 +1,20 @@
+#ifndef GAME_ENGINE_H
+#define GAME_ENGINE_H
 
-
-#include <termios.h> // used to hide terminal input
-#include <unistd.h> // also used to hide terminal input
-#include <pthread.h> // used to create a thread specifically to get input from terminal
-#include <stdio.h> 
+#include <termios.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdio.h>
 #include <stdbool.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
+#define MAX_KEYPRESSES 512
+
+extern volatile bool quitGame; // Declare quitGame as extern
 
 typedef struct Window *Window;
 
@@ -36,3 +43,5 @@ int getWindowHeight(Window window);
 bool getQuit(void);
 
 void tick(int delay);
+
+#endif // GAME_ENGINE_H

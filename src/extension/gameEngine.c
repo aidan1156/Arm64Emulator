@@ -22,7 +22,6 @@ typedef struct Window {
 } *Window;
 
 
-
 static pthread_t inputThreadId; // thread handling inputs
 static struct termios oldTerminal; // old terminal settings
 static char keyPresses[MAX_KEYPRESSES]; // buffer containing key presses
