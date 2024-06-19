@@ -29,8 +29,9 @@ typedef struct Window {
 
 
 static pthread_t inputThreadId; // thread handling inputs
-static struct termios oldTerminal; // old terminal settings
+static pthread_mutex_t inputLock;
 static char keyPresses[MAX_KEYPRESSES]; // buffer containing key presses
+static struct termios oldTerminal; // old terminal settings
 static volatile bool quitGame = false; // if we should quit the game
 static clock_t lastTick; // the last time we ticked, initialised as clock(); = current time
 
@@ -42,10 +43,13 @@ static clock_t lastTick; // the last time we ticked, initialised as clock(); = c
 static void* inputThread(void *vargp) { 
     while (true) {
         char c = getc(stdin);
-        if (strlen(keyPresses) + 1 < MAX_KEYPRESSES) {
-            keyPresses[strlen(keyPresses) + 1] = '\0';
-            keyPresses[strlen(keyPresses)] = c;
+        pthread_mutex_lock(&inputLock); 
+        int len = strlen(keyPresses);
+        if (len + 1 < MAX_KEYPRESSES) {
+            keyPresses[len + 1] = '\0';
+            keyPresses[len] = c;
         }
+        pthread_mutex_unlock(&inputLock); 
     }
     return NULL; 
 } 
@@ -98,6 +102,7 @@ void engineInit(void) {
 
     // empty the key presses buffer
     keyPresses[0] = '\0';
+    pthread_mutex_init(&inputLock, NULL);
 
     // start the thread to get user input  
     pthread_create(&inputThreadId, NULL, inputThread, NULL); 
@@ -169,9 +174,11 @@ void drawWindow(Window window) {
 // flushing the old values and return the new keys pressed 
 //
 char* getKeyPresses(void) {
+    pthread_mutex_lock(&inputLock); 
     char* result = malloc((strlen(keyPresses) + 1) * sizeof(char));
     strcpy(result, keyPresses);
     keyPresses[0] = '\0';
+    pthread_mutex_unlock(&inputLock); 
 
     return result;
 }

@@ -23,6 +23,8 @@ assemble
 dataProcessingImm
 flappyBird
 !flappyBird/
+pong
+!pong/
 gameEngine
 *.cbuild
 
