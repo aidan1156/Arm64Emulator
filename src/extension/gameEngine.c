@@ -210,3 +210,12 @@ void tick(int delay) {
     while (clock() < lastTick + delay * 1000);
     lastTick = clock();
 }
+
+// draw a window onto a window (lol)
+void drawWindowOntoWindow(Window src, Window dest, int x, int y) {
+    for (int i=x; i<src->width && i<dest->width; i++) {
+        for (int j=y;j<src->height && dest->height; j++) {
+            setPixel(dest, i, j, getPixel(src, i, j));
+        }
+    }
+}

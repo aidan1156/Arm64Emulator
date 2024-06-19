@@ -29,3 +29,5 @@ int getWindowHeight(Window window);
 bool getQuit(void);
 
 void tick(int delay);
+
+void drawWindowOntoWindow(Window src, Window dest, int x, int y);
