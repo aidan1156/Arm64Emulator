@@ -14,11 +14,11 @@
 
 #define MAX_KEYPRESSES 512
 
-extern volatile bool quitGame; // Declare quitGame as extern
-
 typedef struct Window *Window;
 
 typedef char* (*LookupFunc)(char);
+
+extern volatile bool quitGame; // Declare quitGame as extern
 
 void engineInit(void);
 

@@ -7,14 +7,17 @@ CFLAGS  ?= -std=c17 -g\
 
 .PHONY: all clean
 
-all: assemble emulate flappyBird
+all: assemble emulate flappyBird mru
 
-assemble: assemble.c
+assemble: assemble.c ./assembler/maps.c ./assembler/utilities.c  ./assembler/fileIO.c ./assembler/instructions/dataProcessingArith.c ./assembler/instructions/dataProcessingImm.c ./assembler/instructions/dataProcessingReg.c ./assembler/instructions/branchInstr.c ./assembler/instructions/sdt.c
 emulate: emulate.c ./emulator/memory.c ./emulator/machine.c ./emulator/utilities.c ./emulator/instructions/dataProcessingImm.c ./emulator/instructions/dataProcessingReg.c ./emulator/instructions/sdt.c ./emulator/instructions/branchInstr.c
 
 flappyBird: ./extension/flappyBird/flappyBird.c ./extension/gameEngine.c ./extension/flappyBird/Pipes.c ./extension/flappyBird/Bird.c ./extension/flappyBird/text.c
 	$(CC) $(CFLAGS) -o flappyBird ./extension/flappyBird/flappyBird.c ./extension/gameEngine.c ./extension/flappyBird/Pipes.c ./extension/flappyBird/Bird.c ./extension/flappyBird/text.c
 
+mru: ./extension/open/open.c ./extension/gameEngine.c
+	$(CC) $(CFLAGS) -o open ./extension/open/open.c ./extension/gameEngine.c
+
 clean:
-	$(RM) *.o assemble emulate flappyBird
+	$(RM) *.o assemble emulate flappyBird open
 	
