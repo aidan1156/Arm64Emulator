@@ -7,6 +7,7 @@
 
 #define MAP_WIDTH 40
 #define MAP_HEIGHT 20
+#define INSTRUCTION_LINES 3
 
 char grid[MAP_HEIGHT][MAP_WIDTH];
 char newGrid[MAP_HEIGHT][MAP_WIDTH];
@@ -114,9 +115,24 @@ static void updateGrid() {
     }
 }
 
+
+static void drawInstructions(Window window) {
+    const char* instructions[] = {
+        "Controls: q - quit, p - pause/resume, r - reset, c - toggle colours",
+        " ",
+        " "
+    };
+    for (int i = 0; i < INSTRUCTION_LINES; i++) {
+        for (int j = 0; instructions[i][j] != '\0'; j++) {
+            setPixel(window, j, i, instructions[i][j]);
+        }
+    }
+}
+
 static void drawGrid(Window window) {
     // fill with dead cells
     fillWindow(window, '0');
+
     for (int y = 0; y < MAP_HEIGHT; y++) {
         for (int x = 0; x < MAP_WIDTH; x++) {
             setPixel(window, x, y, grid[y][x] == '0' ?
@@ -133,6 +149,23 @@ int main() {
     Window window = createWindow(MAP_WIDTH, MAP_HEIGHT, lookupFunc);
     bool running = true;
 
+    printf("\n\033[36mControls: q - quit, p - pause/resume, r - reset, c - toggle colours\033[0m\n");
+    printf("\033[36mPRESS 's' TO START\033[0m\n\n");
+
+    bool startGame = false;
+    while (!startGame) {
+        char *keyPresses = getKeyPresses();
+        for (int i = 0; keyPresses[i] != '\0'; i++) {
+            if (keyPresses[i] == 's') {
+                startGame = true;
+                break;
+            }
+        }
+        free(keyPresses);
+        tick(100);
+    }
+
+    // start simulation
     while (!getQuit()) {
         if (running) {
             updateGrid();
