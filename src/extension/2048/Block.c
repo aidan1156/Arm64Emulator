@@ -202,12 +202,6 @@ bool updateBlocks(BlockArray* array, char keyPress) {
                         // if targetY has same value then merge
 
                         mergeBlocks(array->blocks[targetIndex], array->blocks[index], *array, x, targetY - 1);
-                        // array->blocks[targetIndex].value *= 2;
-                        // array->blocks[index].value = 0;
-                    
-                        // array->blocks[targetIndex].posX = x;
-                        // array->blocks[targetIndex].posY = targetY - 1;
-
                         moved = true;
                     } else {
                         // different values:
@@ -240,11 +234,6 @@ bool updateBlocks(BlockArray* array, char keyPress) {
                     int targetIndex = getBlockIndex(x, targetY + 1);
                     if (targetY < 3 && array->blocks[targetIndex].value == array->blocks[index].value) {
                         mergeBlocks(array->blocks[targetIndex], array->blocks[index], *array, x, targetY + 1);
-                        // array->blocks[targetIndex].value *= 2;
-                        // array->blocks[index].value = 0;
-
-                        // array->blocks[targetIndex].posX = x;
-                        // array->blocks[targetIndex].posY = targetY + 1;
                         moved = true;
                     } else {
                         targetIndex = getBlockIndex(x, targetY);
@@ -272,11 +261,6 @@ bool updateBlocks(BlockArray* array, char keyPress) {
                     int targetIndex = getBlockIndex(targetX - 1, y);
                     if (targetX > 0 && array->blocks[targetIndex].value == array->blocks[index].value) {
                         mergeBlocks(array->blocks[targetIndex], array->blocks[index], *array, targetX - 1, y);
-                        // array->blocks[targetIndex].value *= 2;
-                        // array->blocks[index].value = 0;
-
-                        // array->blocks[targetIndex].posX = targetX - 1;
-                        // array->blocks[targetIndex].posY = y;
                         moved = true;
                     } else {
                         targetIndex = getBlockIndex(targetX, y);
@@ -304,11 +288,6 @@ bool updateBlocks(BlockArray* array, char keyPress) {
                     int targetIndex = getBlockIndex(targetX + 1, y);
                     if (targetX < 3 && array->blocks[targetIndex].value == array->blocks[index].value) {
                         mergeBlocks(array->blocks[targetIndex], array->blocks[index], *array, targetX + 1, y);
-                        // array->blocks[targetIndex].value *= 2;
-                        // array->blocks[index].value = 0;
-
-                        // array->blocks[targetIndex].posX = targetX + 1;
-                        // array->blocks[targetIndex].posY = y;
                         moved = true;
                     } else {
                         targetIndex = getBlockIndex(targetX, y);
