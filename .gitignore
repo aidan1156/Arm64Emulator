@@ -24,6 +24,8 @@ dataProcessingImm
 flappyBird
 !flappyBird/
 gameEngine
+pacman
+!pacman/
 *.cbuild
 
 #ignore junk files from compiling Haskell code

@@ -20,5 +20,4 @@ pacman: ./extension/pacman/Pacman.c ./extension/gameEngine.c ./extension/pacman/
 
 clean:
 	$(RM) *.o assemble emulate flappyBird pacman
-#pacman
 	
