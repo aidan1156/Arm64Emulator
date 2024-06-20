@@ -1,30 +1,52 @@
-\documentclass[11pt]{article}
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{dirtree}
+\usepackage{blindtext}
+\usepackage{titlesec}
+\usepackage{geometry}
+\geometry{margin=1in}
 
-\usepackage{fullpage}
+\title{ARMv8 AArch64 Emulator Mroup Project}
+\author{Yeona Kim, Hridita Soni, Mruchus Ngo, Aidan Baker}
+\date{June 2024}
 
 \begin{document}
 
-\title{ARM Checkpoint... }
-\author{TODO}
-
 \maketitle
 
-\section{Group Organisation}
+\tableofcontents
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+\section{Emulator}
+\subsection{How we split the work}
+The spec splits the emulator up into 4 parts: Data Processing (Immediate), Data Processing (Register), Loads and Stores and finally Branches. Each person in the group completed one of these sections. Due to 'Data Processing (Register)' having more content than 'Data Processing (Immediate)' the code that was used by both instructions, namely performing addition and subtraction, was made by Aidan who was doing 'Data Processing (Immediate)'.
 
-\section{Implementation Strategies}
+\subsection{How the group is working}
+Each member of the group regularly informed each other about their progress on their section of the emulator. Therefore, there was clear communication about the pace at which each member was working. After integrating our sections, we gathered to debug and examine test cases, providing a good opportunity for collaborative code review. Moving forward, it may be necessary to utilise pair programming even more, as later parts of the project might not be able to be split easily into 4 distinct parts.
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+\subsection{How we structured the emulator}
+The emulator was structured as follows, with .h header files omitted:\\
+
+\dirtree{%
+.1 emulator/.
+.2 instructions/.
+.3 branchInstr.c.
+.3 DataProcessingImm.c.
+.3 DataProcessingReg.c.
+.3 sdt.c.
+.2 machine.c.
+.2 memory.c.
+.2 utilities.c.
+.1 emulate.c.
+}
+
+All files inside the instructions sub-directory carry out their respective instruction type and hence one member of the team completed each one. \\
+Memory.c handles basic memory operations such as loading the program into memory or fetching the next instruction.\\ 
+Machine.c managed the machine, including initialising it and printing it to a file output or sdtin.\\
+Utilities.c was created for general purpose functions that would be required across our files. This included sign extending a 32 bit number represented using 64 bits, eg 0x0000 0000 ffff ffff becomes all f's as 0xffff ffff is negative.\\
+Finally emulate.c only had a main which called functions from the other files to emulate and output the program.\\
+We think that code reuse between the emulator and assembler will be limited as the emulator generally converts from binary to detect the instruction where as the emulator will convert to binary from text.
+
+\subsection{Our Challenges}
+Using sub-directories for modular management of the project led to issues such as multiple declarations of functions from \#include which meant we had to modify Makefiles for compiling. Fixing this took us a while (one and a half hours) but it meant that the project was well abstracted and understandable for people who haven't seen the code base.
 
 \end{document}
