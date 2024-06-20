@@ -70,7 +70,7 @@ int main(void) {
     while (!quit) {
 
         if (firstTime) {
-            createBlock(blockArray); // generate first block if start of game
+            createBlock(&blockArray); // generate first block if start of game
             firstTime = false;
         }
         
@@ -81,7 +81,8 @@ int main(void) {
             // update all blocks
             if (updateBlocks(&blockArray, keyPresses[0])) { // if updated block
                 // one of w, s, a, d keys pressed
-                createBlock(blockArray);
+                // create a new block
+                createBlock(&blockArray);
             }
             
         }
@@ -96,6 +97,10 @@ int main(void) {
         quit = getQuit();
 
         if (blockArray.size == MAX_BLOCK_NUM) { // if it hits max num of blocks game ends
+            quit = true;
+        }
+
+        if (checkIfWon(blockArray)) { // if 2048 is made
             quit = true;
         }
     }
