@@ -68,6 +68,7 @@ int main(void) {
     bool quit = getQuit();
 
     while (!quit) {
+
         if (firstTime) {
             createBlock(blockArray); // generate first block if start of game
             firstTime = false;
@@ -84,6 +85,7 @@ int main(void) {
             }
             
         }
+
         free(keyPresses);
 
         fillWindow(window, ' ');
@@ -92,21 +94,11 @@ int main(void) {
         drawWindow(window);
         tick(100);
         quit = getQuit();
+
+        if (blockArray.size == MAX_BLOCK_NUM) { // if it hits max num of blocks game ends
+            quit = true;
+        }
     }
-
-    
-    // Block block = createBlock(blockArray);
-
-    // drawBlock(block, window);
-    // drawWindow(window);
-
-    // updateBlocks(&blockArray, 'd'); 
-
-
-    // fillWindow(window, ' ');
-    // drawGridLines(window);
-    // drawBlockArray(window, blockArray);
-    // drawWindow(window);
 
 
     free(blockArray.blocks);
