@@ -213,8 +213,14 @@ void tick(int delay) {
 
 // draw a window onto a window (lol)
 void drawWindowOntoWindow(Window src, Window dest, int x, int y) {
+    if (x < 0) {
+        x = 0;
+    }
+    if (y < 0) {
+        y = 0;
+    }
     for (int i=x; i<src->width && i<dest->width; i++) {
-        for (int j=y;j<src->height && dest->height; j++) {
+        for (int j=y;j<src->height && j<dest->height; j++) {
             setPixel(dest, i, j, getPixel(src, i, j));
         }
     }
