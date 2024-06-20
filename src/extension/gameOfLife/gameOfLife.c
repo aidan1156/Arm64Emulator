@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 #include "../gameEngine.h"
 
 #define MAP_WIDTH 40
@@ -25,7 +26,7 @@ static char* lookupFunc(char pixel) {
     static char black[] = "⬛";
     if (colorfulMode) {
         switch (pixel) {
-            case 0: return black;
+            case '0': return black;
             case '1': return red;
             case '2': return orange;
             case '3': return yellow;

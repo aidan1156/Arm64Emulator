@@ -27,6 +27,8 @@ pong
 !pong/
 gameEngine
 *.cbuild
+gameOfLife
+!gameOfLife/
 
 #ignore junk files from compiling Haskell code
 *.hi
