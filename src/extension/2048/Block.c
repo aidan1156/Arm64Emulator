@@ -15,10 +15,12 @@
 //     int size;
 // } BlockArray;
 
+#define FINAL_VALUE 2048
+
 
 bool checkIfWon(BlockArray array) {
     for (int i = 0; i < 16; i++) {
-        if (array.blocks[i].value == 2048) {
+        if (array.blocks[i].value == FINAL_VALUE) {
             return true;
         }
     }
