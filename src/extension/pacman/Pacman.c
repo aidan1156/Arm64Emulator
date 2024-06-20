@@ -4,6 +4,7 @@
 #include "./character.h"
 #include "./walls.h"
 #include "./alien.h"
+#include "./stars.h"
 #include "../flappyBird/text.h"
 
 #define WINDOW_WIDTH 25
@@ -14,19 +15,14 @@ static char* charLookup(char c) {
     switch (c) {
         case '.':
             return "🙃";
-            break;
         case 'w':
             return "🧱";
-            break;
         case '!':
             return "⭐";
-            break;
         case 'x':
             return "👾";
-            break;
         case ' ':
             return "🔹";
-            break;
         case '0':
             return "0️⃣ ";
         case '1':
@@ -47,6 +43,10 @@ static char* charLookup(char c) {
             return "8️⃣ ";
         case '9':
             return "9️⃣ ";
+        case ';':
+            return "💀";
+        case '*':
+            return "🎈";
     }
     
     return "🔹";
@@ -55,11 +55,24 @@ static char* charLookup(char c) {
 int main(void) {
     engineInit();
     Window window = createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, &charLookup);
+    int winW = getWindowWidth(window);
+    int winH = getWindowHeight(window);
     charac pacCharac = createCharac(WINDOW_HEIGHT, WINDOW_WIDTH);
-    alien a1 = createAlien(getWindowWidth(window)/4, getWindowHeight(window)/6, 0);
-    alien a2 = createAlien(getWindowWidth(window)/4, getWindowHeight(window)/2, 0);
-    alien a3 = createAlien(getWindowWidth(window)/4, getWindowHeight(window)*5/6, 0);
-    alien a4 = createAlien(getWindowWidth(window)*4/5, getWindowHeight(window)/2, 1);
+
+    //aliens
+    alien a1 = createAlien(winW/4, winH/6, 0);
+    alien a2 = createAlien(winW/4, winH/2, 0);
+    alien a3 = createAlien(winW/4, winH*5/6, 0);
+    alien a4 = createAlien(winW*4/5, winH/2, 1);
+
+    //stars
+    star s1 = createStar(winW/8, winH/6);
+    star s2 = createStar(winW/2, winH/6);
+    star s3 = createStar(winW*4/5, winH/6);
+    star s4 = createStar(winW/8, winH/2);
+    star s5 = createStar(winW/8, winH*5/6);
+    star s6 = createStar(winW*4/5, winH*5/6);
+
 
     bool quit = getQuit();
     bool isPlaying = false;
@@ -98,6 +111,11 @@ int main(void) {
             }
             if (detectDeath(pacCharac, a1) || detectDeath(pacCharac, a2) || 
             detectDeath(pacCharac, a3) || detectDeath(pacCharac, a4)) {
+                setPixel(window, winW/2, winH/2, ';');
+                setPixel(window, winW/2 + 2, winH/2, ';');
+                setPixel(window, winW/2 - 2, winH/2, ';');
+                drawScore(window, score);
+                drawWindow(window);
                 isPlaying = false;
                 engineQuit(window);
                 exit(0);
@@ -108,10 +126,24 @@ int main(void) {
         fillWindow(window, ' ');
         drawWalls(window);
         drawAlien(a1, window); drawAlien(a2, window); drawAlien(a3, window); drawAlien(a4, window);
+        drawStar(s1, window); drawStar(s2, window); drawStar(s3, window); 
+        drawStar(s4, window); drawStar(s5, window);  drawStar(s6, window);
         drawCharac(pacCharac, window);
+        score += detectCollision(pacCharac, s1) + detectCollision(pacCharac, s2) + detectCollision(pacCharac, s3);
+        score += detectCollision(pacCharac, s4) + detectCollision(pacCharac, s5) + detectCollision(pacCharac, s6);
         drawScore(window, score);
         drawWindow(window);
         if (!isPlaying) {isPlaying = true;} 
+        if (score == 30) {
+            setPixel(window, winW/2, winH/2, '*');
+            setPixel(window, winW/2 + 2, winH/2, '*');
+            setPixel(window, winW/2 - 2, winH/2, '*');
+            drawScore(window, score);
+            drawWindow(window);
+            isPlaying = false;
+            engineQuit(window);
+            exit(0);
+        }
         tick(200);
         quit = getQuit();
     }

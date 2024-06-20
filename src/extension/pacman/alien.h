@@ -1,5 +1,7 @@
 #include <stdlib.h>
+
 #include "../gameEngine.h"
+#include "./character.h"
 
 typedef struct alien *alien;
 
@@ -9,8 +11,6 @@ void drawAlien(alien a, Window window);
 
 void updateAlien(alien a, bool pos);
 
-int getAlienPosX(alien a);
-
-int getAlienPosY(alien a);
+bool detectDeath(charac c, alien a);
 
 void freeAlien(alien a);

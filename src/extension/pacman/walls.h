@@ -1,9 +1,6 @@
 
 #include <stdlib.h>
-#include <assert.h>
-#include <stdbool.h>
 #include "../gameEngine.h"
-
 
 void drawWalls(Window window);
 

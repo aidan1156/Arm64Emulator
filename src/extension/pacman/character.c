@@ -1,6 +1,7 @@
 #include <stdlib.h>
+
+#include "../gameEngine.h"
 #include "./character.h"
-#include "./walls.h"
 
 typedef struct charac {
     int posX;
@@ -47,11 +48,12 @@ void moveCharac(Window win, charac c, int dir) {
 
 }
 
-bool detectDeath(charac c, alien a) {
-    if (c -> posX == getAlienPosX(a) && c -> posY == getAlienPosY(a)) {
-        return true;
-    }
-    return false;
+int getPosX(charac c) {
+    return c -> posX;
+}
+
+int getPosY(charac c) {
+    return c -> posY;
 }
 
 void resetCharac(charac c) {

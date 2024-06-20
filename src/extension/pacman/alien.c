@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "../gameEngine.h"
+#include "./alien.h"
 
 typedef struct alien {
     int posX;
@@ -75,12 +75,11 @@ void updateAlien(alien a, bool pos) {
     }
 }
 
-int getAlienPosX(alien a) {
-    return a -> posX;
-}
-
-int getAlienPosY(alien a) {
-    return a -> posY;
+bool detectDeath(charac c, alien a) {
+    if (getPosX(c) == a -> posX && getPosY(c) == a -> posY) {
+        return true;
+    }
+    return false;
 }
 
 void freeAlien(alien a) {
