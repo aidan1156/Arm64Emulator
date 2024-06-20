@@ -25,5 +25,5 @@ gameOfLife: ./extension/gameOfLife/gameOfLife.c ./extension/gameEngine.c
 	$(CC) $(CFLAGS) -o gameOfLife ./extension/gameOfLife/gameOfLife.c ./extension/gameEngine.c
 
 clean:
-	$(RM) *.o assemble emulate flappyBird
+	$(RM) *.o assemble emulate flappyBird pong gameOfLife pacman
 	
