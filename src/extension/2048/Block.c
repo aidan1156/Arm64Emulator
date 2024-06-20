@@ -123,7 +123,7 @@ void drawBlock(Block block, Window window) {
             setPixel(window, block.posX * 5 + 2, newY, valueChar1);
 
             valueChar2 = (block.value / 10) % 10 + '0';
-            setPixel(window, block.posX * 5 + 1, newY, valueChar1);
+            setPixel(window, block.posX * 5 + 1, newY, valueChar2);
             break;
 
         case 3:
@@ -180,10 +180,6 @@ void mergeBlocks(Block block1, Block block2, BlockArray array, int newX, int new
 }
 
 
-// bool checkBlocks(Block block1, Block block2, BlockArray array) {
-//     if 
-// }
-
 bool updateBlocks(BlockArray* array, char keyPress) {
     bool moved = false;
 
@@ -204,11 +200,13 @@ bool updateBlocks(BlockArray* array, char keyPress) {
 
                     if (targetY > 0 && array->blocks[targetIndex].value == array->blocks[index].value) {
                         // if targetY has same value then merge
-                        array->blocks[targetIndex].value *= 2;
-                        array->blocks[index].value = 0;
+
+                        mergeBlocks(array->blocks[targetIndex], array->blocks[index], *array, x, targetY - 1);
+                        // array->blocks[targetIndex].value *= 2;
+                        // array->blocks[index].value = 0;
                     
-                        array->blocks[targetIndex].posX = x;
-                        array->blocks[targetIndex].posY = targetY - 1;
+                        // array->blocks[targetIndex].posX = x;
+                        // array->blocks[targetIndex].posY = targetY - 1;
 
                         moved = true;
                     } else {

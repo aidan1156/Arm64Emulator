@@ -78,8 +78,11 @@ int main(void) {
             // take first keyPress
             // and make any relevant merges of blocks
             // update all blocks
-            updateBlocks(&blockArray, keyPresses[0]);
-            createBlock(blockArray);
+            if (updateBlocks(&blockArray, keyPresses[0])) { // if updated block
+                // one of w, s, a, d keys pressed
+                createBlock(blockArray);
+            }
+            
         }
         free(keyPresses);
 
