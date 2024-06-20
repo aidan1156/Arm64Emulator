@@ -59,41 +59,54 @@ int main(void) {
 
     BlockArray blockArray; // initialising array of blocks
     blockArray.size = 0;
-    blockArray.blocks = (Block*)malloc(MAX_BLOCK_NUM * sizeof(Block)); 
+    blockArray.blocks = malloc((MAX_BLOCK_NUM) * sizeof(struct Block)); // dont have to realloc this way
     assert (blockArray.blocks != NULL);
-    // dont have to realloc this way
+    initBlockArray(blockArray);
 
+    
     bool firstTime = true;
     bool quit = getQuit();
+
     while (!quit) {
+        if (firstTime) {
+            createBlock(blockArray); // generate first block if start of game
+            firstTime = false;
+        }
+        
         char* keyPresses = getKeyPresses();
         if (strlen(keyPresses) > 0) {
             // take first keyPress
             // and make any relevant merges of blocks
             // update all blocks
+            updateBlocks(&blockArray, keyPresses[0]);
+            createBlock(blockArray);
         }
         free(keyPresses);
-
-        if (firstTime) {
-            createBlock(blockArray); // generate first block if start of game
-
-            firstTime = false;
-        }
 
         fillWindow(window, ' ');
         drawGridLines(window);
         drawBlockArray(window, blockArray);
+        drawWindow(window);
         tick(100);
         quit = getQuit();
     }
 
-
+    
     // Block block = createBlock(blockArray);
-    // Block block2 = createBlock(blockArray);
 
     // drawBlock(block, window);
-    // drawBlock(block2, window);
     // drawWindow(window);
+
+    // updateBlocks(&blockArray, 'd'); 
+
+
+    // fillWindow(window, ' ');
+    // drawGridLines(window);
+    // drawBlockArray(window, blockArray);
+    // drawWindow(window);
+
+
+    free(blockArray.blocks);
 
     engineQuit(window);
     exit(0);

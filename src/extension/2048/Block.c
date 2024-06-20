@@ -2,14 +2,44 @@
 
 #include "./Block.h"
 
+
+// typedef struct Block {
+//     int posX;
+//     int posY;
+//     int value;
+// } Block;
+
+
+// typedef struct BlockArray {
+//     Block* blocks; // flattened out 1D list 
+//     int size;
+// } BlockArray;
+
+
+// getting index of block in array depending on the position of block
+static int getBlockIndex(int x, int y){
+    return y * 4 + x;
+}
+
+void initBlockArray(BlockArray array) {
+    for (int i = 0; i < 16; i++) {
+        array.blocks[i].value = 0;
+        array.blocks[i].posX = -1;
+        array.blocks[i].posY = -1;
+    }
+}
+
+
 // deleting block from BlockArray at a given index
 void deleteBlock(BlockArray blockArray, int index) {
     assert (index < 0 || index >= blockArray.size); // index in the right range
 
-    // Shift elements to the left to fill the gap
-    for (int i = index; i < blockArray.size - 1; i++) {
-        blockArray.blocks[i] = blockArray.blocks[i + 1];
-    }
+    // // Shift elements to the left to fill the gap
+    // for (int i = index; i < blockArray.size - 1; i++) {
+    //     blockArray.blocks[i] = blockArray.blocks[i + 1];
+    // }
+
+    blockArray.blocks[index].value = 0; // reinitialising the value
 
     // Decrement the size
     blockArray.size--;
@@ -24,9 +54,11 @@ void addBlock(BlockArray blockArray, Block block) {
 
     assert(blockArray.size <= 16); // should not exceed max
 
-    blockArray.blocks[blockArray.size - 1].posX = block.posX;
-    blockArray.blocks[blockArray.size - 1].posY = block.posY;
-    blockArray.blocks[blockArray.size - 1].value = block.value;
+    int index = getBlockIndex(block.posX, block.posY);
+
+    blockArray.blocks[index].posX = block.posX;
+    blockArray.blocks[index].posY = block.posY;
+    blockArray.blocks[index].value = block.value;
 }
 
 
@@ -122,8 +154,10 @@ void drawBlock(Block block, Window window) {
 }
 
 void drawBlockArray(Window window, BlockArray array) {
-    for (int i = 0; i < array.size; i++) {
-        drawBlock(array.blocks[i], window);
+    for (int i = 0; i < 16; i++) {
+        if (array.blocks[i].value != 0) { // if there is a value there
+            drawBlock(array.blocks[i], window);
+        }
     }
 }
 
@@ -146,24 +180,154 @@ void mergeBlocks(Block block1, Block block2, BlockArray array, int newX, int new
 }
 
 
-void updateBlocks(BlockArray array, char keyPress) {
-    if (keyPress == 'w') { // up
-        // any block with posY != 0 moves to 0
-        // either merge or position moves up max
+// bool checkBlocks(Block block1, Block block2, BlockArray array) {
+//     if 
+// }
 
-        for (int i = 0; i < 4; i++) {
-            // check each column at a time
-            
+bool updateBlocks(BlockArray* array, char keyPress) {
+    bool moved = false;
+
+    if (keyPress == 'w') { // Up
+        for (int x = 0; x < 4; x++) {
+            for (int y = 1; y < 4; y++) {
+                int index = getBlockIndex(x, y);
+
+                // only working with blocks that actually exist
+                if (array->blocks[index].value != 0) {
+                    
+                    // setting targetY: first y value above
+                    int targetY = y;
+                    while (targetY > 0 && array->blocks[getBlockIndex(x, targetY - 1)].value == 0) {
+                        targetY--;
+                    }
+                    int targetIndex = getBlockIndex(x, targetY - 1);
+
+                    if (targetY > 0 && array->blocks[targetIndex].value == array->blocks[index].value) {
+                        // if targetY has same value then merge
+                        array->blocks[targetIndex].value *= 2;
+                        array->blocks[index].value = 0;
+                    
+                        array->blocks[targetIndex].posX = x;
+                        array->blocks[targetIndex].posY = targetY - 1;
+
+                        moved = true;
+                    } else {
+                        // different values:
+                        targetIndex = getBlockIndex(x, targetY);
+                        if (targetIndex != index) {
+                            // if shifting up is needed
+                            array->blocks[targetIndex] = array->blocks[index];
+                            array->blocks[index].value = 0;
+                            
+                            array->blocks[targetIndex].posX = x;
+                            array->blocks[targetIndex].posY = targetY;
+                            moved = true;
+                        }
+                    }
+                }
+            }
         }
 
-    } else if (keyPress == 's') { // down
+    } else if (keyPress == 's') { // Down
+        for (int x = 0; x < 4; x++) {
+            for (int y = 2; y >= 0; y--) {
+                int index = getBlockIndex(x, y);
 
-    } else if (keyPress == 'a') { // left
-         
-    } else if (keyPress == 'd') { // right
+                if (array->blocks[index].value != 0) {
+                    int targetY = y;
+                    while (targetY < 3 && array->blocks[getBlockIndex(x, targetY + 1)].value == 0) {
+                        targetY++;
+                    }
+                    
+                    int targetIndex = getBlockIndex(x, targetY + 1);
+                    if (targetY < 3 && array->blocks[targetIndex].value == array->blocks[index].value) {
+                        array->blocks[targetIndex].value *= 2;
+                        array->blocks[index].value = 0;
 
+                        array->blocks[targetIndex].posX = x;
+                        array->blocks[targetIndex].posY = targetY + 1;
+                        moved = true;
+                    } else {
+                        targetIndex = getBlockIndex(x, targetY);
+                        if (targetIndex != index) {
+                            array->blocks[targetIndex] = array->blocks[index];
+                            array->blocks[index].value = 0;
+
+                            array->blocks[targetIndex].posX = x;
+                            array->blocks[targetIndex].posY = targetY;
+                            moved = true;
+                        }
+                    }
+                }
+            }
+        }
+    } else if (keyPress == 'a') { // Left
+        for (int y = 0; y < 4; y++) {
+            for (int x = 1; x < 4; x++) {
+                int index = getBlockIndex(x, y);
+                if (array->blocks[index].value != 0) {
+                    int targetX = x;
+                    while (targetX > 0 && array->blocks[getBlockIndex(targetX - 1, y)].value == 0) {
+                        targetX--;
+                    }
+                    int targetIndex = getBlockIndex(targetX - 1, y);
+                    if (targetX > 0 && array->blocks[targetIndex].value == array->blocks[index].value) {
+                        array->blocks[targetIndex].value *= 2;
+                        array->blocks[index].value = 0;
+
+                        array->blocks[targetIndex].posX = targetX - 1;
+                        array->blocks[targetIndex].posY = y;
+                        moved = true;
+                    } else {
+                        targetIndex = getBlockIndex(targetX, y);
+                        if (targetIndex != index) {
+                            array->blocks[targetIndex] = array->blocks[index];
+                            array->blocks[index].value = 0;
+
+                            array->blocks[targetIndex].posX = targetX;
+                            array->blocks[targetIndex].posY = y;
+                            moved = true;
+                        }
+                    }
+                }
+            }
+        }
+    } else if (keyPress == 'd') { // Right
+        for (int y = 0; y < 4; y++) {
+            for (int x = 2; x >= 0; x--) {
+                int index = getBlockIndex(x, y);
+                if (array->blocks[index].value != 0) {
+                    int targetX = x;
+                    while (targetX < 3 && array->blocks[getBlockIndex(targetX + 1, y)].value == 0) {
+                        targetX++;
+                    }
+                    int targetIndex = getBlockIndex(targetX + 1, y);
+                    if (targetX < 3 && array->blocks[targetIndex].value == array->blocks[index].value) {
+                        array->blocks[targetIndex].value *= 2;
+                        array->blocks[index].value = 0;
+
+                        array->blocks[targetIndex].posX = targetX + 1;
+                        array->blocks[targetIndex].posY = y;
+                        moved = true;
+                    } else {
+                        targetIndex = getBlockIndex(targetX, y);
+                        if (targetIndex != index) {
+                            array->blocks[targetIndex] = array->blocks[index];
+                            array->blocks[index].value = 0;
+
+                            array->blocks[targetIndex].posX = targetX;
+                            array->blocks[targetIndex].posY = y;
+                            moved = true;
+                        }
+                    }
+                }
+            }
+        }
     }
+
+    return moved;
 }
+
 
 
 
