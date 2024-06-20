@@ -21,7 +21,18 @@
 emulate
 assemble
 dataProcessingImm
+flappyBird
+!flappyBird/
+2048
+!2048/
+pong
+!pong/
+gameEngine
+pacman
+!pacman/
 *.cbuild
+gameOfLife
+!gameOfLife/
 
 #ignore junk files from compiling Haskell code
 *.hi
