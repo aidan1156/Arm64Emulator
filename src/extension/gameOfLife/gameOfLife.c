@@ -14,7 +14,7 @@ char newGrid[MAP_HEIGHT][MAP_WIDTH];
 int unchangedCount[MAP_HEIGHT][MAP_WIDTH];
 bool colorfulMode = true;
 
-char* lookupFunc(char pixel) {
+static char* lookupFunc(char pixel) {
     static char red[] = "🟥";
     static char orange[] = "🟧";
     static char yellow[] = "🟨";
@@ -42,7 +42,7 @@ char* lookupFunc(char pixel) {
             case '4':
             case '5':
             case '6': return white; // for any alive cell
-            case '0': return black;
+            case '0': default: return black;
         }
     }
 }
@@ -111,20 +111,6 @@ static void updateGrid() {
     for (int y = 0; y < MAP_HEIGHT; y++) {
         for (int x = 0; x < MAP_WIDTH; x++) {
             grid[y][x] = newGrid[y][x];
-        }
-    }
-}
-
-
-static void drawInstructions(Window window) {
-    const char* instructions[] = {
-        "Controls: q - quit, p - pause/resume, r - reset, c - toggle colours",
-        " ",
-        " "
-    };
-    for (int i = 0; i < INSTRUCTION_LINES; i++) {
-        for (int j = 0; instructions[i][j] != '\0'; j++) {
-            setPixel(window, j, i, instructions[i][j]);
         }
     }
 }
