@@ -82,7 +82,7 @@ int main(void) {
         drawPlayer(player2, window);
         drawBall(ball, window);
         drawWindow(window);
-        tick(100);
+        tick(50);
         quit = getQuit();
         if (getScore(player1) == 9 || getScore(player2) == 9) {
             quit = true;
