@@ -35,8 +35,5 @@ bool getQuit(void);
 
 void tick(int delay);
 
-<<<<<<< HEAD
 void drawWindowOntoWindow(Window src, Window dest, int x, int y);
-=======
 #endif // GAME_ENGINE_H
->>>>>>> game-of-life
