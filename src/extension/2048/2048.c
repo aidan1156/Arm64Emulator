@@ -12,7 +12,7 @@ static char* charLookup(char c) {
     switch (c) {
         case ' ':
             return "🟦";
-        case 'w':
+        case '.':
             return "⬜";
         case '0':
             return "0️⃣ ";
@@ -38,32 +38,62 @@ static char* charLookup(char c) {
     return "🟦";
 }
 
+void drawGridLines(Window window) {
+    for (int i = 0; i < WINDOW_HEIGHT; i++) { 
+        setPixel(window, 4, i, '.');
+        setPixel(window, 9, i, '.');
+        setPixel(window, 14, i, '.');
+
+        setPixel(window, i, 4, '.');
+        setPixel(window, i, 9, '.');
+        setPixel(window, i, 14, '.');
+    }
+}
+
 int main(void) {
     engineInit();
     Window window = createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, &charLookup);
     fillWindow(window, ' '); // fill in window with blue
 
-    for (int i = 0; i < WINDOW_HEIGHT; i++) { // drawing grid lines
-        setPixel(window, 4, i, 'w');
-        setPixel(window, 9, i, 'w');
-        setPixel(window, 14, i, 'w');
-
-        setPixel(window, i, 4, 'w');
-        setPixel(window, i, 9, 'w');
-        setPixel(window, i, 14, 'w');
-    }
-
+    drawGridLines(window); // drawing grid lines
 
     BlockArray blockArray; // initialising array of blocks
     blockArray.size = 0;
-    blockArray.blocks = (Block*)malloc(MAX_BLOCK_NUM * sizeof(Block));
+    blockArray.blocks = (Block*)malloc(MAX_BLOCK_NUM * sizeof(Block)); 
+    assert (blockArray.blocks != NULL);
+    // dont have to realloc this way
 
-    Block block = createBlock(blockArray);
-    Block block2 = createBlock(blockArray);
+    bool firstTime = true;
+    bool quit = getQuit();
+    while (!quit) {
+        char* keyPresses = getKeyPresses();
+        if (strlen(keyPresses) > 0) {
+            // take first keyPress
+            // and make any relevant merges of blocks
+            // update all blocks
+        }
+        free(keyPresses);
 
-    drawBlock(block, window);
-    drawBlock(block2, window);
-    drawWindow(window);
+        if (firstTime) {
+            createBlock(blockArray); // generate first block if start of game
+
+            firstTime = false;
+        }
+
+        fillWindow(window, ' ');
+        drawGridLines(window);
+        drawBlockArray(window, blockArray);
+        tick(100);
+        quit = getQuit();
+    }
+
+
+    // Block block = createBlock(blockArray);
+    // Block block2 = createBlock(blockArray);
+
+    // drawBlock(block, window);
+    // drawBlock(block2, window);
+    // drawWindow(window);
 
     engineQuit(window);
     exit(0);
