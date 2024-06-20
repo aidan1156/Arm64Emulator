@@ -26,6 +26,8 @@ flappyBird
 pong
 !pong/
 gameEngine
+pacman
+!pacman/
 *.cbuild
 gameOfLife
 !gameOfLife/
