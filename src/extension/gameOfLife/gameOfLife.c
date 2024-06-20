@@ -24,7 +24,7 @@ char* lookupFunc(char pixel) {
     static char black[] = "⬛";
     if (colorfulMode) {
         switch (pixel) {
-            case '0': return black;
+            case 0: return black;
             case '1': return red;
             case '2': return orange;
             case '3': return yellow;
@@ -40,14 +40,16 @@ char* lookupFunc(char pixel) {
             case '3':
             case '4':
             case '5':
-            case '6': return white;
-            case '0': default: return black;
+            case '6': return white; // for any alive cell
+            case '0': return black;
         }
     }
 }
 
-void initializeGame() {
+static void initialiseGame() {
     engineInit();
+    // seed random number generator
+    // get current time (will be different each time running)
     srand(time(NULL));
     for (int y = 0; y < MAP_HEIGHT; y++) {
         for (int x = 0; x < MAP_WIDTH; x++) {
@@ -58,13 +60,15 @@ void initializeGame() {
     }
 }
 
-int countAliveNeighbors(int y, int x) {
+static int countAliveNeighbors(int y, int x) {
     int count = 0;
+    // iterate through all possible neighbours
     for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
-            if (i == 0 && j == 0) continue;
+            if (i == 0 && j == 0) continue; // itself
             int ny = y + i;
             int nx = x + j;
+            // prevent out of bounds access
             if (ny >= 0 && ny < MAP_HEIGHT && nx >= 0 && nx < MAP_WIDTH) {
                 if (grid[ny][nx] == '1') {
                     count++;
@@ -75,19 +79,24 @@ int countAliveNeighbors(int y, int x) {
     return count;
 }
 
-// update grid for next tick
-void updateGrid() {
+static void updateGrid() {
     for (int y = 0; y < MAP_HEIGHT; y++) {
         for (int x = 0; x < MAP_WIDTH; x++) {
             int aliveNeighbors = countAliveNeighbors(y, x);
             char newState = '0';
+
             if (grid[y][x] == '1') {
+                // if has 2 or 3 alive neighbors -> stay alive
+                // less or more -> die
                 newState = (aliveNeighbors == 2 || aliveNeighbors == 3) ? '1' : '0';
             } else {
+                // BIRTH rule - become alive is have 3 neighbours
                 newState = (aliveNeighbors == 3) ? '1' : '0';
             }
 
+            // update unchanged 
             if (newState == grid[y][x]) {
+                // unchanged
                 if (unchangedCount[y][x] < 6) unchangedCount[y][x]++;
             } else {
                 unchangedCount[y][x] = 1; // immediately turn red if changed
@@ -97,7 +106,7 @@ void updateGrid() {
         }
     }
 
-    // Copy new grid to grid
+    // copy new grid to grid
     for (int y = 0; y < MAP_HEIGHT; y++) {
         for (int x = 0; x < MAP_WIDTH; x++) {
             grid[y][x] = newGrid[y][x];
@@ -105,18 +114,22 @@ void updateGrid() {
     }
 }
 
-void drawGrid(Window window) {
+static void drawGrid(Window window) {
+    // fill with dead cells
     fillWindow(window, '0');
     for (int y = 0; y < MAP_HEIGHT; y++) {
         for (int x = 0; x < MAP_WIDTH; x++) {
-            setPixel(window, x, y, grid[y][x] == '0' ? '0' : (char)(unchangedCount[y][x] + '0'));
+            setPixel(window, x, y, grid[y][x] == '0' ?
+            // already dead or changing
+            // prevent dead being counted as 'stable' / unchanged cell
+             '0' : (char)(unchangedCount[y][x] + '0'));
         }
     }
     drawWindow(window);
 }
 
 int main() {
-    initializeGame();
+    initialiseGame();
     Window window = createWindow(MAP_WIDTH, MAP_HEIGHT, lookupFunc);
     bool running = true;
 
@@ -126,6 +139,7 @@ int main() {
             drawGrid(window);
         }
 
+        // check is not immediate but fast enough to seems so
         char *keyPresses = getKeyPresses();
         for (int i = 0; keyPresses[i] != '\0'; i++) {
             char key = keyPresses[i];
@@ -136,7 +150,7 @@ int main() {
             } else if (key == 'p') { // pause or resume the game
                 running = !running; 
             } else if (key == 'r') { // reset game
-                initializeGame(); 
+                initialiseGame(); 
             } else if (key == 'c') { // toggle colour mode
                 colorfulMode = !colorfulMode; 
             }
