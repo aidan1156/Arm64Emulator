@@ -68,7 +68,7 @@ Our code consisted of the following steps:
     \item Creating a delay
     \item Setting Pin 7 to a low signal (LED off)
     \item Creating a delay
-    \item Repeat steps 2-6 by using a loop
+    \item Repeat steps 3-6 by using a loop
 \end{enumerate}
 
 The delay was created by repeatedly incrementing a value stored in a register until it was equal to a sufficiently large number: 0x3ff lsl 12. This consumed processor cycles which created a pause when the LED turned on, and then again when it turned off. \\
@@ -175,6 +175,8 @@ Another issue was fetching user input, initially we just used enter as the input
 To test the game engine we would write very simple programs as we added functionality to the engine. These programs would do basic things using a newly added function, for example setting a pixel on the 'screen'. 
 
 For testing individual games again we played the game and attempted to break it and find cases where the pixels would behave unexpectedly.
+
+Overall we would say this proved to be effective way for us to test and debug our games.
 
 \section{Group reflection}
 Dividing the work based off instruction categories for the emulator did not result in even work load, so for the assembler we opted to have a table of specific instructions with each person marking off an instruction as they were working on it. This method meant that we had a roughly equal work load as people who did harder instructions simply did fewer instructions.
