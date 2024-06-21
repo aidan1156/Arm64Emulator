@@ -30,6 +30,8 @@ pong
 gameEngine
 pacman
 !pacman/
+2048
+!2048/
 *.cbuild
 gameOfLife
 !gameOfLife/

@@ -9,8 +9,6 @@ typedef struct Window *Window;
 
 typedef char* (*LookupFunc)(char);
 
-extern volatile bool quitGame; // Declare quitGame as extern
-
 void engineInit(void);
 
 void engineQuit(Window window);
