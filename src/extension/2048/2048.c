@@ -14,6 +14,10 @@ static char* charLookup(char c) {
             return "🟦";
         case '.':
             return "⬜";
+        case 'w':
+            return "🏆";
+        case 'l':
+            return "😢";
         case '0':
             return "0️⃣ ";
         case '1':
@@ -48,6 +52,24 @@ void drawGridLines(Window window) {
         setPixel(window, i, 9, '.');
         setPixel(window, i, 14, '.');
     }
+}
+
+void createWinScreen(Window window) {
+    for (int i = 7; i < 12; i++) {
+        for (int j = 7; j < 12; j++) {
+            setPixel(window, i, j, '.');
+        }
+    }
+    setPixel(window, 9, 9, 'w');
+}
+
+void createLossScreen(Window window) {
+    for (int i = 7; i < 12; i++) {
+        for (int j = 7; j < 12; j++) {
+            setPixel(window, i, j, '.');
+        }
+    }
+    setPixel(window, 9, 9, 'l');
 }
 
 int main(void) {
@@ -98,10 +120,14 @@ int main(void) {
 
         if (blockArray.size == MAX_BLOCK_NUM) { // if it hits max num of blocks game ends
             quit = true;
+            createLossScreen(window);
+            drawWindow(window);
         }
 
         if (checkIfWon(blockArray)) { // if 2048 is made
             quit = true;
+            createWinScreen(window);
+            drawWindow(window);
         }
     }
 
