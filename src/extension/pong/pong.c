@@ -54,11 +54,14 @@ int main(void) {
         char* keyPresses = getKeyPresses();
         if (strchr(keyPresses, 'w')) {
             movePlayer(player1, -2);
-        } else if (strchr(keyPresses, 's')) {
+        }
+        if (strchr(keyPresses, 's')) {
             movePlayer(player1, 2);
-        } else if (strchr(keyPresses, 'o')) {
+        }
+        if (strchr(keyPresses, 'o')) {
             movePlayer(player2, -2);
-        } else if (strchr(keyPresses, 'l')) {
+        } 
+        if (strchr(keyPresses, 'l')) {
             movePlayer(player2, 2);
         }
         free(keyPresses);

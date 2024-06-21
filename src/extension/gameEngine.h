@@ -3,8 +3,6 @@
 
 #include <stdbool.h>
 
-#define MAX_KEYPRESSES 512
-
 typedef struct Window *Window;
 
 typedef char* (*LookupFunc)(char);
